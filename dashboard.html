@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Numora — Dashboard</title>
+
+<style>
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Segoe UI",
+        sans-serif;
+
+    background: #f4f8ff;
+    color: #10233f;
+    min-height: 100vh;
+}
+
+button {
+    font: inherit;
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   LOADING SCREEN
+========================================================= */
+
+#loadingScreen {
+    position: fixed;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f7fbff,
+            #edf5ff
+        );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 9999;
+}
+
+.loading-box {
+    text-align: center;
+}
+
+.loading-logo {
+    width: 62px;
+    height: 62px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1769ff,
+            #4d9aff
+        );
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 27px;
+    font-weight: 800;
+
+    box-shadow:
+        0 15px 35px
+        rgba(23, 105, 255, 0.25);
+}
+
+.loading-text {
+    color: #71829a;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+#app {
+    min-height: 100vh;
+    padding-bottom: 90px;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    height: 76px;
+
+    padding:
+        0 5%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background:
+        rgba(244, 248, 255, 0.88);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-bottom:
+        1px solid rgba(215, 228, 247, 0.8);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 39px;
+    height: 39px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1769ff,
+            #4d9aff
+        );
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    box-shadow:
+        0 8px 20px
+        rgba(23, 105, 255, 0.22);
+}
+
+.brand-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.profile-button {
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+
+    padding: 3px;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 50%;
+
+    background: #dfeeff;
+
+    color: #1769ff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 800;
+
+    overflow: hidden;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.main {
+    width: 100%;
+    max-width: 1120px;
+
+    margin: 0 auto;
+
+    padding:
+        34px 5%;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.page-heading {
+    margin-bottom: 26px;
+}
+
+.page-heading h1 {
+    font-size: clamp(30px, 5vw, 43px);
+
+    letter-spacing: -1.7px;
+
+    margin-bottom: 8px;
+}
+
+.page-heading p {
+    color: #71829a;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   NUMBER CARD
+========================================================= */
+
+.number-card {
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 27px;
+
+    padding: 27px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #125ce4,
+            #438eff
+        );
+
+    box-shadow:
+        0 22px 45px
+        rgba(23, 105, 255, 0.20);
+
+    margin-bottom: 20px;
+}
+
+.number-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    border-radius: 50%;
+
+    right: -80px;
+    top: -100px;
+
+    background:
+        rgba(255,255,255,0.09);
+}
+
+.number-card-content {
+    position: relative;
+    z-index: 2;
+}
+
+.number-label {
+    font-size: 11px;
+    letter-spacing: 0.7px;
+    opacity: 0.78;
+
+    margin-bottom: 9px;
+}
+
+.number-value {
+    font-size: clamp(24px, 6vw, 34px);
+
+    font-weight: 800;
+
+    letter-spacing: 0.3px;
+
+    margin-bottom: 17px;
+}
+
+.number-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 11px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(255,255,255,0.15);
+
+    font-size: 12px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #7ff0ae;
+}
+
+
+/* =========================================================
+   GET NUMBER
+========================================================= */
+
+.get-number-card {
+    background: white;
+
+    border:
+        1px solid #e2ebf7;
+
+    border-radius: 24px;
+
+    padding: 23px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 10px 28px
+        rgba(42, 78, 120, 0.05);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.get-number-content h2 {
+    font-size: 20px;
+    margin-bottom: 7px;
+}
+
+.get-number-content p {
+    color: #71829a;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.primary-button {
+    border: none;
+
+    background: #1769ff;
+    color: white;
+
+    padding: 13px 18px;
+
+    border-radius: 13px;
+
+    font-weight: 750;
+
+    white-space: nowrap;
+
+    box-shadow:
+        0 10px 22px
+        rgba(23, 105, 255, 0.20);
+
+    transition: 0.2s ease;
+}
+
+.primary-button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   STAT GRID
+========================================================= */
+
+.stat-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 22px;
+}
+
+.stat-card {
+    background: white;
+
+    border:
+        1px solid #e3ebf6;
+
+    border-radius: 21px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 8px 22px
+        rgba(42, 78, 120, 0.04);
+}
+
+.stat-label {
+    color: #71829a;
+
+    font-size: 12px;
+
+    margin-bottom: 9px;
+}
+
+.stat-value {
+    font-size: 17px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.section {
+    margin-top: 28px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 13px;
+}
+
+.section-title h2 {
+    font-size: 20px;
+}
+
+.section-title span {
+    color: #1769ff;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   EMPTY MESSAGE
+========================================================= */
+
+.empty-card {
+    background: white;
+
+    border:
+        1px solid #e3ebf6;
+
+    border-radius: 22px;
+
+    padding: 30px 22px;
+
+    text-align: center;
+}
+
+.empty-icon {
+    width: 49px;
+    height: 49px;
+
+    margin:
+        0 auto 13px;
+
+    border-radius: 16px;
+
+    background: #e8f1ff;
+
+    color: #1769ff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.empty-card h3 {
+    font-size: 17px;
+    margin-bottom: 6px;
+}
+
+.empty-card p {
+    color: #71829a;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    max-width: 350px;
+
+    margin: auto;
+}
+
+
+/* =========================================================
+   MESSAGES PAGE
+========================================================= */
+
+.messages-page {
+    display: none;
+}
+
+.messages-header {
+    margin-bottom: 20px;
+}
+
+.messages-header h1 {
+    font-size: 32px;
+    letter-spacing: -1.3px;
+    margin-bottom: 6px;
+}
+
+.messages-header p {
+    color: #71829a;
+    font-size: 14px;
+}
+
+.search-box {
+    width: 100%;
+
+    border:
+        1px solid #dfe8f4;
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 13px 15px;
+
+    outline: none;
+
+    color: #10233f;
+
+    margin-bottom: 16px;
+}
+
+.search-box:focus {
+    border-color: #7faeff;
+}
+
+
+/* =========================================================
+   MORE PAGE
+========================================================= */
+
+.more-page {
+    display: none;
+}
+
+.account-card {
+    background: white;
+
+    border:
+        1px solid #e3ebf6;
+
+    border-radius: 23px;
+
+    padding: 22px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 18px;
+}
+
+.account-avatar {
+    width: 53px;
+    height: 53px;
+
+    border-radius: 50%;
+
+    background: #e7f0ff;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+}
+
+.account-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.account-info {
+    min-width: 0;
+}
+
+.account-info h2 {
+    font-size: 17px;
+    margin-bottom: 4px;
+}
+
+.account-info p {
+    color: #71829a;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.menu-card {
+    background: white;
+
+    border:
+        1px solid #e3ebf6;
+
+    border-radius: 22px;
+
+    overflow: hidden;
+}
+
+.menu-item {
+    width: 100%;
+
+    border: none;
+
+    background: white;
+
+    padding: 17px 18px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    text-align: left;
+
+    color: #10233f;
+
+    border-bottom:
+        1px solid #edf2f8;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-icon {
+    width: 37px;
+    height: 37px;
+
+    border-radius: 12px;
+
+    background: #eaf2ff;
+
+    color: #1769ff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    flex-shrink: 0;
+}
+
+.menu-text {
+    flex: 1;
+}
+
+.menu-text strong {
+    display: block;
+
+    font-size: 14px;
+
+    margin-bottom: 3px;
+}
+
+.menu-text span {
+    display: block;
+
+    color: #71829a;
+
+    font-size: 12px;
+}
+
+.menu-arrow {
+    color: #9aabc0;
+}
+
+.logout {
+    color: #e04444;
+}
+
+.logout .menu-icon {
+    background: #fff0f0;
+    color: #e04444;
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+========================================================= */
+
+.bottom-nav {
+    position: fixed;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 200;
+
+    height: 76px;
+
+    padding:
+        8px 18px
+        calc(8px + env(safe-area-inset-bottom));
+
+    background:
+        rgba(255,255,255,0.94);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-top:
+        1px solid #e2eaf5;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 45px;
+}
+
+.nav-button {
+    border: none;
+    background: transparent;
+
+    min-width: 65px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 5px;
+
+    color: #8292a8;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.nav-icon {
+    width: 35px;
+    height: 30px;
+
+    border-radius: 11px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.nav-button.active {
+    color: #1769ff;
+}
+
+.nav-button.active .nav-icon {
+    background: #e7f0ff;
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 850px) {
+
+    #app {
+        padding-bottom: 35px;
+    }
+
+    .main {
+        padding-top: 50px;
+    }
+
+    .bottom-nav {
+        position: fixed;
+
+        left: 50%;
+        right: auto;
+
+        bottom: 25px;
+
+        transform: translateX(-50%);
+
+        width: auto;
+
+        height: 66px;
+
+        border:
+            1px solid #dce7f4;
+
+        border-radius: 20px;
+
+        padding:
+            7px 25px;
+
+        box-shadow:
+            0 15px 35px
+            rgba(42, 78, 120, 0.12);
+
+        gap: 35px;
+    }
+
+    .stat-grid {
+        grid-template-columns:
+            repeat(4, 1fr);
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .topbar {
+        height: 70px;
+    }
+
+    .brand-name {
+        font-size: 19px;
+    }
+
+    .main {
+        padding:
+            27px 5%;
+    }
+
+    .number-card {
+        padding: 23px;
+        border-radius: 23px;
+    }
+
+    .get-number-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .primary-button {
+        width: 100%;
+    }
+
+    .bottom-nav {
+        gap: 24px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     LOADING
+===================================================== -->
+
+<div id="loadingScreen">
+
+    <div class="loading-box">
+
+        <div class="loading-logo">
+            N
+        </div>
+
+        <div class="loading-text">
+            Loading Numora...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     APP
+===================================================== -->
+
+<div id="app" class="hidden">
+
+
+    <!-- =================================================
+         TOP BAR
+    ================================================= -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="logo">
+                N
+            </div>
+
+            <div class="brand-name">
+                Numora
+            </div>
+
+        </div>
+
+
+        <button
+            class="profile-button"
+            onclick="showPage('more')"
+            aria-label="Open account"
+        >
+
+            <div
+                class="profile-avatar"
+                id="topAvatar"
+            >
+                N
+            </div>
+
+        </button>
+
+    </header>
+
+
+    <!-- =================================================
+         MAIN
+    ================================================= -->
+
+    <main class="main">
+
+
+        <!-- =============================================
+             HOME
+        ============================================== -->
+
+        <section
+            id="homePage"
+            class="home-page"
+        >
+
+            <div class="page-heading">
+
+                <h1 id="welcomeTitle">
+                    Welcome back
+                </h1>
+
+                <p>
+                    Your Numora account at a glance.
+                </p>
+
+            </div>
+
+
+            <!-- NUMBER -->
+
+            <div class="number-card">
+
+                <div class="number-card-content">
+
+                    <div class="number-label">
+                        YOUR NUMORA NUMBER
+                    </div>
+
+                    <div class="number-value">
+                        No number yet
+                    </div>
+
+                    <div class="number-status">
+
+                        <span class="status-dot"></span>
+
+                        Waiting for your number
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- GET NUMBER -->
+
+            <div class="get-number-card">
+
+                <div class="get-number-content">
+
+                    <h2>
+                        Get your Numora number
+                    </h2>
+
+                    <p>
+                        Choose a virtual number and start
+                        managing your conversations from one place.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-button"
+                    onclick="getNumber()"
+                >
+                    Get Your Number
+                </button>
+
+            </div>
+
+
+            <!-- STATS -->
+
+            <div class="stat-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-label">
+                        Subscription
+                    </div>
+
+                    <div class="stat-value">
+                        No active plan
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-label">
+                        Number status
+                    </div>
+
+                    <div class="stat-value">
+                        Not assigned
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-label">
+                        Messages
+                    </div>
+
+                    <div class="stat-value">
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-label">
+                        Account
+                    </div>
+
+                    <div class="stat-value">
+                        Active
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECENT MESSAGES -->
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <h2>
+                        Recent messages
+                    </h2>
+
+                    <span>
+                        View all
+                    </span>
+
+                </div>
+
+
+                <div class="empty-card">
+
+                    <div class="empty-icon">
+                        M
+                    </div>
+
+                    <h3>
+                        No messages yet
+                    </h3>
+
+                    <p>
+                        Once you have a Numora number,
+                        your conversations will appear here.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =============================================
+             MESSAGES
+        ============================================== -->
+
+        <section
+            id="messagesPage"
+            class="messages-page"
+        >
+
+            <div class="messages-header">
+
+                <h1>
+                    Messages
+                </h1>
+
+                <p>
+                    Your Numora conversations will appear here.
+                </p>
+
+            </div>
+
+
+            <input
+                class="search-box"
+                type="search"
+                placeholder="Search conversations..."
+                autocomplete="off"
+            >
+
+
+            <div class="empty-card">
+
+                <div class="empty-icon">
+                    M
+                </div>
+
+                <h3>
+                    No conversations yet
+                </h3>
+
+                <p>
+                    Get a Numora number to start sending
+                    and receiving SMS messages.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =============================================
+             MORE
+        ============================================== -->
+
+        <section
+            id="morePage"
+            class="more-page"
+        >
+
+            <div class="messages-header">
+
+                <h1>
+                    More
+                </h1>
+
+                <p>
+                    Manage your Numora account.
+                </p>
+
+            </div>
+
+
+            <!-- ACCOUNT -->
+
+            <div class="account-card">
+
+                <div
+                    class="account-avatar"
+                    id="accountAvatar"
+                >
+                    <img
+                        id="accountAvatarImage"
+                        src=""
+                        alt=""
+                        class="hidden"
+                    >
+                </div>
+
+
+                <div class="account-info">
+
+                    <h2 id="accountName">
+                        Numora User
+                    </h2>
+
+                    <p id="accountEmail">
+                        Loading account...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- MENU -->
+
+            <div class="menu-card">
+
+
+                <button class="menu-item">
+
+                    <div class="menu-icon">
+                        P
+                    </div>
+
+                    <div class="menu-text">
+
+                        <strong>
+                            Payment History
+                        </strong>
+
+                        <span>
+                            View your payments and subscriptions
+                        </span>
+
+                    </div>
+
+                    <div class="menu-arrow">
+                        ›
+                    </div>
+
+                </button>
+
+
+                <button class="menu-item">
+
+                    <div class="menu-icon">
+                        N
+                    </div>
+
+                    <div class="menu-text">
+
+                        <strong>
+                            Notifications
+                        </strong>
+
+                        <span>
+                            Important Numora updates
+                        </span>
+
+                    </div>
+
+                    <div class="menu-arrow">
+                        ›
+                    </div>
+
+                </button>
+
+
+                <button
+                    class="menu-item"
+                    onclick="support()"
+                >
+
+                    <div class="menu-icon">
+                        ?
+                    </div>
+
+                    <div class="menu-text">
+
+                        <strong>
+                            Help & Support
+                        </strong>
+
+                        <span>
+                            Get help with your Numora account
+                        </span>
+
+                    </div>
+
+                    <div class="menu-arrow">
+                        ›
+                    </div>
+
+                </button>
+
+
+                <button class="menu-item">
+
+                    <div class="menu-icon">
+                        T
+                    </div>
+
+                    <div class="menu-text">
+
+                        <strong>
+                            Terms & Privacy
+                        </strong>
+
+                        <span>
+                            Numora policies and information
+                        </span>
+
+                    </div>
+
+                    <div class="menu-arrow">
+                        ›
+                    </div>
+
+                </button>
+
+
+                <button
+                    class="menu-item logout"
+                    onclick="logout()"
+                >
+
+                    <div class="menu-icon">
+                        ↪
+                    </div>
+
+                    <div class="menu-text">
+
+                        <strong>
+                            Sign Out
+                        </strong>
+
+                        <span>
+                            Sign out of this Numora account
+                        </span>
+
+                    </div>
+
+                    <div class="menu-arrow">
+                        ›
+                    </div>
+
+                </button>
+
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =================================================
+         BOTTOM NAV
+    ================================================= -->
+
+    <nav class="bottom-nav">
+
+        <button
+            class="nav-button active"
+            id="navHome"
+            onclick="showPage('home')"
+        >
+
+            <div class="nav-icon">
+                H
+            </div>
+
+            <span>
+                Home
+            </span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            id="navMessages"
+            onclick="showPage('messages')"
+        >
+
+            <div class="nav-icon">
+                M
+            </div>
+
+            <span>
+                Messages
+            </span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            id="navMore"
+            onclick="showPage('more')"
+        >
+
+            <div class="nav-icon">
+                •••
+            </div>
+
+            <span>
+                More
+            </span>
+
+        </button>
+
+    </nav>
+
+</div>
+
+
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+
+    authDomain:
+        "numora-c9a3b.firebaseapp.com",
+
+    projectId:
+        "numora-c9a3b",
+
+    storageBucket:
+        "numora-c9a3b.firebasestorage.app",
+
+    messagingSenderId:
+        "778502274031",
+
+    appId:
+        "1:778502274031:web:4cf57beed3703cbe5dd41a",
+
+    measurementId:
+        "G-6ELM21FDPH"
+};
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const loadingScreen =
+    document.getElementById("loadingScreen");
+
+const appElement =
+    document.getElementById("app");
+
+const welcomeTitle =
+    document.getElementById("welcomeTitle");
+
+const accountName =
+    document.getElementById("accountName");
+
+const accountEmail =
+    document.getElementById("accountEmail");
+
+const topAvatar =
+    document.getElementById("topAvatar");
+
+const accountAvatar =
+    document.getElementById("accountAvatar");
+
+const accountAvatarImage =
+    document.getElementById("accountAvatarImage");
+
+
+/* =====================================================
+   AVATAR
+===================================================== */
+
+function setUserAvatar(user) {
+
+    const photoURL =
+        user.photoURL;
+
+    const name =
+        user.displayName ||
+        user.email ||
+        "N";
+
+
+    const initial =
+        name
+            .charAt(0)
+            .toUpperCase();
+
+
+    if (photoURL) {
+
+        topAvatar.innerHTML = `
+            <img
+                src="${photoURL}"
+                alt="Profile"
+            >
+        `;
+
+        accountAvatarImage.src =
+            photoURL;
+
+        accountAvatarImage.classList.remove(
+            "hidden"
+        );
+
+    } else {
+
+        topAvatar.textContent =
+            initial;
+
+        accountAvatarImage.classList.add(
+            "hidden"
+        );
+
+        accountAvatar.textContent =
+            initial;
+    }
+
+}
+
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+onAuthStateChanged(
+    auth,
+    (user) => {
+
+        /*
+         * Firebase Auth persistence keeps the
+         * user signed in across browser restarts.
+         *
+         * We do NOT implement an inactivity timer.
+         */
+
+        if (user) {
+
+            const name =
+                user.displayName ||
+                "there";
+
+
+            welcomeTitle.textContent =
+                `Welcome back, ${name.split(" ")[0]}`;
+
+
+            accountName.textContent =
+                user.displayName ||
+                "Numora User";
+
+
+            accountEmail.textContent =
+                user.email ||
+                "Google account";
+
+
+            setUserAvatar(user);
+
+
+            loadingScreen.classList.add(
+                "hidden"
+            );
+
+            appElement.classList.remove(
+                "hidden"
+            );
+
+        } else {
+
+            /*
+             * User is genuinely signed out.
+             *
+             * Redirect to the landing page.
+             */
+
+            window.location.replace(
+                "/"
+            );
+        }
+
+    }
+);
+
+
+/* =====================================================
+   PAGE NAVIGATION
+===================================================== */
+
+window.showPage = function(page) {
+
+    const homePage =
+        document.getElementById("homePage");
+
+    const messagesPage =
+        document.getElementById("messagesPage");
+
+    const morePage =
+        document.getElementById("morePage");
+
+
+    const navHome =
+        document.getElementById("navHome");
+
+    const navMessages =
+        document.getElementById("navMessages");
+
+    const navMore =
+        document.getElementById("navMore");
+
+
+    homePage.style.display =
+        "none";
+
+    messagesPage.style.display =
+        "none";
+
+    morePage.style.display =
+        "none";
+
+
+    navHome.classList.remove(
+        "active"
+    );
+
+    navMessages.classList.remove(
+        "active"
+    );
+
+    navMore.classList.remove(
+        "active"
+    );
+
+
+    if (page === "home") {
+
+        homePage.style.display =
+            "block";
+
+        navHome.classList.add(
+            "active"
+        );
+
+    }
+
+
+    if (page === "messages") {
+
+        messagesPage.style.display =
+            "block";
+
+        navMessages.classList.add(
+            "active"
+        );
+
+    }
+
+
+    if (page === "more") {
+
+        morePage.style.display =
+            "block";
+
+        navMore.classList.add(
+            "active"
+        );
+
+    }
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+};
+
+
+/* =====================================================
+   GET NUMBER
+===================================================== */
+
+window.getNumber = function() {
+
+    alert(
+        "Number selection is coming next."
+    );
+
+};
+
+
+/* =====================================================
+   SUPPORT
+===================================================== */
+
+window.support = function() {
+
+    alert(
+        "Numora Support will be connected here."
+    );
+
+};
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+window.logout = async function() {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to sign out of Numora?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        await signOut(auth);
+
+    } catch (error) {
+
+        console.error(
+            "Sign out error:",
+            error
+        );
+
+        alert(
+            "Unable to sign out right now. Please try again."
+        );
+
+    }
+
+};
+
+</script>
+
+</body>
+</html>
