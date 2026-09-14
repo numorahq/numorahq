@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -12,11 +11,12 @@
 
 <title>Numora — Your number. Your connection.</title>
 
-<style>
+<meta
+    name="description"
+    content="Numora gives you a real phone number for calls and SMS, managed simply from your account."
+>
 
-/* =========================================================
-   GLOBAL
-========================================================= */
+<style>
 
 * {
     margin: 0;
@@ -35,275 +35,296 @@ body {
         "SF Pro Display",
         "SF Pro Text",
         "Segoe UI",
+        Roboto,
+        Arial,
         sans-serif;
 
-    background: #f5f9ff;
-    color: #10233f;
-    min-height: 100vh;
+    background: #f7faff;
+    color: #0f172a;
+    overflow-x: hidden;
 }
 
-button {
+button,
+a {
     font: inherit;
-    cursor: pointer;
 }
 
-.hidden {
-    display: none !important;
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-
-/* =========================================================
+/* =========================
    HEADER
-========================================================= */
+========================= */
 
 .header {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 100;
 
-    height: 76px;
+    padding: 18px 24px;
+}
+
+.header-inner {
+    max-width: 1180px;
+    margin: auto;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    padding: 0 6%;
+    padding: 12px 16px;
 
-    background:
-        rgba(245, 249, 255, 0.88);
+    background: rgba(255,255,255,.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(15,23,42,.07);
+    border-radius: 18px;
 
-    border-bottom:
-        1px solid rgba(220, 231, 246, 0.85);
+    box-shadow:
+        0 10px 35px rgba(30,64,175,.08);
 }
 
 .brand {
     display: flex;
     align-items: center;
     gap: 10px;
+
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -.5px;
 }
 
 .logo {
-    width: 40px;
-    height: 40px;
-
-    border-radius: 12px;
-
-    background:
-        linear-gradient(
-            145deg,
-            #1769ff,
-            #4d9aff
-        );
-
-    color: white;
+    width: 38px;
+    height: 38px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 19px;
-    font-weight: 800;
-
-    box-shadow:
-        0 10px 24px
-        rgba(23, 105, 255, 0.22);
-}
-
-.brand-name {
-    font-size: 21px;
-    font-weight: 800;
-    letter-spacing: -0.6px;
-}
-
-.header-button {
-    border: none;
-
-    background: #1769ff;
-    color: white;
-
-    padding: 11px 17px;
-
     border-radius: 12px;
 
-    font-weight: 700;
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #4f8cff
+    );
+
+    color: white;
+    font-size: 21px;
+    font-weight: 800;
 
     box-shadow:
-        0 8px 20px
-        rgba(23, 105, 255, 0.18);
+        0 8px 18px rgba(37,99,235,.25);
 }
 
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-/* =========================================================
+.nav a {
+    padding: 10px 14px;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.nav a:hover {
+    color: #2563eb;
+}
+
+.login-btn {
+    border: 0;
+    cursor: pointer;
+
+    padding: 11px 17px;
+    border-radius: 12px;
+
+    background: #0f172a;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+.login-btn:hover {
+    transform: translateY(-1px);
+    background: #1e293b;
+}
+
+/* =========================
    HERO
-========================================================= */
+========================= */
 
 .hero {
-    max-width: 1180px;
-
-    margin: 0 auto;
+    min-height: 100vh;
 
     padding:
-        90px 6%
-        75px;
+        150px 24px
+        80px;
+
+    display: flex;
+    align-items: center;
+}
+
+.hero-inner {
+    width: 100%;
+    max-width: 1180px;
+    margin: auto;
 
     display: grid;
-
-    grid-template-columns:
-        1.05fr
-        0.95fr;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 70px;
 
     align-items: center;
-
-    gap: 70px;
 }
 
-.hero-content {
-    max-width: 650px;
-}
-
-.eyebrow {
+.badge {
     display: inline-flex;
+    align-items: center;
+    gap: 8px;
 
     padding: 8px 12px;
 
-    border-radius: 30px;
+    border-radius: 999px;
 
-    background: #e8f1ff;
-    color: #1769ff;
+    background: #eff6ff;
+    color: #2563eb;
 
-    font-size: 12px;
-    font-weight: 750;
+    font-size: 13px;
+    font-weight: 700;
 
-    margin-bottom: 19px;
+    margin-bottom: 22px;
+}
+
+.badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
 }
 
 .hero h1 {
-    font-size:
-        clamp(43px, 7vw, 75px);
+    max-width: 700px;
 
-    line-height: 0.98;
+    font-size: clamp(
+        48px,
+        7vw,
+        78px
+    );
 
+    line-height: .98;
     letter-spacing: -4px;
 
-    margin-bottom: 23px;
+    margin-bottom: 24px;
 }
 
 .hero h1 span {
-    color: #1769ff;
+    color: #2563eb;
 }
 
-.hero-description {
-    max-width: 560px;
+.hero p {
+    max-width: 600px;
 
-    color: #687b95;
+    color: #64748b;
 
-    font-size: 17px;
-
+    font-size: 19px;
     line-height: 1.65;
 
-    margin-bottom: 31px;
+    margin-bottom: 32px;
 }
 
 .hero-buttons {
     display: flex;
-    align-items: center;
     gap: 12px;
-
     flex-wrap: wrap;
 }
 
-.primary-button {
-    border: none;
+.primary-btn,
+.secondary-btn {
+    border: 0;
+    cursor: pointer;
 
-    background: #1769ff;
-    color: white;
-
-    padding: 14px 20px;
-
-    border-radius: 14px;
-
-    font-weight: 750;
-
-    box-shadow:
-        0 13px 28px
-        rgba(23, 105, 255, 0.22);
-
-    transition: 0.2s ease;
-}
-
-.primary-button:hover {
-    transform: translateY(-2px);
-}
-
-.secondary-button {
-    border:
-        1px solid #dbe6f5;
-
-    background: white;
-    color: #18314f;
-
-    padding: 13px 19px;
-
+    padding: 15px 22px;
     border-radius: 14px;
 
     font-weight: 700;
+
+    transition: .2s ease;
 }
 
+.primary-btn {
+    background: #2563eb;
+    color: white;
 
-/* =========================================================
+    box-shadow:
+        0 12px 28px rgba(37,99,235,.22);
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+}
+
+.secondary-btn {
+    background: white;
+    color: #0f172a;
+
+    border: 1px solid #e2e8f0;
+}
+
+.secondary-btn:hover {
+    background: #f8fafc;
+}
+
+/* =========================
    PHONE MOCKUP
-========================================================= */
+========================= */
 
-.phone-wrap {
+.hero-visual {
     display: flex;
     justify-content: center;
 }
 
 .phone {
-    width: 285px;
-    max-width: 100%;
+    width: min(330px, 80vw);
+    height: 600px;
 
     padding: 10px;
 
-    border-radius: 43px;
+    border-radius: 44px;
 
-    background:
-        #10233f;
+    background: #0f172a;
 
     box-shadow:
-        0 35px 70px
-        rgba(24, 60, 105, 0.20);
+        0 35px 80px rgba(15,23,42,.22);
+
+    transform: rotate(2deg);
 }
 
 .phone-screen {
-    min-height: 555px;
+    height: 100%;
 
-    border-radius: 34px;
-
-    overflow: hidden;
+    border-radius: 36px;
 
     background:
         linear-gradient(
             160deg,
-            #edf5ff,
-            #ffffff
+            #f8fbff,
+            #eaf3ff
         );
 
-    padding: 23px 18px;
-}
+    padding: 26px 20px;
 
-.phone-notch {
-    width: 90px;
-    height: 22px;
-
-    border-radius: 20px;
-
-    background: #10233f;
-
-    margin: -11px auto 30px;
+    overflow: hidden;
 }
 
 .phone-top {
@@ -311,646 +332,540 @@ button {
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom: 24px;
+    margin-bottom: 30px;
+}
+
+.phone-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-weight: 800;
 }
 
 .phone-logo {
-    width: 35px;
-    height: 35px;
-
-    border-radius: 11px;
-
-    background: #1769ff;
-
-    color: white;
+    width: 30px;
+    height: 30px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-weight: 800;
-}
+    border-radius: 9px;
 
-.phone-avatar {
-    width: 32px;
-    height: 32px;
-
-    border-radius: 50%;
-
-    background: #dceaff;
+    background: #2563eb;
+    color: white;
+    font-size: 14px;
 }
 
 .phone-title {
-    font-size: 27px;
+    font-size: 25px;
     font-weight: 800;
 
-    letter-spacing: -1px;
-
-    margin-bottom: 18px;
+    margin-bottom: 6px;
 }
 
-.phone-card {
-    background:
-        linear-gradient(
-            135deg,
-            #1769ff,
-            #438eff
-        );
+.phone-subtitle {
+    color: #64748b;
+    font-size: 13px;
 
-    color: white;
+    margin-bottom: 20px;
+}
+
+.number-card {
+    padding: 20px;
 
     border-radius: 22px;
 
-    padding: 20px;
-
-    margin-bottom: 15px;
-
-    box-shadow:
-        0 18px 35px
-        rgba(23, 105, 255, 0.20);
-}
-
-.phone-card small {
-    opacity: 0.75;
-
-    font-size: 9px;
-
-    letter-spacing: 1px;
-}
-
-.phone-number {
-    font-size: 22px;
-    font-weight: 800;
-
-    margin: 8px 0 13px;
-}
-
-.phone-status {
-    font-size: 10px;
-
-    display: inline-flex;
-
-    padding: 6px 9px;
-
-    border-radius: 20px;
-
-    background:
-        rgba(255,255,255,0.15);
-}
-
-.phone-list {
     background: white;
 
-    border-radius: 20px;
+    box-shadow:
+        0 12px 30px rgba(30,64,175,.08);
 
-    padding: 15px;
+    margin-bottom: 14px;
 }
 
-.phone-list-row {
-    display: flex;
-
-    align-items: center;
-
-    gap: 11px;
-
-    padding: 12px 0;
-
-    border-bottom:
-        1px solid #edf2f8;
-}
-
-.phone-list-row:last-child {
-    border-bottom: none;
-}
-
-.phone-list-icon {
-    width: 35px;
-    height: 35px;
-
-    border-radius: 11px;
-
-    background: #eaf2ff;
-
-    color: #1769ff;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+.number-label {
+    color: #64748b;
     font-size: 12px;
-    font-weight: 800;
-}
-
-.phone-list-text {
-    flex: 1;
-}
-
-.phone-list-text strong {
-    display: block;
-
-    font-size: 11px;
-
-    margin-bottom: 4px;
-}
-
-.phone-list-text span {
-    color: #8a9aae;
-
-    font-size: 9px;
-}
-
-
-/* =========================================================
-   FEATURES
-========================================================= */
-
-.features {
-    max-width: 1180px;
-
-    margin: 0 auto;
-
-    padding:
-        50px 6%
-        80px;
-}
-
-.section-heading {
-    text-align: center;
-
-    max-width: 650px;
-
-    margin: 0 auto 42px;
-}
-
-.section-heading h2 {
-    font-size:
-        clamp(30px, 5vw, 43px);
-
-    letter-spacing: -1.8px;
-
-    margin-bottom: 11px;
-}
-
-.section-heading p {
-    color: #71829a;
-
-    line-height: 1.6;
-
-    font-size: 15px;
-}
-
-.feature-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 18px;
-}
-
-.feature-card {
-    background: white;
-
-    border:
-        1px solid #e1eaf6;
-
-    border-radius: 23px;
-
-    padding: 25px;
-
-    box-shadow:
-        0 12px 30px
-        rgba(42, 78, 120, 0.05);
-}
-
-.feature-icon {
-    width: 45px;
-    height: 45px;
-
-    border-radius: 14px;
-
-    background: #e8f1ff;
-    color: #1769ff;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-weight: 800;
-
-    margin-bottom: 18px;
-}
-
-.feature-card h3 {
-    font-size: 18px;
 
     margin-bottom: 8px;
 }
 
-.feature-card p {
-    color: #71829a;
+.number {
+    font-size: 25px;
+    font-weight: 800;
 
-    font-size: 14px;
-
-    line-height: 1.6;
-}
-
-
-/* =========================================================
-   CTA
-========================================================= */
-
-.cta {
-    max-width: 1080px;
-
-    margin: 0 auto;
-
-    padding:
-        30px 6%
-        90px;
-}
-
-.cta-box {
-    background:
-        linear-gradient(
-            135deg,
-            #125ce4,
-            #438eff
-        );
-
-    color: white;
-
-    border-radius: 30px;
-
-    padding:
-        48px 35px;
-
-    text-align: center;
-
-    box-shadow:
-        0 25px 50px
-        rgba(23, 105, 255, 0.20);
-}
-
-.cta-box h2 {
-    font-size:
-        clamp(28px, 5vw, 43px);
-
-    letter-spacing: -1.7px;
+    letter-spacing: -.5px;
 
     margin-bottom: 12px;
 }
 
-.cta-box p {
-    opacity: 0.82;
+.active {
+    display: inline-flex;
 
-    font-size: 15px;
+    padding: 6px 10px;
 
-    margin-bottom: 25px;
+    border-radius: 999px;
+
+    background: #dcfce7;
+    color: #15803d;
+
+    font-size: 11px;
+    font-weight: 700;
 }
 
-.cta-button {
-    border: none;
+.phone-message {
+    padding: 15px;
+
+    border-radius: 17px;
 
     background: white;
-    color: #1769ff;
 
-    padding: 14px 22px;
+    margin-top: 12px;
+
+    box-shadow:
+        0 8px 20px rgba(15,23,42,.05);
+}
+
+.phone-message strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.phone-message span {
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* =========================
+   FEATURES
+========================= */
+
+.section {
+    padding: 100px 24px;
+}
+
+.section-inner {
+    max-width: 1180px;
+    margin: auto;
+}
+
+.section-heading {
+    max-width: 650px;
+    margin-bottom: 50px;
+}
+
+.section-heading span {
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.section-heading h2 {
+    font-size: clamp(35px, 5vw, 52px);
+    letter-spacing: -2px;
+    margin: 10px 0 15px;
+}
+
+.section-heading p {
+    color: #64748b;
+    line-height: 1.7;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 18px;
+}
+
+.feature {
+    padding: 28px;
+
+    background: white;
+
+    border: 1px solid #e8eef7;
+    border-radius: 24px;
+
+    box-shadow:
+        0 15px 40px rgba(30,64,175,.05);
+}
+
+.feature-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     border-radius: 14px;
+
+    background: #eff6ff;
+    color: #2563eb;
+
+    font-weight: 800;
+
+    margin-bottom: 20px;
+}
+
+.feature h3 {
+    margin-bottom: 10px;
+    font-size: 19px;
+}
+
+.feature p {
+    color: #64748b;
+    line-height: 1.65;
+    font-size: 14px;
+}
+
+/* =========================
+   CTA
+========================= */
+
+.cta {
+    padding: 30px 24px 100px;
+}
+
+.cta-card {
+    max-width: 1180px;
+    margin: auto;
+
+    padding: 60px 40px;
+
+    text-align: center;
+
+    border-radius: 32px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #4f8cff
+        );
+
+    color: white;
+
+    box-shadow:
+        0 25px 60px rgba(37,99,235,.22);
+}
+
+.cta-card h2 {
+    font-size: clamp(34px,5vw,52px);
+    letter-spacing: -2px;
+    margin-bottom: 15px;
+}
+
+.cta-card p {
+    max-width: 580px;
+    margin: 0 auto 28px;
+
+    color: rgba(255,255,255,.82);
+    line-height: 1.6;
+}
+
+.cta-card button {
+    border: 0;
+    cursor: pointer;
+
+    padding: 15px 25px;
+
+    border-radius: 14px;
+
+    background: white;
+    color: #2563eb;
 
     font-weight: 800;
 }
 
-
-/* =========================================================
+/* =========================
    FOOTER
-========================================================= */
+========================= */
 
 .footer {
-    border-top:
-        1px solid #e1eaf5;
+    padding: 30px 24px 45px;
 
-    padding:
-        28px 6%;
+    border-top: 1px solid #e2e8f0;
 
-    text-align: center;
-
-    color: #8090a4;
-
-    font-size: 12px;
+    color: #64748b;
 }
 
+.footer-inner {
+    max-width: 1180px;
+    margin: auto;
 
-/* =========================================================
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    font-size: 13px;
+}
+
+.footer-brand {
+    font-weight: 800;
+    color: #0f172a;
+}
+
+/* =========================
    TOAST
-========================================================= */
+========================= */
 
 .toast {
     position: fixed;
+    right: 20px;
+    bottom: 20px;
 
-    left: 50%;
-    bottom: 28px;
+    z-index: 999;
 
-    transform:
-        translate(-50%, 20px);
+    padding: 14px 18px;
 
-    background: #10233f;
+    background: #0f172a;
     color: white;
 
-    padding: 13px 17px;
+    border-radius: 14px;
 
-    border-radius: 13px;
-
-    font-size: 13px;
-
-    box-shadow:
-        0 15px 35px
-        rgba(16, 35, 63, 0.20);
+    font-size: 14px;
+    font-weight: 600;
 
     opacity: 0;
+    transform: translateY(15px);
 
     pointer-events: none;
 
-    transition: 0.25s ease;
-
-    z-index: 999;
+    transition: .25s ease;
 }
 
 .toast.show {
     opacity: 1;
-
-    transform:
-        translate(-50%, 0);
+    transform: translateY(0);
 }
 
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 850px) {
 
-    .hero {
-        grid-template-columns: 1fr;
-
-        gap: 50px;
-
-        padding-top: 60px;
+    .nav a {
+        display: none;
     }
 
-    .hero-content {
-        text-align: center;
+    .hero {
+        padding-top: 125px;
+    }
 
-        margin: auto;
+    .hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero p {
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .hero-buttons {
         justify-content: center;
     }
 
-    .phone {
-        width: 270px;
+    .hero-visual {
+        margin-top: 20px;
     }
 
-    .feature-grid {
+    .phone {
+        width: 290px;
+        height: 530px;
+    }
+
+    .features {
         grid-template-columns: 1fr;
     }
 
-}
-
-
-@media (max-width: 480px) {
-
-    .header {
-        padding: 0 5%;
-
-        height: 70px;
+    .section {
+        padding: 75px 20px;
     }
 
-    .header-button {
-        padding: 10px 13px;
-
-        font-size: 12px;
+    .cta {
+        padding: 20px 20px 70px;
     }
 
-    .hero {
-        padding:
-            55px 5%
-            65px;
+    .cta-card {
+        padding: 45px 25px;
     }
-
-    .hero h1 {
-        letter-spacing: -2.7px;
-    }
-
-    .hero-description {
-        font-size: 15px;
-    }
-
-    .phone {
-        width: 250px;
-    }
-
-    .phone-screen {
-        min-height: 500px;
-    }
-
 }
 
 </style>
 
 </head>
 
-
 <body>
-
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
 
 <header class="header">
 
-    <div class="brand">
+    <div class="header-inner">
 
-        <div class="logo">
-            N
-        </div>
+        <a
+            href="/numorahq/"
+            class="brand"
+        >
 
-        <div class="brand-name">
-            Numora
-        </div>
+            <div class="logo">N</div>
+
+            <span>Numora</span>
+
+        </a>
+
+        <nav class="nav">
+
+            <a href="#features">
+                Features
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+            <button
+                class="login-btn"
+                id="authButton"
+            >
+                Sign in with Google
+            </button>
+
+        </nav>
 
     </div>
-
-
-    <button
-        class="header-button"
-        id="headerLoginButton"
-        onclick="login()"
-    >
-        Sign in with Google
-    </button>
 
 </header>
 
 
-<!-- =====================================================
-     HERO
-===================================================== -->
+<main>
 
 <section class="hero">
 
-    <div class="hero-content">
+    <div class="hero-inner">
 
-        <div class="eyebrow">
-            YOUR NUMBER. YOUR CONNECTION.
+        <div>
+
+            <div class="badge">
+
+                <span class="badge-dot"></span>
+
+                Simple. Private. Connected.
+
+            </div>
+
+            <h1>
+                Your number.
+                <span>Your connection.</span>
+            </h1>
+
+            <p>
+                Get a real phone number and manage your
+                messages from one simple Numora account.
+                Built for people who want a cleaner way
+                to stay connected.
+            </p>
+
+            <div class="hero-buttons">
+
+                <button
+                    class="primary-btn"
+                    id="heroGetNumber"
+                >
+                    Get Your Number
+                </button>
+
+                <a
+                    href="#features"
+                    class="secondary-btn"
+                >
+                    Learn More
+                </a>
+
+            </div>
+
         </div>
 
 
-        <h1>
-            Stay connected
-            <span>your way.</span>
-        </h1>
+        <div class="hero-visual">
 
+            <div class="phone">
 
-        <p class="hero-description">
-            Get a real virtual phone number and manage
-            your conversations from one simple,
-            modern Numora account.
-        </p>
+                <div class="phone-screen">
 
+                    <div class="phone-top">
 
-        <div class="hero-buttons">
+                        <div class="phone-brand">
 
-            <button
-                class="primary-button"
-                onclick="login()"
-            >
-                Get Your Number
-            </button>
+                            <div class="phone-logo">
+                                N
+                            </div>
 
-
-            <button
-                class="secondary-button"
-                onclick="document
-                    .getElementById('features')
-                    .scrollIntoView()"
-            >
-                Learn More
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- PHONE -->
-
-    <div class="phone-wrap">
-
-        <div class="phone">
-
-            <div class="phone-screen">
-
-                <div class="phone-notch"></div>
-
-
-                <div class="phone-top">
-
-                    <div class="phone-logo">
-                        N
-                    </div>
-
-                    <div class="phone-avatar"></div>
-
-                </div>
-
-
-                <div class="phone-title">
-                    Your number
-                </div>
-
-
-                <div class="phone-card">
-
-                    <small>
-                        NUMORA NUMBER
-                    </small>
-
-                    <div class="phone-number">
-                        +1 (555) 284-0193
-                    </div>
-
-                    <div class="phone-status">
-                        ● Active
-                    </div>
-
-                </div>
-
-
-                <div class="phone-list">
-
-                    <div class="phone-list-row">
-
-                        <div class="phone-list-icon">
-                            M
-                        </div>
-
-                        <div class="phone-list-text">
-
-                            <strong>
-                                Messages
-                            </strong>
-
-                            <span>
-                                Your conversations
-                            </span>
+                            Numora
 
                         </div>
+
+                        <span
+                            style="
+                                color:#94a3b8;
+                                font-size:12px;
+                            "
+                        >
+                            ●
+                        </span>
 
                     </div>
 
+                    <div class="phone-title">
+                        Welcome
+                    </div>
 
-                    <div class="phone-list-row">
+                    <div class="phone-subtitle">
+                        Your connection starts here.
+                    </div>
 
-                        <div class="phone-list-icon">
-                            P
+                    <div class="number-card">
+
+                        <div class="number-label">
+                            YOUR NUMBER
                         </div>
 
-                        <div class="phone-list-text">
-
-                            <strong>
-                                Payments
-                            </strong>
-
-                            <span>
-                                Manage subscriptions
-                            </span>
-
+                        <div class="number">
+                            No number yet
                         </div>
+
+                        <span class="active">
+                            Ready to activate
+                        </span>
 
                     </div>
 
+                    <div class="phone-message">
 
-                    <div class="phone-list-row">
+                        <strong>
+                            Your messages
+                        </strong>
 
-                        <div class="phone-list-icon">
-                            S
-                        </div>
+                        <span>
+                            Your SMS conversations will
+                            appear here.
+                        </span>
 
-                        <div class="phone-list-text">
+                    </div>
 
-                            <strong>
-                                Secure account
-                            </strong>
+                    <div class="phone-message">
 
-                            <span>
-                                Google protected
-                            </span>
+                        <strong>
+                            Secure access
+                        </strong>
 
-                        </div>
+                        <span>
+                            Sign in securely with Google.
+                        </span>
 
                     </div>
 
@@ -965,83 +880,119 @@ button {
 </section>
 
 
-<!-- =====================================================
-     FEATURES
-===================================================== -->
-
 <section
-    class="features"
+    class="section"
     id="features"
 >
 
-    <div class="section-heading">
+    <div class="section-inner">
 
-        <h2>
-            Everything in one place.
-        </h2>
+        <div class="section-heading">
 
-        <p>
-            Numora makes managing your virtual number
-            simple, clear and convenient.
-        </p>
+            <span>
+                NUMORA
+            </span>
+
+            <h2>
+                Everything you need,
+                without the clutter.
+            </h2>
+
+            <p>
+                A simple virtual number experience
+                designed around your number and
+                your messages.
+            </p>
+
+        </div>
+
+
+        <div class="features">
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    01
+                </div>
+
+                <h3>
+                    Your own number
+                </h3>
+
+                <p>
+                    Choose an available number and
+                    manage it from your Numora account.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    02
+                </div>
+
+                <h3>
+                    Two-way SMS
+                </h3>
+
+                <p>
+                    Receive and send messages from
+                    your rented number through your
+                    Numora dashboard.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    03
+                </div>
+
+                <h3>
+                    Simple access
+                </h3>
+
+                <p>
+                    Sign in with Google and keep your
+                    account experience simple and secure.
+                </p>
+
+            </div>
+
+        </div>
 
     </div>
 
-
-    <div class="feature-grid">
-
-
-        <div class="feature-card">
-
-            <div class="feature-icon">
-                N
-            </div>
-
-            <h3>
-                Your own number
-            </h3>
-
-            <p>
-                Get a dedicated virtual phone number
-                and manage it directly from your Numora
-                dashboard.
-            </p>
-
-        </div>
+</section>
 
 
-        <div class="feature-card">
+<section
+    class="section"
+    id="about"
+>
 
-            <div class="feature-icon">
-                M
-            </div>
+    <div class="section-inner">
 
-            <h3>
-                Two-way messaging
-            </h3>
+        <div class="section-heading">
+
+            <span>
+                BUILT FOR SIMPLICITY
+            </span>
+
+            <h2>
+                One account.
+                One number.
+                One connection.
+            </h2>
 
             <p>
-                Send and receive supported messages
-                from one clean conversation interface.
-            </p>
-
-        </div>
-
-
-        <div class="feature-card">
-
-            <div class="feature-icon">
-                S
-            </div>
-
-            <h3>
-                Simple & secure
-            </h3>
-
-            <p>
-                Sign in with Google and keep your Numora
-                account protected without another password
-                to remember.
+                Numora brings your virtual number,
+                messages and account information
+                together in one clean experience.
             </p>
 
         </div>
@@ -1051,26 +1002,20 @@ button {
 </section>
 
 
-<!-- =====================================================
-     CTA
-===================================================== -->
-
 <section class="cta">
 
-    <div class="cta-box">
+    <div class="cta-card">
 
         <h2>
-            Ready for your number?
+            Ready to get connected?
         </h2>
 
         <p>
-            Create your Numora account and get started.
+            Sign in with Google and start your
+            Numora journey.
         </p>
 
-        <button
-            class="cta-button"
-            onclick="login()"
-        >
+        <button id="ctaButton">
             Get Your Number
         </button>
 
@@ -1078,53 +1023,60 @@ button {
 
 </section>
 
+</main>
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
 
 <footer class="footer">
 
-    © 2026 Numora. Your number. Your connection.
+    <div class="footer-inner">
+
+        <div>
+            <span class="footer-brand">
+                Numora
+            </span>
+
+            <span>
+                &nbsp; — &nbsp;Your number. Your connection.
+            </span>
+        </div>
+
+        <div>
+            Support:
+            numora.support@gmail.com
+        </div>
+
+    </div>
 
 </footer>
 
 
-<!-- =====================================================
-     TOAST
-===================================================== -->
-
 <div
     class="toast"
     id="toast"
->
-    Signed in successfully.
-</div>
+></div>
 
-
-<!-- =====================================================
-     FIREBASE
-===================================================== -->
 
 <script type="module">
 
 import {
     initializeApp
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
     getAuth,
-    onAuthStateChanged,
-    signInWithPopup,
     GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged,
     setPersistence,
     browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
+/* =========================================================
+   FIREBASE
+========================================================= */
 
 const firebaseConfig = {
 
@@ -1148,12 +1100,9 @@ const firebaseConfig = {
 
     measurementId:
         "G-6ELM21FDPH"
+
 };
 
-
-/* =====================================================
-   INITIALIZE
-===================================================== */
 
 const app =
     initializeApp(firebaseConfig);
@@ -1165,106 +1114,98 @@ const provider =
     new GoogleAuthProvider();
 
 
-/* =====================================================
+/* =========================================================
    ELEMENTS
-===================================================== */
+========================================================= */
 
-const loginButton =
-    document.getElementById(
-        "headerLoginButton"
-    );
+const authButton =
+    document.getElementById("authButton");
+
+const heroGetNumber =
+    document.getElementById("heroGetNumber");
+
+const ctaButton =
+    document.getElementById("ctaButton");
 
 const toast =
-    document.getElementById(
-        "toast"
-    );
+    document.getElementById("toast");
 
 
-/* =====================================================
+/* =========================================================
    TOAST
-===================================================== */
+========================================================= */
 
 function showToast(message) {
 
-    toast.textContent =
-        message;
+    toast.textContent = message;
 
-    toast.classList.add(
-        "show"
-    );
-
+    toast.classList.add("show");
 
     setTimeout(() => {
 
-        toast.classList.remove(
-            "show"
-        );
+        toast.classList.remove("show");
 
-    }, 2500);
+    }, 3000);
 
 }
 
 
-/* =====================================================
-   GOOGLE LOGIN
-===================================================== */
+/* =========================================================
+   DASHBOARD PATH
+========================================================= */
 
-window.login = async function() {
+const DASHBOARD_URL =
+    "/numorahq/dashboard/";
+
+
+/* =========================================================
+   OPEN DASHBOARD
+========================================================= */
+
+function openDashboard() {
+
+    window.location.href =
+        DASHBOARD_URL;
+
+}
+
+
+/* =========================================================
+   GOOGLE SIGN-IN
+========================================================= */
+
+async function login() {
 
     try {
-
-        loginButton.disabled =
-            true;
-
-        loginButton.textContent =
-            "Signing in...";
-
-
-        /*
-         * Explicitly store authentication
-         * locally so the user remains signed in
-         * after refreshing or reopening the browser.
-         */
 
         await setPersistence(
             auth,
             browserLocalPersistence
         );
 
-
         await signInWithPopup(
             auth,
             provider
         );
 
-
         showToast(
             "Signed in successfully."
         );
 
+        setTimeout(() => {
 
-        /*
-         * Open the customer dashboard.
-         */
+            openDashboard();
 
-        window.location.href =
-            "/numorahq/dashboard.html";
+        }, 500);
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
         console.error(
             "Google sign-in error:",
             error
         );
-
-
-        loginButton.disabled =
-            false;
-
-        loginButton.textContent =
-            "Sign in with Google";
-
 
         if (
             error.code ===
@@ -1275,61 +1216,88 @@ window.login = async function() {
 
         }
 
-
-        alert(
-            "Unable to sign in right now. Please try again."
+        showToast(
+            "Unable to sign in. Please try again."
         );
 
     }
 
-};
+}
 
 
-/* =====================================================
-   AUTH STATE
-===================================================== */
+/* =========================================================
+   BUTTON ACTION
+========================================================= */
 
-onAuthStateChanged(
-    auth,
-    (user) => {
+function handleMainButton() {
 
-        /*
-         * If the visitor already has a persistent
-         * Numora login, don't make them sign in again.
-         */
+    if (auth.currentUser) {
 
-        if (user) {
+        openDashboard();
 
-            loginButton.textContent =
-                "Open Dashboard";
+    } else {
 
-            loginButton.disabled =
-                false;
-
-
-            loginButton.onclick =
-                () => {
-
-                    window.location.href =
-                        "/dashboard.html";
-
-                };
-
-        } else {
-
-            loginButton.textContent =
-                "Sign in with Google";
-
-            loginButton.disabled =
-                false;
-
-            loginButton.onclick =
-                window.login;
-
-        }
+        login();
 
     }
+
+}
+
+
+authButton.addEventListener(
+    "click",
+    handleMainButton
 );
+
+heroGetNumber.addEventListener(
+    "click",
+    handleMainButton
+);
+
+ctaButton.addEventListener(
+    "click",
+    handleMainButton
+);
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+setPersistence(
+    auth,
+    browserLocalPersistence
+)
+.then(() => {
+
+    onAuthStateChanged(
+        auth,
+        user => {
+
+            if (user) {
+
+                authButton.textContent =
+                    "Open Dashboard";
+
+            } else {
+
+                authButton.textContent =
+                    "Sign in with Google";
+
+            }
+
+        }
+    );
+
+})
+.catch(error => {
+
+    console.error(
+        "Persistence error:",
+        error
+    );
+
+});
 
 </script>
 
