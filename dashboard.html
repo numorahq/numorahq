@@ -39,6 +39,7 @@ body {
 
     background: #f4f8ff;
     color: #10233f;
+
     min-height: 100vh;
 }
 
@@ -63,6 +64,7 @@ button:disabled {
 
 #loadingScreen {
     position: fixed;
+
     inset: 0;
 
     background:
@@ -73,6 +75,7 @@ button:disabled {
         );
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -114,6 +117,7 @@ button:disabled {
 
 .loading-text {
     color: #71829a;
+
     font-size: 14px;
 }
 
@@ -124,6 +128,7 @@ button:disabled {
 
 #app {
     min-height: 100vh;
+
     padding-bottom: 90px;
 }
 
@@ -134,7 +139,9 @@ button:disabled {
 
 .topbar {
     position: sticky;
+
     top: 0;
+
     z-index: 100;
 
     height: 76px;
@@ -143,6 +150,7 @@ button:disabled {
         0 5%;
 
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
@@ -158,7 +166,9 @@ button:disabled {
 
 .brand {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
 }
 
@@ -178,6 +188,7 @@ button:disabled {
     color: white;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -191,15 +202,19 @@ button:disabled {
 
 .brand-name {
     font-size: 20px;
+
     font-weight: 800;
+
     letter-spacing: -0.5px;
 }
 
 .profile-button {
     border: none;
+
     background: transparent;
 
     display: flex;
+
     align-items: center;
 
     padding: 3px;
@@ -216,6 +231,7 @@ button:disabled {
     color: #1769ff;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -227,16 +243,18 @@ button:disabled {
 .profile-avatar img {
     width: 100%;
     height: 100%;
+
     object-fit: cover;
 }
 
 
 /* =========================================================
-   MAIN CONTENT
+   MAIN
 ========================================================= */
 
 .main {
     width: 100%;
+
     max-width: 1120px;
 
     margin: 0 auto;
@@ -255,7 +273,8 @@ button:disabled {
 }
 
 .page-heading h1 {
-    font-size: clamp(30px, 5vw, 43px);
+    font-size:
+        clamp(30px, 5vw, 43px);
 
     letter-spacing: -1.7px;
 
@@ -264,7 +283,9 @@ button:disabled {
 
 .page-heading p {
     color: #71829a;
+
     font-size: 15px;
+
     line-height: 1.5;
 }
 
@@ -317,19 +338,23 @@ button:disabled {
 
 .number-card-content {
     position: relative;
+
     z-index: 2;
 }
 
 .number-label {
     font-size: 11px;
+
     letter-spacing: 0.7px;
+
     opacity: 0.78;
 
     margin-bottom: 9px;
 }
 
 .number-value {
-    font-size: clamp(24px, 6vw, 34px);
+    font-size:
+        clamp(24px, 6vw, 34px);
 
     font-weight: 800;
 
@@ -340,7 +365,9 @@ button:disabled {
 
 .number-status {
     display: inline-flex;
+
     align-items: center;
+
     gap: 7px;
 
     padding: 7px 11px;
@@ -384,7 +411,9 @@ button:disabled {
         rgba(42, 78, 120, 0.05);
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     gap: 20px;
@@ -392,12 +421,15 @@ button:disabled {
 
 .get-number-content h2 {
     font-size: 20px;
+
     margin-bottom: 7px;
 }
 
 .get-number-content p {
     color: #71829a;
+
     font-size: 14px;
+
     line-height: 1.5;
 }
 
@@ -405,6 +437,7 @@ button:disabled {
     border: none;
 
     background: #1769ff;
+
     color: white;
 
     padding: 13px 18px;
@@ -467,6 +500,7 @@ button:disabled {
 
 .stat-value {
     font-size: 17px;
+
     font-weight: 800;
 }
 
@@ -481,7 +515,9 @@ button:disabled {
 
 .section-title {
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     margin-bottom: 13px;
@@ -495,12 +531,13 @@ button:disabled {
     color: #1769ff;
 
     font-size: 13px;
+
     font-weight: 700;
 }
 
 
 /* =========================================================
-   EMPTY MESSAGE
+   EMPTY CARD
 ========================================================= */
 
 .empty-card {
@@ -530,15 +567,18 @@ button:disabled {
     color: #1769ff;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     font-size: 20px;
+
     font-weight: 800;
 }
 
 .empty-card h3 {
     font-size: 17px;
+
     margin-bottom: 6px;
 }
 
@@ -556,7 +596,7 @@ button:disabled {
 
 
 /* =========================================================
-   MESSAGES PAGE
+   MESSAGES
 ========================================================= */
 
 .messages-page {
@@ -569,12 +609,15 @@ button:disabled {
 
 .messages-header h1 {
     font-size: 32px;
+
     letter-spacing: -1.3px;
+
     margin-bottom: 6px;
 }
 
 .messages-header p {
     color: #71829a;
+
     font-size: 14px;
 }
 
@@ -603,7 +646,7 @@ button:disabled {
 
 
 /* =========================================================
-   MORE PAGE
+   MORE
 ========================================================= */
 
 .more-page {
@@ -621,6 +664,7 @@ button:disabled {
     padding: 22px;
 
     display: flex;
+
     align-items: center;
 
     gap: 14px;
@@ -639,11 +683,21 @@ button:disabled {
     overflow: hidden;
 
     flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #1769ff;
+
+    font-weight: 800;
 }
 
 .account-avatar img {
     width: 100%;
     height: 100%;
+
     object-fit: cover;
 }
 
@@ -653,6 +707,7 @@ button:disabled {
 
 .account-info h2 {
     font-size: 17px;
+
     margin-bottom: 4px;
 }
 
@@ -689,6 +744,7 @@ button:disabled {
     padding: 17px 18px;
 
     display: flex;
+
     align-items: center;
 
     gap: 13px;
@@ -716,10 +772,12 @@ button:disabled {
     color: #1769ff;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     font-size: 13px;
+
     font-weight: 800;
 
     flex-shrink: 0;
@@ -755,12 +813,13 @@ button:disabled {
 
 .logout .menu-icon {
     background: #fff0f0;
+
     color: #e04444;
 }
 
 
 /* =========================================================
-   BOTTOM NAVIGATION
+   BOTTOM NAV
 ========================================================= */
 
 .bottom-nav {
@@ -788,7 +847,9 @@ button:disabled {
         1px solid #e2eaf5;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     gap: 45px;
@@ -796,12 +857,15 @@ button:disabled {
 
 .nav-button {
     border: none;
+
     background: transparent;
 
     min-width: 65px;
 
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
 
     gap: 5px;
@@ -809,6 +873,7 @@ button:disabled {
     color: #8292a8;
 
     font-size: 11px;
+
     font-weight: 700;
 }
 
@@ -819,10 +884,12 @@ button:disabled {
     border-radius: 11px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     font-size: 14px;
+
     font-weight: 800;
 }
 
@@ -850,14 +917,13 @@ button:disabled {
     }
 
     .bottom-nav {
-        position: fixed;
-
         left: 50%;
         right: auto;
 
         bottom: 25px;
 
-        transform: translateX(-50%);
+        transform:
+            translateX(-50%);
 
         width: auto;
 
@@ -882,6 +948,7 @@ button:disabled {
         grid-template-columns:
             repeat(4, 1fr);
     }
+
 }
 
 
@@ -906,11 +973,13 @@ button:disabled {
 
     .number-card {
         padding: 23px;
+
         border-radius: 23px;
     }
 
     .get-number-card {
         align-items: flex-start;
+
         flex-direction: column;
     }
 
@@ -921,6 +990,7 @@ button:disabled {
     .bottom-nav {
         gap: 24px;
     }
+
 }
 
 </style>
@@ -1003,9 +1073,9 @@ button:disabled {
     <main class="main">
 
 
-        <!-- =============================================
+        <!-- =================================================
              HOME
-        ============================================== -->
+        ================================================= -->
 
         <section
             id="homePage"
@@ -1148,7 +1218,10 @@ button:disabled {
                         Recent messages
                     </h2>
 
-                    <span>
+                    <span
+                        onclick="showPage('messages')"
+                        style="cursor:pointer"
+                    >
                         View all
                     </span>
 
@@ -1177,9 +1250,9 @@ button:disabled {
         </section>
 
 
-        <!-- =============================================
+        <!-- =================================================
              MESSAGES
-        ============================================== -->
+        ================================================= -->
 
         <section
             id="messagesPage"
@@ -1227,9 +1300,9 @@ button:disabled {
         </section>
 
 
-        <!-- =============================================
+        <!-- =================================================
              MORE
-        ============================================== -->
+        ================================================= -->
 
         <section
             id="morePage"
@@ -1257,12 +1330,14 @@ button:disabled {
                     class="account-avatar"
                     id="accountAvatar"
                 >
+
                     <img
                         id="accountAvatarImage"
                         src=""
-                        alt=""
+                        alt="Profile"
                         class="hidden"
                     >
+
                 </div>
 
 
@@ -1498,7 +1573,9 @@ import {
 import {
     getAuth,
     onAuthStateChanged,
-    signOut
+    signOut,
+    setPersistence,
+    browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 
@@ -1547,28 +1624,39 @@ const auth =
 ===================================================== */
 
 const loadingScreen =
-    document.getElementById("loadingScreen");
+    document.getElementById(
+        "loadingScreen"
+    );
 
 const appElement =
-    document.getElementById("app");
+    document.getElementById(
+        "app"
+    );
 
 const welcomeTitle =
-    document.getElementById("welcomeTitle");
+    document.getElementById(
+        "welcomeTitle"
+    );
 
 const accountName =
-    document.getElementById("accountName");
+    document.getElementById(
+        "accountName"
+    );
 
 const accountEmail =
-    document.getElementById("accountEmail");
+    document.getElementById(
+        "accountEmail"
+    );
 
 const topAvatar =
-    document.getElementById("topAvatar");
-
-const accountAvatar =
-    document.getElementById("accountAvatar");
+    document.getElementById(
+        "topAvatar"
+    );
 
 const accountAvatarImage =
-    document.getElementById("accountAvatarImage");
+    document.getElementById(
+        "accountAvatarImage"
+    );
 
 
 /* =====================================================
@@ -1601,8 +1689,10 @@ function setUserAvatar(user) {
             >
         `;
 
+
         accountAvatarImage.src =
             photoURL;
+
 
         accountAvatarImage.classList.remove(
             "hidden"
@@ -1613,79 +1703,115 @@ function setUserAvatar(user) {
         topAvatar.textContent =
             initial;
 
+
         accountAvatarImage.classList.add(
             "hidden"
         );
 
-        accountAvatar.textContent =
+
+        document.getElementById(
+            "accountAvatar"
+        ).textContent =
             initial;
+
     }
 
 }
 
 
 /* =====================================================
-   AUTH STATE
+   START DASHBOARD
 ===================================================== */
 
-onAuthStateChanged(
-    auth,
-    (user) => {
+async function startDashboard() {
+
+    try {
 
         /*
-         * Firebase Auth persistence keeps the
-         * user signed in across browser restarts.
+         * Keep the user signed in locally.
          *
-         * We do NOT implement an inactivity timer.
+         * There is NO inactivity timeout.
          */
 
-        if (user) {
-
-            const name =
-                user.displayName ||
-                "there";
-
-
-            welcomeTitle.textContent =
-                `Welcome back, ${name.split(" ")[0]}`;
+        await setPersistence(
+            auth,
+            browserLocalPersistence
+        );
 
 
-            accountName.textContent =
-                user.displayName ||
-                "Numora User";
+        onAuthStateChanged(
+            auth,
+            (user) => {
+
+                if (!user) {
+
+                    /*
+                     * No signed-in user.
+                     */
+
+                    window.location.replace(
+                        "/"
+                    );
+
+                    return;
+                }
 
 
-            accountEmail.textContent =
-                user.email ||
-                "Google account";
+                /* =====================================
+                   USER DATA
+                ===================================== */
+
+                const name =
+                    user.displayName ||
+                    "there";
 
 
-            setUserAvatar(user);
+                welcomeTitle.textContent =
+                    `Welcome back, ${name.split(" ")[0]}`;
 
 
-            loadingScreen.classList.add(
-                "hidden"
-            );
+                accountName.textContent =
+                    user.displayName ||
+                    "Numora User";
 
-            appElement.classList.remove(
-                "hidden"
-            );
 
-        } else {
+                accountEmail.textContent =
+                    user.email ||
+                    "Google account";
 
-            /*
-             * User is genuinely signed out.
-             *
-             * Redirect to the landing page.
-             */
 
-            window.location.replace(
-                "/"
-            );
-        }
+                setUserAvatar(user);
+
+
+                /* =====================================
+                   SHOW DASHBOARD
+                ===================================== */
+
+                loadingScreen.classList.add(
+                    "hidden"
+                );
+
+                appElement.classList.remove(
+                    "hidden"
+                );
+
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Dashboard authentication error:",
+            error
+        );
+
+        window.location.replace(
+            "/"
+        );
 
     }
-);
+
+}
 
 
 /* =====================================================
@@ -1695,23 +1821,35 @@ onAuthStateChanged(
 window.showPage = function(page) {
 
     const homePage =
-        document.getElementById("homePage");
+        document.getElementById(
+            "homePage"
+        );
 
     const messagesPage =
-        document.getElementById("messagesPage");
+        document.getElementById(
+            "messagesPage"
+        );
 
     const morePage =
-        document.getElementById("morePage");
+        document.getElementById(
+            "morePage"
+        );
 
 
     const navHome =
-        document.getElementById("navHome");
+        document.getElementById(
+            "navHome"
+        );
 
     const navMessages =
-        document.getElementById("navMessages");
+        document.getElementById(
+            "navMessages"
+        );
 
     const navMore =
-        document.getElementById("navMore");
+        document.getElementById(
+            "navMore"
+        );
 
 
     homePage.style.display =
@@ -1842,6 +1980,13 @@ window.logout = async function() {
     }
 
 };
+
+
+/* =====================================================
+   START
+===================================================== */
+
+startDashboard();
 
 </script>
 
