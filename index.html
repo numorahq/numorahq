@@ -85,6 +85,12 @@
         border-radius: 13px;
         color: #155fe8;
         font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .login-top:hover {
+        transform: translateY(-1px);
+        background: white;
     }
 
     /* =========================
@@ -185,6 +191,14 @@
 
     .primary-btn:hover {
         transform: translateY(-2px);
+    }
+
+    .primary-btn:disabled,
+    .login-top:disabled,
+    .cta-button:disabled {
+        opacity: 0.7;
+        cursor: wait;
+        transform: none;
     }
 
     .secondary-btn {
@@ -431,6 +445,11 @@
         padding: 14px 22px;
         border-radius: 13px;
         font-weight: 800;
+        transition: 0.2s ease;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-2px);
     }
 
     /* =========================
@@ -452,6 +471,45 @@
         justify-content: space-between;
         gap: 20px;
         flex-wrap: wrap;
+    }
+
+    /* =========================
+       LOGIN MESSAGE
+    ========================= */
+
+    .auth-message {
+        position: fixed;
+        left: 50%;
+        bottom: 28px;
+        transform: translate(-50%, 120px);
+        width: calc(100% - 32px);
+        max-width: 430px;
+        background: white;
+        border: 1px solid #dce7f5;
+        border-radius: 18px;
+        padding: 17px 19px;
+        box-shadow: 0 20px 45px rgba(35, 75, 125, 0.18);
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.3s ease;
+    }
+
+    .auth-message.show {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+
+    .auth-message-title {
+        font-size: 15px;
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
+
+    .auth-message-text {
+        color: #71829a;
+        font-size: 13px;
+        line-height: 1.5;
     }
 
     /* =========================
@@ -539,7 +597,11 @@
         <div class="brand-name">Numora</div>
     </a>
 
-    <button class="login-top" onclick="login()">
+    <button
+        class="login-top"
+        id="topLoginButton"
+        onclick="login()"
+    >
         Sign in
     </button>
 
@@ -576,6 +638,7 @@
 
                     <button
                         class="primary-btn"
+                        id="getNumberButton"
                         onclick="login()"
                     >
                         Get Your Number
@@ -788,6 +851,7 @@
 
             <button
                 class="cta-button"
+                id="ctaButton"
                 onclick="login()"
             >
                 Get Started
@@ -817,13 +881,289 @@
 </footer>
 
 
-<script>
+<!-- AUTH MESSAGE -->
 
-function login() {
-    alert(
-        "Google Sign-In will be connected here next."
+<div
+    class="auth-message"
+    id="authMessage"
+>
+
+    <div
+        class="auth-message-title"
+        id="authMessageTitle"
+    >
+        Numora
+    </div>
+
+    <div
+        class="auth-message-text"
+        id="authMessageText"
+    >
+        Welcome to Numora.
+    </div>
+
+</div>
+
+
+<!-- =========================
+     FIREBASE + GOOGLE LOGIN
+========================= -->
+
+<script type="module">
+
+    import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+    import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithPopup,
+        onAuthStateChanged
+    }
+    from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+
+    /* =========================
+       NUMORA FIREBASE CONFIG
+    ========================= */
+
+    const firebaseConfig = {
+
+        apiKey: "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+
+        authDomain:
+            "numora-c9a3b.firebaseapp.com",
+
+        projectId:
+            "numora-c9a3b",
+
+        storageBucket:
+            "numora-c9a3b.firebasestorage.app",
+
+        messagingSenderId:
+            "778502274031",
+
+        appId:
+            "1:778502274031:web:4cf57beed3703cbe5dd41a",
+
+        measurementId:
+            "G-6ELM21FDPH"
+    };
+
+
+    /* =========================
+       INITIALIZE FIREBASE
+    ========================= */
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const provider = new GoogleAuthProvider();
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const topLoginButton =
+        document.getElementById("topLoginButton");
+
+    const getNumberButton =
+        document.getElementById("getNumberButton");
+
+    const ctaButton =
+        document.getElementById("ctaButton");
+
+    const authMessage =
+        document.getElementById("authMessage");
+
+    const authMessageTitle =
+        document.getElementById("authMessageTitle");
+
+    const authMessageText =
+        document.getElementById("authMessageText");
+
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    function showMessage(title, text) {
+
+        authMessageTitle.textContent = title;
+
+        authMessageText.textContent = text;
+
+        authMessage.classList.add("show");
+
+        setTimeout(() => {
+
+            authMessage.classList.remove("show");
+
+        }, 5000);
+    }
+
+
+    /* =========================
+       GOOGLE SIGN-IN
+    ========================= */
+
+    window.login = async function () {
+
+        const buttons = [
+            topLoginButton,
+            getNumberButton,
+            ctaButton
+        ];
+
+        buttons.forEach(button => {
+
+            if (button) {
+                button.disabled = true;
+            }
+
+        });
+
+
+        if (auth.currentUser) {
+
+            showMessage(
+                "You're already signed in",
+                "Your Numora account is ready."
+            );
+
+            buttons.forEach(button => {
+
+                if (button) {
+                    button.disabled = false;
+                }
+
+            });
+
+            return;
+        }
+
+
+        try {
+
+            const result =
+                await signInWithPopup(
+                    auth,
+                    provider
+                );
+
+
+            const user =
+                result.user;
+
+
+            console.log(
+                "Numora user signed in:",
+                user.uid
+            );
+
+
+            showMessage(
+                "Welcome to Numora",
+                `You're signed in as ${user.displayName || user.email}.`
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Google Sign-In error:",
+                error
+            );
+
+
+            if (
+                error.code ===
+                "auth/popup-closed-by-user"
+            ) {
+
+                showMessage(
+                    "Sign-in cancelled",
+                    "The Google sign-in window was closed."
+                );
+
+            } else if (
+                error.code ===
+                "auth/popup-blocked"
+            ) {
+
+                showMessage(
+                    "Popup blocked",
+                    "Please allow popups for Numora and try again."
+                );
+
+            } else if (
+                error.code ===
+                "auth/unauthorized-domain"
+            ) {
+
+                showMessage(
+                    "Domain not authorized",
+                    "Add numorahq.github.io to Firebase Authentication → Settings → Authorized domains."
+                );
+
+            } else {
+
+                showMessage(
+                    "Sign-in failed",
+                    "Something went wrong while signing in with Google. Please try again."
+                );
+            }
+
+        } finally {
+
+            buttons.forEach(button => {
+
+                if (button) {
+                    button.disabled = false;
+                }
+
+            });
+
+        }
+
+    };
+
+
+    /* =========================
+       AUTH STATE
+    ========================= */
+
+    onAuthStateChanged(
+        auth,
+        (user) => {
+
+            if (user) {
+
+                topLoginButton.textContent =
+                    "Signed in";
+
+                getNumberButton.textContent =
+                    "Continue";
+
+                ctaButton.textContent =
+                    "Continue to Numora";
+
+            } else {
+
+                topLoginButton.textContent =
+                    "Sign in";
+
+                getNumberButton.textContent =
+                    "Get Your Number";
+
+                ctaButton.textContent =
+                    "Get Started";
+            }
+
+        }
     );
-}
 
 </script>
 
