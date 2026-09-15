@@ -735,11 +735,11 @@ main{
             <div class="total">
 
                 <span>
-                    Monthly price
+                    Order total
                 </span>
 
                 <strong id="price">
-                    $0.00
+                    ₦0
                 </strong>
 
             </div>
@@ -752,19 +752,19 @@ main{
         <section class="card payment-box">
 
             <div class="payment-icon">
-                $
+                ₦
             </div>
 
 
             <h2>
-                Payment
+                Pay by Bank Transfer
             </h2>
 
 
             <p>
                 Your order has been created successfully.
-                The payment provider will be connected here
-                next.
+                Continue to generate your secure Paystack
+                bank transfer payment details.
             </p>
 
 
@@ -774,7 +774,7 @@ main{
                 onclick="startPayment()"
             >
 
-                Continue to Payment
+                Continue to Bank Transfer
 
             </button>
 
@@ -782,7 +782,7 @@ main{
             <div class="security">
 
                 Secure payment processing will be handled
-                by Numora's payment provider.
+                by Paystack.
 
             </div>
 
@@ -1042,7 +1042,10 @@ async function loadOrder(){
         document
             .getElementById("price")
             .textContent =
-            "$" + price.toFixed(2);
+            "₦" +
+            price.toLocaleString(
+                "en-NG"
+            );
 
 
         document
@@ -1090,7 +1093,7 @@ window.startPayment = function(){
 
 
     status.textContent =
-        "Payment processing will be connected next. Your order has been saved safely in Numora.";
+        "Paystack bank transfer will be connected here next. Your order has been saved safely in Numora.";
 
 };
 
