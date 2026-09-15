@@ -1372,23 +1372,29 @@ body {
 
 <script type="module">
 
+
+<script type="module">
+
 import {
     initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
     getAuth,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 import {
     getFirestore,
     collection,
     addDoc,
     serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 /* =========================================================
    FIREBASE CONFIG
 ========================================================= */
@@ -1424,6 +1430,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const db = getFirestore(app);
+
+await setPersistence(
+    auth,
+    browserLocalPersistence
+);
 
 
 /* =========================================================
