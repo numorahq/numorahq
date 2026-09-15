@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Payment — Numora</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        Arial,
+        sans-serif;
+
+    background:#f4f8ff;
+    color:#10233f;
+
+    min-height:100vh;
+
+}
+
+header{
+
+    height:70px;
+
+    background:rgba(255,255,255,.94);
+
+    backdrop-filter:blur(18px);
+
+    border-bottom:1px solid #e3ebf7;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 22px;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:20;
+
+}
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:20px;
+
+    font-weight:800;
+
+}
+
+.logo{
+
+    width:38px;
+
+    height:38px;
+
+    border-radius:12px;
+
+    background:#1677ff;
+
+    color:white;
+
+    display:grid;
+
+    place-items:center;
+
+    font-weight:900;
+
+    box-shadow:
+        0 8px 20px rgba(22,119,255,.20);
+
+}
+
+.back{
+
+    border:0;
+
+    background:#eef5ff;
+
+    color:#1667d9;
+
+    padding:10px 15px;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+}
+
+main{
+
+    width:100%;
+
+    max-width:720px;
+
+    margin:auto;
+
+    padding:35px 18px 60px;
+
+}
+
+.page-title{
+
+    text-align:center;
+
+    margin-bottom:28px;
+
+}
+
+.page-title h1{
+
+    font-size:34px;
+
+    letter-spacing:-1px;
+
+    margin-bottom:8px;
+
+}
+
+.page-title p{
+
+    color:#667895;
+
+    font-size:15px;
+
+}
+
+.card{
+
+    background:white;
+
+    border:1px solid #e1e9f4;
+
+    border-radius:24px;
+
+    padding:24px;
+
+    box-shadow:
+        0 14px 40px rgba(34,75,130,.07);
+
+    margin-bottom:16px;
+
+}
+
+.card-title{
+
+    font-size:18px;
+
+    font-weight:800;
+
+    margin-bottom:18px;
+
+}
+
+.order-number{
+
+    background:#eef6ff;
+
+    border:1px solid #dceaff;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+}
+
+.order-number .label{
+
+    color:#6d7f98;
+
+    font-size:13px;
+
+    margin-bottom:7px;
+
+}
+
+.phone-number{
+
+    font-size:25px;
+
+    font-weight:900;
+
+    color:#10233f;
+
+    letter-spacing:.3px;
+
+}
+
+.area{
+
+    margin-top:7px;
+
+    color:#6d7f98;
+
+    font-size:14px;
+
+}
+
+.details{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:0;
+
+}
+
+.detail-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    padding:15px 0;
+
+    border-bottom:1px solid #edf1f6;
+
+}
+
+.detail-row:last-child{
+
+    border-bottom:0;
+
+}
+
+.detail-row span{
+
+    color:#6b7c94;
+
+}
+
+.detail-row strong{
+
+    text-align:right;
+
+}
+
+.total{
+
+    margin-top:8px;
+
+    padding-top:18px;
+
+    border-top:1px solid #dfe7f1;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.total span{
+
+    font-size:17px;
+
+    font-weight:700;
+
+}
+
+.total strong{
+
+    color:#1677ff;
+
+    font-size:25px;
+
+}
+
+.payment-box{
+
+    text-align:center;
+
+}
+
+.payment-icon{
+
+    width:62px;
+
+    height:62px;
+
+    margin:0 auto 15px;
+
+    border-radius:20px;
+
+    background:#eef6ff;
+
+    color:#1677ff;
+
+    display:grid;
+
+    place-items:center;
+
+    font-size:28px;
+
+    font-weight:900;
+
+}
+
+.payment-box h2{
+
+    font-size:20px;
+
+    margin-bottom:8px;
+
+}
+
+.payment-box p{
+
+    color:#718198;
+
+    font-size:14px;
+
+    line-height:1.5;
+
+    margin-bottom:20px;
+
+}
+
+.pay-button{
+
+    width:100%;
+
+    border:0;
+
+    background:#1677ff;
+
+    color:white;
+
+    padding:16px;
+
+    border-radius:15px;
+
+    font-size:16px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 10px 25px rgba(22,119,255,.20);
+
+}
+
+.pay-button:hover{
+
+    background:#086bea;
+
+}
+
+.pay-button:disabled{
+
+    opacity:.55;
+
+    cursor:not-allowed;
+
+}
+
+.security{
+
+    margin-top:14px;
+
+    color:#8492a7;
+
+    font-size:12px;
+
+    line-height:1.5;
+
+}
+
+.status{
+
+    margin-top:18px;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    background:#f5f8fc;
+
+    color:#65758c;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    display:none;
+
+}
+
+.loading{
+
+    text-align:center;
+
+    padding:60px 20px;
+
+}
+
+.spinner{
+
+    width:38px;
+
+    height:38px;
+
+    border:4px solid #e3edfa;
+
+    border-top-color:#1677ff;
+
+    border-radius:50%;
+
+    margin:0 auto 16px;
+
+    animation:spin .8s linear infinite;
+
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+.error{
+
+    display:none;
+
+    text-align:center;
+
+    padding:45px 20px;
+
+}
+
+.error-icon{
+
+    font-size:42px;
+
+    margin-bottom:12px;
+
+}
+
+.error h2{
+
+    margin-bottom:8px;
+
+}
+
+.error p{
+
+    color:#718198;
+
+    font-size:14px;
+
+    line-height:1.5;
+
+    margin-bottom:20px;
+
+}
+
+.secondary{
+
+    border:0;
+
+    background:#eef5ff;
+
+    color:#1667d9;
+
+    padding:13px 20px;
+
+    border-radius:13px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+}
+
+@media(max-width:600px){
+
+    main{
+
+        padding:25px 15px 45px;
+
+    }
+
+    .page-title h1{
+
+        font-size:29px;
+
+    }
+
+    .card{
+
+        padding:19px;
+
+        border-radius:20px;
+
+    }
+
+    .phone-number{
+
+        font-size:21px;
+
+    }
+
+    .detail-row{
+
+        font-size:14px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="brand">
+
+        <div class="logo">
+            N
+        </div>
+
+        Numora
+
+    </div>
+
+
+    <button
+        class="back"
+        onclick="goBack()"
+    >
+
+        Dashboard
+
+    </button>
+
+</header>
+
+
+<main>
+
+
+    <!-- LOADING -->
+
+    <div
+        id="loading"
+        class="loading"
+    >
+
+        <div class="spinner"></div>
+
+        <p>
+            Loading your order...
+        </p>
+
+    </div>
+
+
+    <!-- ERROR -->
+
+    <div
+        id="error"
+        class="error"
+    >
+
+        <div class="error-icon">
+            !
+        </div>
+
+        <h2>
+            Order not found
+        </h2>
+
+        <p id="errorMessage">
+
+            We couldn't load this order.
+            Please return to your dashboard
+            and try again.
+
+        </p>
+
+        <button
+            class="secondary"
+            onclick="goBack()"
+        >
+
+            Return to Dashboard
+
+        </button>
+
+    </div>
+
+
+    <!-- PAYMENT CONTENT -->
+
+    <div
+        id="paymentContent"
+        style="display:none;"
+    >
+
+
+        <div class="page-title">
+
+            <h1>
+                Complete Your Order
+            </h1>
+
+            <p>
+                Review your number before continuing to payment.
+            </p>
+
+        </div>
+
+
+        <!-- NUMBER -->
+
+        <section class="card">
+
+            <div class="card-title">
+                Your selected number
+            </div>
+
+
+            <div class="order-number">
+
+                <div class="label">
+                    Numora number
+                </div>
+
+                <div
+                    class="phone-number"
+                    id="phoneNumber"
+                >
+                    —
+                </div>
+
+                <div
+                    class="area"
+                    id="phoneArea"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="details">
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Country
+                    </span>
+
+                    <strong id="country">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Usage
+                    </span>
+
+                    <strong id="usage">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Order status
+                    </span>
+
+                    <strong id="orderStatus">
+                        Awaiting payment
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="total">
+
+                <span>
+                    Monthly price
+                </span>
+
+                <strong id="price">
+                    $0.00
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- PAYMENT -->
+
+        <section class="card payment-box">
+
+            <div class="payment-icon">
+                $
+            </div>
+
+
+            <h2>
+                Payment
+            </h2>
+
+
+            <p>
+                Your order has been created successfully.
+                The payment provider will be connected here
+                next.
+            </p>
+
+
+            <button
+                class="pay-button"
+                id="payButton"
+                onclick="startPayment()"
+            >
+
+                Continue to Payment
+
+            </button>
+
+
+            <div class="security">
+
+                Secure payment processing will be handled
+                by Numora's payment provider.
+
+            </div>
+
+
+            <div
+                class="status"
+                id="paymentStatus"
+            ></div>
+
+        </section>
+
+
+    </div>
+
+
+</main>
+
+
+<script type="module">
+
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+
+import {
+    getFirestore,
+    doc,
+    getDoc
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+/* FIREBASE */
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+
+    authDomain:
+    "numora-c9a3b.firebaseapp.com",
+
+    projectId:
+    "numora-c9a3b",
+
+    storageBucket:
+    "numora-c9a3b.firebasestorage.app",
+
+    messagingSenderId:
+    "778502274031",
+
+    appId:
+    "1:778502274031:web:4cf57beed3703cbe5dd41a",
+
+    measurementId:
+    "G-6ELM21FDPH"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+/* ORDER ID */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const orderId =
+    params.get("orderId");
+
+
+let currentUser = null;
+
+let currentOrder = null;
+
+
+/* NAVIGATION */
+
+window.goBack = function(){
+
+    window.location.href =
+        "/numorahq/dashboard.html";
+
+};
+
+
+/* SHOW ERROR */
+
+function showError(message){
+
+    document
+        .getElementById("loading")
+        .style.display = "none";
+
+
+    document
+        .getElementById("paymentContent")
+        .style.display = "none";
+
+
+    document
+        .getElementById("error")
+        .style.display = "block";
+
+
+    document
+        .getElementById("errorMessage")
+        .textContent =
+        message;
+
+}
+
+
+/* LOAD ORDER */
+
+async function loadOrder(){
+
+    if(!orderId){
+
+        showError(
+            "No order was provided. Please return to your dashboard and start again."
+        );
+
+        return;
+
+    }
+
+
+    if(!currentUser){
+
+        showError(
+            "You must be signed in to view this order."
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        const orderRef =
+            doc(
+                db,
+                "orders",
+                orderId
+            );
+
+
+        const orderSnapshot =
+            await getDoc(orderRef);
+
+
+        if(!orderSnapshot.exists()){
+
+            showError(
+                "This order does not exist or may have expired."
+            );
+
+            return;
+
+        }
+
+
+        const order =
+            orderSnapshot.data();
+
+
+        /*
+         * SECURITY CHECK
+         *
+         * Make sure the order belongs
+         * to the signed-in customer.
+         */
+
+        if(
+            order.userId !==
+            currentUser.uid
+        ){
+
+            showError(
+                "You do not have permission to view this order."
+            );
+
+            return;
+
+        }
+
+
+        currentOrder = order;
+
+
+        /* DISPLAY ORDER */
+
+        document
+            .getElementById("phoneNumber")
+            .textContent =
+            order.phoneNumber || "—";
+
+
+        document
+            .getElementById("phoneArea")
+            .textContent =
+            order.area || "United States";
+
+
+        document
+            .getElementById("country")
+            .textContent =
+            order.country || "United States";
+
+
+        document
+            .getElementById("usage")
+            .textContent =
+            order.usage || "SMS";
+
+
+        document
+            .getElementById("orderStatus")
+            .textContent =
+            order.status || "Awaiting payment";
+
+
+        const price =
+            Number(order.price || 0);
+
+
+        document
+            .getElementById("price")
+            .textContent =
+            "$" + price.toFixed(2);
+
+
+        document
+            .getElementById("loading")
+            .style.display =
+            "none";
+
+
+        document
+            .getElementById("paymentContent")
+            .style.display =
+            "block";
+
+    }
+
+    catch(error){
+
+        console.error(
+            "LOAD ORDER ERROR:",
+            error
+        );
+
+
+        showError(
+            "We couldn't load your order. Please try again."
+        );
+
+    }
+
+}
+
+
+/* TEMPORARY PAYMENT BUTTON */
+
+window.startPayment = function(){
+
+    const status =
+        document.getElementById(
+            "paymentStatus"
+        );
+
+
+    status.style.display =
+        "block";
+
+
+    status.textContent =
+        "Payment processing will be connected next. Your order has been saved safely in Numora.";
+
+};
+
+
+/* AUTH */
+
+setPersistence(
+    auth,
+    browserLocalPersistence
+).catch(error => {
+
+    console.error(
+        "Persistence error:",
+        error
+    );
+
+});
+
+
+onAuthStateChanged(
+    auth,
+    user => {
+
+        if(!user){
+
+            window.location.replace(
+                "/numorahq/"
+            );
+
+            return;
+
+        }
+
+
+        currentUser =
+            user;
+
+
+        loadOrder();
+
+    }
+);
+
+
+</script>
+
+</body>
+</html>
