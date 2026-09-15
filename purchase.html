@@ -58,10 +58,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     background: rgba(255,255,255,0.88);
+
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
+
     border-bottom: 1px solid rgba(40,90,150,0.08);
+
     position: sticky;
     top: 0;
     z-index: 50;
@@ -77,14 +81,25 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 13px;
-    background: linear-gradient(135deg,#1976ff,#54a5ff);
+
+    background:
+        linear-gradient(
+            135deg,
+            #1976ff,
+            #54a5ff
+        );
+
     color: white;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     font-size: 21px;
     font-weight: 800;
-    box-shadow: 0 8px 20px rgba(25,118,255,0.22);
+
+    box-shadow:
+        0 8px 20px rgba(25,118,255,0.22);
 }
 
 .brand-name {
@@ -95,13 +110,20 @@ body {
 
 .back-btn {
     border: 1px solid #dce8f5;
+
     background: white;
+
     color: #24517f;
+
     padding: 10px 16px;
+
     border-radius: 12px;
+
     font-size: 14px;
     font-weight: 650;
+
     cursor: pointer;
+
     transition: 0.2s ease;
 }
 
@@ -115,6 +137,7 @@ body {
 
 .page {
     width: min(1050px, calc(100% - 32px));
+
     margin: 38px auto 70px;
 }
 
@@ -124,13 +147,17 @@ body {
 
 .page-heading h1 {
     font-size: clamp(28px, 5vw, 42px);
+
     letter-spacing: -1.2px;
+
     margin-bottom: 8px;
 }
 
 .page-heading p {
     color: #71849b;
+
     font-size: 15px;
+
     line-height: 1.6;
 }
 
@@ -140,14 +167,21 @@ body {
 
 .purchase-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 330px;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        330px;
+
     gap: 22px;
+
     align-items: start;
 }
 
 .main-column {
     display: flex;
+
     flex-direction: column;
+
     gap: 18px;
 }
 
@@ -157,43 +191,62 @@ body {
 
 .card {
     background: rgba(255,255,255,0.94);
+
     border: 1px solid #e5edf6;
+
     border-radius: 22px;
+
     padding: 24px;
+
     box-shadow:
         0 12px 35px rgba(40,80,120,0.07);
 }
 
 .card-header {
     display: flex;
+
     align-items: flex-start;
+
     gap: 14px;
+
     margin-bottom: 20px;
 }
 
 .step-number {
     flex: 0 0 auto;
+
     width: 34px;
     height: 34px;
+
     border-radius: 11px;
+
     background: #eaf3ff;
+
     color: #1474ed;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     font-size: 14px;
+
     font-weight: 800;
 }
 
 .card-title {
     font-size: 18px;
+
     font-weight: 750;
+
     margin-bottom: 4px;
 }
 
 .card-description {
     color: #8091a5;
+
     font-size: 13px;
+
     line-height: 1.5;
 }
 
@@ -203,37 +256,57 @@ body {
 
 .country-select {
     width: 100%;
+
     border: 1px solid #dce7f3;
+
     background: #f9fbfe;
+
     padding: 15px 16px;
+
     border-radius: 14px;
+
     font-size: 15px;
+
     color: #173454;
+
     outline: none;
+
+    cursor: pointer;
 }
 
 .country-select:focus {
     border-color: #4996ff;
-    box-shadow: 0 0 0 4px rgba(73,150,255,0.10);
+
+    box-shadow:
+        0 0 0 4px rgba(73,150,255,0.10);
 }
 
 /* =========================================================
-   USAGE / PRODUCTS
+   USAGE
 ========================================================= */
 
 .usage-options {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
     gap: 12px;
 }
 
 .usage-option {
     position: relative;
+
     border: 1px solid #dfe9f4;
+
     background: #fbfdff;
+
     border-radius: 17px;
+
     padding: 18px 15px;
+
     cursor: pointer;
+
     transition:
         transform 0.2s ease,
         border-color 0.2s ease,
@@ -243,62 +316,86 @@ body {
 
 .usage-option:hover {
     transform: translateY(-2px);
+
     border-color: #a9cfff;
 }
 
 .usage-option.active {
     border-color: #398bfa;
+
     background: #f2f8ff;
-    box-shadow: 0 8px 22px rgba(39,127,241,0.10);
+
+    box-shadow:
+        0 8px 22px rgba(39,127,241,0.10);
 }
 
 .usage-radio {
     position: absolute;
+
     opacity: 0;
+
     pointer-events: none;
 }
 
 .usage-check {
     width: 22px;
     height: 22px;
+
     border-radius: 50%;
+
     border: 1.5px solid #cbd9e8;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     margin-bottom: 13px;
+
     color: white;
+
     font-size: 12px;
 }
 
 .usage-option.active .usage-check {
     border-color: #277ff1;
+
     background: #277ff1;
 }
 
 .usage-name {
     font-size: 15px;
+
     font-weight: 750;
+
     margin-bottom: 6px;
 }
 
 .usage-description {
     font-size: 12px;
+
     line-height: 1.5;
+
     color: #788ba0;
+
     min-height: 36px;
 }
 
 .usage-price {
     margin-top: 13px;
+
     font-size: 17px;
+
     font-weight: 800;
+
     color: #176edc;
 }
 
 .usage-duration {
     margin-top: 4px;
+
     font-size: 11px;
+
     color: #7c8ea3;
 }
 
@@ -308,68 +405,96 @@ body {
 
 .number-picker {
     width: 100%;
+
     border: 1px solid #dfe8f2;
+
     background: #fafcff;
+
     border-radius: 16px;
+
     padding: 17px;
+
     cursor: pointer;
+
     display: flex;
+
     align-items: center;
     justify-content: space-between;
+
     gap: 15px;
+
     transition: 0.2s ease;
 }
 
-.number-picker:hover {
+.number-picker:hover:not(:disabled) {
     border-color: #9ecbff;
+
     background: #f6faff;
 }
 
-.number-picker.disabled {
+.number-picker:disabled {
     opacity: 0.65;
+
     cursor: not-allowed;
 }
 
 .number-picker-left {
     display: flex;
+
     align-items: center;
+
     gap: 13px;
 }
 
 .phone-icon {
     width: 42px;
     height: 42px;
+
     border-radius: 13px;
+
     background: #eaf3ff;
+
     color: #2078ed;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     font-size: 18px;
 }
 
 .number-picker-title {
     font-size: 14px;
+
     font-weight: 700;
+
     margin-bottom: 3px;
 }
 
 .number-picker-subtitle {
     font-size: 12px;
+
     color: #8394a8;
 }
 
 .chevron {
     color: #7790a9;
+
     font-size: 21px;
 }
 
 .selected-number-box {
     margin-top: 14px;
+
     display: none;
+
     border-radius: 15px;
+
     background: #f2f8ff;
+
     border: 1px solid #cfe4ff;
+
     padding: 15px;
 }
 
@@ -379,12 +504,15 @@ body {
 
 .selected-number {
     font-size: 17px;
+
     font-weight: 800;
+
     margin-bottom: 4px;
 }
 
 .selected-area {
     color: #71859c;
+
     font-size: 12px;
 }
 
@@ -394,10 +522,15 @@ body {
 
 .compatibility-box {
     margin-top: 15px;
+
     display: none;
+
     border-radius: 15px;
+
     padding: 15px;
+
     border: 1px solid #cfe8dc;
+
     background: #f3fbf7;
 }
 
@@ -407,24 +540,35 @@ body {
 
 .compatibility-title {
     display: flex;
+
     align-items: center;
+
     gap: 8px;
+
     font-size: 13px;
+
     font-weight: 750;
+
     color: #17683e;
+
     margin-bottom: 6px;
 }
 
 .compatibility-text {
     font-size: 12px;
+
     color: #5c7668;
+
     line-height: 1.55;
 }
 
 .compatibility-warning {
     margin-top: 8px;
+
     color: #786b45;
+
     font-size: 11px;
+
     line-height: 1.5;
 }
 
@@ -434,33 +578,40 @@ body {
 
 .summary-card {
     position: sticky;
+
     top: 95px;
 }
 
 .summary-title {
     font-size: 18px;
+
     font-weight: 800;
+
     margin-bottom: 20px;
 }
 
 .summary-empty {
     padding: 18px 0;
+
     color: #8293a7;
+
     font-size: 13px;
+
     line-height: 1.6;
 }
 
 .summary-row {
     display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    padding: 11px 0;
-    border-bottom: 1px solid #edf2f7;
-    font-size: 13px;
-}
 
-.summary-row:last-of-type {
-    border-bottom: 0;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 11px 0;
+
+    border-bottom: 1px solid #edf2f7;
+
+    font-size: 13px;
 }
 
 .summary-label {
@@ -469,61 +620,93 @@ body {
 
 .summary-value {
     text-align: right;
+
     font-weight: 650;
+
     color: #203c5d;
 }
 
 .summary-total {
     margin-top: 14px;
+
     padding-top: 17px;
+
     border-top: 1px solid #e4ebf3;
+
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
 }
 
 .total-label {
     font-size: 13px;
+
     color: #718399;
 }
 
 .total-price {
     font-size: 25px;
+
     font-weight: 850;
+
     color: #126ddc;
 }
 
 .continue-btn {
     width: 100%;
+
     border: 0;
+
     margin-top: 20px;
+
     padding: 15px;
+
     border-radius: 14px;
-    background: linear-gradient(135deg,#1478f5,#3f99ff);
+
+    background:
+        linear-gradient(
+            135deg,
+            #1478f5,
+            #3f99ff
+        );
+
     color: white;
+
     font-size: 15px;
+
     font-weight: 750;
+
     cursor: pointer;
-    box-shadow: 0 10px 22px rgba(31,123,235,0.20);
+
+    box-shadow:
+        0 10px 22px rgba(31,123,235,0.20);
+
     transition: 0.2s ease;
 }
 
-.continue-btn:hover {
+.continue-btn:hover:not(:disabled) {
     transform: translateY(-1px);
 }
 
 .continue-btn:disabled {
     opacity: 0.48;
+
     cursor: not-allowed;
-    transform: none;
+
     box-shadow: none;
 }
 
 .secure-note {
     text-align: center;
+
     margin-top: 12px;
+
     color: #8a99aa;
+
     font-size: 11px;
+
     line-height: 1.5;
 }
 
@@ -533,14 +716,22 @@ body {
 
 .modal-overlay {
     position: fixed;
+
     inset: 0;
+
     background: rgba(12,29,48,0.48);
+
     backdrop-filter: blur(8px);
+
     -webkit-backdrop-filter: blur(8px);
+
     display: none;
+
     align-items: center;
     justify-content: center;
+
     padding: 20px;
+
     z-index: 100;
 }
 
@@ -550,168 +741,238 @@ body {
 
 .modal {
     width: min(570px,100%);
+
     max-height: min(720px,90vh);
+
     overflow: auto;
+
     background: white;
+
     border-radius: 24px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.20);
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,0.20);
+
     padding: 23px;
 }
 
 .modal-header {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
+
     gap: 15px;
+
     margin-bottom: 7px;
 }
 
 .modal-title {
     font-size: 20px;
+
     font-weight: 800;
 }
 
 .close-modal {
     width: 34px;
     height: 34px;
+
     border: 0;
+
     border-radius: 50%;
+
     background: #f1f5f9;
+
     color: #60758c;
+
     font-size: 19px;
+
     cursor: pointer;
 }
 
 .modal-subtitle {
     font-size: 13px;
+
     color: #8090a4;
+
     line-height: 1.5;
+
     margin-bottom: 18px;
 }
 
 .modal-warning {
     background: #fff9e9;
+
     border: 1px solid #f1dfac;
+
     color: #756238;
+
     border-radius: 13px;
+
     padding: 12px;
+
     font-size: 11px;
+
     line-height: 1.55;
+
     margin-bottom: 14px;
 }
 
 .number-list {
     display: flex;
+
     flex-direction: column;
+
     gap: 10px;
 }
 
 .number-option {
     width: 100%;
+
     border: 1px solid #e0e9f2;
+
     background: #fbfdff;
+
     border-radius: 16px;
+
     padding: 15px;
+
     cursor: pointer;
+
     text-align: left;
+
     transition: 0.2s ease;
 }
 
 .number-option:hover {
     border-color: #83bcfa;
+
     background: #f6faff;
 }
 
 .number-option-top {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
+
     gap: 12px;
 }
 
 .number-option-number {
     font-size: 15px;
+
     font-weight: 800;
+
     color: #173653;
 }
 
 .number-option-area {
     margin-top: 4px;
+
     color: #8394a7;
+
     font-size: 11px;
 }
 
 .status-badge {
     display: inline-flex;
+
     align-items: center;
+
     gap: 5px;
+
     padding: 6px 9px;
+
     border-radius: 999px;
+
     background: #edf9f3;
+
     color: #23794c;
+
     font-size: 10px;
+
     font-weight: 750;
+
     white-space: nowrap;
 }
 
 .status-badge.sms {
     background: #edf5ff;
+
     color: #276db5;
 }
 
 .no-results {
     text-align: center;
+
     padding: 28px 10px;
+
     color: #7f90a4;
+
     font-size: 13px;
+
     line-height: 1.6;
 }
 
 /* =========================================================
-   SUCCESS
+   AUTH LOADING
 ========================================================= */
 
-.success-state {
-    display: none;
-    text-align: center;
-    padding: 45px 20px;
-}
+.auth-loading {
+    position: fixed;
 
-.success-state.show {
-    display: block;
-}
+    inset: 0;
 
-.success-icon {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    background: #eaf9f1;
-    color: #238452;
+    z-index: 200;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f5f9ff,
+            #ffffff
+        );
+
     display: flex;
+
     align-items: center;
     justify-content: center;
-    margin: 0 auto 18px;
-    font-size: 27px;
+
+    flex-direction: column;
+
+    gap: 13px;
 }
 
-.success-state h2 {
-    font-size: 25px;
-    margin-bottom: 8px;
+.auth-loading.hidden {
+    display: none;
 }
 
-.success-state p {
-    color: #77899d;
-    font-size: 14px;
-    line-height: 1.6;
+.auth-spinner {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 50%;
+
+    border: 3px solid #dcecff;
+
+    border-top-color: #247ff0;
+
+    animation:
+        spin 0.8s linear infinite;
 }
 
-.success-order {
-    margin-top: 18px;
-    padding: 13px;
-    background: #f5f9fd;
-    border-radius: 12px;
-    font-size: 12px;
-    color: #536b83;
+.auth-loading-text {
+    color: #71849b;
+
+    font-size: 13px;
+}
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
 }
 
 /* =========================================================
@@ -735,6 +996,7 @@ body {
     .usage-description {
         min-height: auto;
     }
+
 }
 
 @media (max-width: 560px) {
@@ -745,11 +1007,13 @@ body {
 
     .page {
         width: min(100% - 22px, 1050px);
+
         margin-top: 25px;
     }
 
     .card {
         padding: 18px;
+
         border-radius: 19px;
     }
 
@@ -773,6 +1037,7 @@ body {
     .number-option-top {
         align-items: flex-start;
     }
+
 }
 
 </style>
@@ -781,20 +1046,48 @@ body {
 
 <body>
 
-<!-- =======================================================
+
+<!-- =========================================================
+     AUTH LOADING
+========================================================= -->
+
+<div
+    class="auth-loading"
+    id="authLoading"
+>
+
+    <div class="auth-spinner"></div>
+
+    <div class="auth-loading-text">
+        Checking your Numora account...
+    </div>
+
+</div>
+
+
+<!-- =========================================================
      HEADER
-======================================================= -->
+========================================================= -->
 
 <header class="header">
 
     <div class="brand">
-        <div class="logo">N</div>
-        <div class="brand-name">Numora</div>
+
+        <div class="logo">
+            N
+        </div>
+
+        <div class="brand-name">
+            Numora
+        </div>
+
     </div>
+
 
     <button
         class="back-btn"
         id="backButton"
+        type="button"
     >
         ← Dashboard
     </button>
@@ -802,19 +1095,21 @@ body {
 </header>
 
 
-<!-- =======================================================
+<!-- =========================================================
      MAIN
-======================================================= -->
+========================================================= -->
 
 <main class="page">
 
     <div class="page-heading">
 
-        <h1>Get Your Number</h1>
+        <h1>
+            Get Your Number
+        </h1>
 
         <p>
-            Choose your country, select what you need the number for,
-            then choose an eligible number.
+            Choose your country, select what you need the
+            number for, then choose an eligible number.
         </p>
 
     </div>
@@ -822,26 +1117,31 @@ body {
 
     <div class="purchase-layout">
 
+
         <div class="main-column">
 
-            <!-- =================================================
-                 STEP 1 — COUNTRY
-            ================================================== -->
+
+            <!-- STEP 1 -->
 
             <section class="card">
 
                 <div class="card-header">
 
-                    <div class="step-number">1</div>
+                    <div class="step-number">
+                        1
+                    </div>
 
                     <div>
+
                         <div class="card-title">
                             Choose your country
                         </div>
 
                         <div class="card-description">
-                            Select the country where you want your number.
+                            Select the country where you want
+                            your number.
                         </div>
+
                     </div>
 
                 </div>
@@ -861,31 +1161,36 @@ body {
             </section>
 
 
-            <!-- =================================================
-                 STEP 2 — PURPOSE
-            ================================================== -->
+            <!-- STEP 2 -->
 
             <section class="card">
 
                 <div class="card-header">
 
-                    <div class="step-number">2</div>
+                    <div class="step-number">
+                        2
+                    </div>
 
                     <div>
+
                         <div class="card-title">
                             What will you use it for?
                         </div>
 
                         <div class="card-description">
-                            Your selection determines the price and
-                            which numbers are available.
+                            Your selection determines the
+                            price and eligible numbers.
                         </div>
+
                     </div>
 
                 </div>
 
 
-                <div class="usage-options" id="usageOptions">
+                <div
+                    class="usage-options"
+                    id="usageOptions"
+                >
 
                     <div
                         class="usage-option"
@@ -942,8 +1247,8 @@ body {
                         </div>
 
                         <div class="usage-description">
-                            Receive and use SMS with your rented
-                            number.
+                            Receive and use SMS with your
+                            rented number.
                         </div>
 
                         <div class="usage-price">
@@ -977,8 +1282,8 @@ body {
                         </div>
 
                         <div class="usage-description">
-                            Use the number for WhatsApp verification
-                            and normal SMS.
+                            WhatsApp verification plus normal
+                            SMS access.
                         </div>
 
                         <div class="usage-price">
@@ -996,32 +1301,34 @@ body {
             </section>
 
 
-            <!-- =================================================
-                 STEP 3 — NUMBER
-            ================================================== -->
+            <!-- STEP 3 -->
 
             <section class="card">
 
                 <div class="card-header">
 
-                    <div class="step-number">3</div>
+                    <div class="step-number">
+                        3
+                    </div>
 
                     <div>
+
                         <div class="card-title">
                             Choose your number
                         </div>
 
                         <div class="card-description">
-                            Only numbers compatible with your selected
-                            product will be shown.
+                            Only numbers compatible with your
+                            selected product will be shown.
                         </div>
+
                     </div>
 
                 </div>
 
 
                 <button
-                    class="number-picker disabled"
+                    class="number-picker"
                     id="numberPicker"
                     type="button"
                     disabled
@@ -1052,6 +1359,7 @@ body {
                         </div>
 
                     </div>
+
 
                     <div class="chevron">
                         ›
@@ -1093,10 +1401,9 @@ body {
                     ></div>
 
                     <div class="compatibility-warning">
-                        Compatibility testing does not guarantee that
-                        WhatsApp or Meta will accept registration or
-                        verification. Their own policies and checks
-                        still apply.
+                        Compatibility testing does not guarantee
+                        that WhatsApp or Meta will accept registration
+                        or verification.
                     </div>
 
                 </div>
@@ -1104,9 +1411,7 @@ body {
             </section>
 
 
-            <!-- =================================================
-                 INFO
-            ================================================== -->
+            <!-- WHATSAPP INFO -->
 
             <section
                 class="card"
@@ -1128,17 +1433,17 @@ body {
 
                         <div class="card-description">
 
-                            WhatsApp verification products include a
-                            24-hour verification window. Verification
-                            messages received during that window will
-                            appear in your Numora Messages inbox.
+                            WhatsApp verification products include
+                            a 24-hour verification window.
+
+                            Verification messages received during
+                            that window will appear in your Numora
+                            Messages inbox.
 
                             <br><br>
 
-                            After the 24-hour window expires, the
-                            verification session ends. Your records
-                            may remain available to Numora for
-                            administrative and compliance purposes.
+                            After the 24-hour window expires,
+                            the verification session ends.
 
                         </div>
 
@@ -1148,12 +1453,11 @@ body {
 
             </section>
 
+
         </div>
 
 
-        <!-- =====================================================
-             SUMMARY
-        ====================================================== -->
+        <!-- SUMMARY -->
 
         <aside class="card summary-card">
 
@@ -1166,11 +1470,15 @@ body {
                 class="summary-empty"
                 id="summaryEmpty"
             >
-                Select a purpose and number to see your order details.
+                Select a purpose and number to see
+                your order details.
             </div>
 
 
-            <div id="summaryContent" style="display:none;">
+            <div
+                id="summaryContent"
+                style="display:none;"
+            >
 
                 <div class="summary-row">
 
@@ -1255,6 +1563,7 @@ body {
                 <button
                     class="continue-btn"
                     id="continueButton"
+                    type="button"
                     disabled
                 >
                     Continue to Payment
@@ -1263,7 +1572,7 @@ body {
 
                 <div class="secure-note">
                     Your order will be created first.
-                    Payment is handled securely on the next step.
+                    Payment is handled on the next step.
                 </div>
 
             </div>
@@ -1316,49 +1625,15 @@ body {
             id="modalWarning"
             style="display:none;"
         >
-            WhatsApp-compatible numbers shown here have a Numora
-            compatibility status. A compatibility check is not a
-            guarantee that WhatsApp or Meta will approve the number.
+            Numbers shown as WhatsApp compatible are marked
+            as compatible in Numora's current inventory.
+            This does not guarantee approval by WhatsApp or Meta.
         </div>
 
 
         <div
             class="number-list"
             id="numberList"
-        ></div>
-
-    </div>
-
-</div>
-
-
-<!-- =========================================================
-     SUCCESS STATE
-========================================================= -->
-
-<div
-    class="modal-overlay"
-    id="successModal"
->
-
-    <div class="modal success-state">
-
-        <div class="success-icon">
-            ✓
-        </div>
-
-        <h2>
-            Order Created
-        </h2>
-
-        <p>
-            Your order has been created successfully.
-            Continue to payment to complete your purchase.
-        </p>
-
-        <div
-            class="success-order"
-            id="successOrder"
         ></div>
 
     </div>
@@ -1379,8 +1654,8 @@ import {
 import {
     getAuth,
     onAuthStateChanged,
-    setPersistence,
-    browserLocalPersistence
+    browserLocalPersistence,
+    setPersistence
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 import {
@@ -1422,18 +1697,21 @@ const firebaseConfig = {
 
 
 /* =========================================================
-   FIREBASE
+   FIREBASE INITIALIZATION
 ========================================================= */
 
-const app = initializeApp(firebaseConfig);
+const app =
+    initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+const auth =
+    getAuth(app);
 
-const db = getFirestore(app);
+const db =
+    getFirestore(app);
 
 
 /* =========================================================
-   DOM ELEMENTS
+   DOM
 ========================================================= */
 
 const authLoading =
@@ -1525,6 +1803,8 @@ let selectedUsage = null;
 
 let selectedNumber = null;
 
+let authFinished = false;
+
 
 /* =========================================================
    PRODUCTS
@@ -1578,7 +1858,7 @@ const PRODUCTS = {
 
 
 /* =========================================================
-   DEMO INVENTORY
+   DEMO NUMBERS
 ========================================================= */
 
 const DEMO_NUMBERS = [
@@ -1626,7 +1906,14 @@ const DEMO_NUMBERS = [
    AUTHENTICATION
 ========================================================= */
 
-async function startAuthentication() {
+/*
+   We do NOT immediately redirect while Firebase is
+   determining the existing Google session.
+
+   Firebase gets the existing browser session first.
+*/
+
+async function initializeAuthentication() {
 
     try {
 
@@ -1638,7 +1925,7 @@ async function startAuthentication() {
     } catch (error) {
 
         console.warn(
-            "Auth persistence could not be enabled:",
+            "Auth persistence warning:",
             error
         );
 
@@ -1646,86 +1933,62 @@ async function startAuthentication() {
 
 
     onAuthStateChanged(
-
         auth,
-
         (user) => {
 
-            console.log(
-                "Numora auth state:",
-                user ? user.email : "Not signed in"
-            );
+            authFinished = true;
 
 
-            if (!user) {
+            if (user) {
 
-                window.location.replace(
-                    "/numorahq/"
+                currentUser =
+                    user;
+
+
+                authLoading.classList.add(
+                    "hidden"
                 );
+
+
+                setTimeout(
+                    () => {
+
+                        authLoading.style.display =
+                            "none";
+
+                    },
+                    250
+                );
+
+
+                console.log(
+                    "Numora purchase user:",
+                    user.email
+                );
+
 
                 return;
 
             }
 
 
-            currentUser = user;
-
-
             /*
-             * THIS IS IMPORTANT.
-             * It removes the full-screen loading layer
-             * after Firebase confirms the user.
+             * No user exists.
+             * Send them to the actual Numora homepage,
+             * NOT the dashboard.
              */
 
-            authLoading.classList.add(
-                "hidden"
+            window.location.replace(
+                "/numorahq/"
             );
-
-
-            /*
-             * Small delay so the CSS fade
-             * can complete smoothly.
-             */
-
-            setTimeout(() => {
-
-                authLoading.style.display =
-                    "none";
-
-            }, 300);
-
-        },
-
-        (error) => {
-
-            console.error(
-                "Firebase authentication error:",
-                error
-            );
-
-
-            authLoading.querySelector(
-                ".auth-loading-text"
-            ).textContent =
-                "Unable to verify your account. Please sign in again.";
-
-
-            setTimeout(() => {
-
-                window.location.replace(
-                    "/numorahq/"
-                );
-
-            }, 1500);
 
         }
-
     );
 
 }
 
 
-startAuthentication();
+initializeAuthentication();
 
 
 /* =========================================================
@@ -1767,13 +2030,18 @@ usageOptions.forEach(
 
 function selectUsage(productName) {
 
-    if (!PRODUCTS[productName]) {
+    const product =
+        PRODUCTS[productName];
+
+
+    if (!product) {
         return;
     }
 
 
     selectedUsage =
         productName;
+
 
     selectedNumber =
         null;
@@ -1789,10 +2057,6 @@ function selectUsage(productName) {
 
         }
     );
-
-
-    const product =
-        PRODUCTS[productName];
 
 
     numberPicker.disabled =
@@ -1912,7 +2176,7 @@ numberPicker.addEventListener(
 
 
 /* =========================================================
-   OPEN MODAL
+   OPEN NUMBER MODAL
 ========================================================= */
 
 function openNumberModal() {
@@ -1935,7 +2199,8 @@ function openNumberModal() {
             : "none";
 
 
-    numberList.innerHTML = "";
+    numberList.innerHTML =
+        "";
 
 
     if (
@@ -1972,36 +2237,25 @@ function openNumberModal() {
                 button.type =
                     "button";
 
+
                 button.className =
                     "number-option";
 
 
-                let statusHTML;
-
-
-                if (
+                const statusHTML =
                     product.requiresWhatsApp
-                ) {
 
-                    statusHTML = `
+                        ? `
+                            <span class="status-badge">
+                                ✓ Compatibility available
+                            </span>
+                          `
 
-                        <span class="status-badge">
-                            ✓ WhatsApp compatibility status
-                        </span>
-
-                    `;
-
-                } else {
-
-                    statusHTML = `
-
-                        <span class="status-badge sms">
-                            ✓ SMS capable
-                        </span>
-
-                    `;
-
-                }
+                        : `
+                            <span class="status-badge sms">
+                                ✓ SMS capable
+                            </span>
+                          `;
 
 
                 button.innerHTML = `
@@ -2130,9 +2384,10 @@ function selectNumber(number) {
 
 
         compatibilityText.textContent =
+
             number.demo
 
-                ? "This demo number is marked as WhatsApp compatible in the demo inventory. Production numbers will only be shown after Numora's backend completes the real provider compatibility workflow."
+                ? "This demo number is marked as compatible in Numora's demo inventory. Production numbers will only be listed after the real provider compatibility workflow."
 
                 : "This number is currently marked as WhatsApp compatible in Numora's inventory. WhatsApp or Meta may still apply its own registration and verification rules.";
 
@@ -2248,18 +2503,18 @@ function updateSummary() {
         selectedNumber.number;
 
 
-    summaryPrice.textContent =
-        formatNaira(
-            product.price
-        );
-
-
     summaryAccess.textContent =
         product.verificationHours === 24
 
             ? "24-hour verification"
 
             : "Normal rental access";
+
+
+    summaryPrice.textContent =
+        formatNaira(
+            product.price
+        );
 
 
     continueButton.disabled =
@@ -2299,7 +2554,19 @@ continueButton.addEventListener(
 async function createOrder() {
 
     if (
-        !currentUser ||
+        !currentUser
+    ) {
+
+        alert(
+            "Your Numora session is still loading. Please wait a moment and try again."
+        );
+
+        return;
+
+    }
+
+
+    if (
         !selectedUsage ||
         !selectedNumber
     ) {
@@ -2382,12 +2649,6 @@ async function createOrder() {
         };
 
 
-        console.log(
-            "Creating Numora order:",
-            orderData
-        );
-
-
         const orderRef =
             await addDoc(
                 collection(
@@ -2398,16 +2659,11 @@ async function createOrder() {
             );
 
 
-        console.log(
-            "Order created:",
-            orderRef.id
-        );
-
-
         window.location.href =
             `/numorahq/payment.html?orderId=${encodeURIComponent(
                 orderRef.id
             )}`;
+
 
     } catch (error) {
 
@@ -2435,7 +2691,7 @@ async function createOrder() {
 
 
 /* =========================================================
-   ESCAPE KEY — CLOSE MODAL
+   ESC KEY
 ========================================================= */
 
 document.addEventListener(
