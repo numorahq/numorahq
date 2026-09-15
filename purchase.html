@@ -892,8 +892,6 @@ onAuthStateChanged(
 );
 
 
-/* CREATE ORDER */
-
 window.createOrder = async function(){
 
     if(
@@ -911,7 +909,9 @@ window.createOrder = async function(){
         );
 
     button.disabled = true;
-    button.textContent = "Creating order…";
+
+    button.textContent =
+        "Creating order…";
 
     try{
 
@@ -961,31 +961,35 @@ window.createOrder = async function(){
                 }
             );
 
-        document
-            .getElementById("purchaseForm")
-            .style.display = "none";
+        /*
+         * ORDER CREATED
+         *
+         * Now send the customer
+         * to the payment page.
+         */
 
-        document
-            .getElementById("success")
-            .style.display = "block";
-
-        document
-            .getElementById("orderId")
-            .textContent =
-            "Order ID: " + orderRef.id;
+        window.location.href =
+            "/numorahq/payment.html?orderId=" +
+            encodeURIComponent(orderRef.id);
 
     }
 
     catch(error){
 
-        console.error(error);
+        console.error(
+            "ORDER ERROR:",
+            error
+        );
 
         alert(
-            "Could not create your order. Please try again."
+            "Could not create your order.\n\n" +
+            error.message
         );
 
         button.disabled = false;
-        button.textContent = "Continue";
+
+        button.textContent =
+            "Continue";
 
     }
 
