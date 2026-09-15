@@ -2665,28 +2665,30 @@ async function createOrder() {
             )}`;
 
 
-    } catch (error) {
+   } catch (error) {
 
-        console.error(
-            "Order creation failed:",
-            error
-        );
-
-
-        alert(
-            "We couldn't create your order right now. Please try again."
-        );
+    console.error(
+        "Order creation failed:",
+        error
+    );
 
 
-        continueButton.disabled =
-            false;
+    alert(
+        "Order creation failed:\n\n" +
+        (error.code || "Unknown error") +
+        "\n\n" +
+        (error.message || "No additional information.")
+    );
 
 
-        continueButton.textContent =
-            "Continue to Payment";
+    continueButton.disabled =
+        false;
 
-    }
 
+    continueButton.textContent =
+        "Continue to Payment";
+
+}
 }
 
 
