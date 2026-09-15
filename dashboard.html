@@ -1856,7 +1856,7 @@ const HOME_URL =
     "/numorahq/";
 
 const DASHBOARD_URL =
-    "/numorahq/dashboard/";
+    "/numorahq/dashboard.html";
 
 
 /* =========================================================
@@ -2171,9 +2171,8 @@ document
         "click",
         () => {
 
-            alert(
-                "Number selection will be available here."
-            );
+            window.location.href =
+                "/numorahq/purchase.html";
 
         }
     );
