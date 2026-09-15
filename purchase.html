@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +30,7 @@ body{
 
 header{
     height:70px;
-    background:rgba(255,255,255,.92);
+    background:rgba(255,255,255,.94);
     backdrop-filter:blur(18px);
     border-bottom:1px solid #e3ebf7;
 
@@ -38,17 +39,15 @@ header{
     justify-content:space-between;
 
     padding:0 22px;
-
     position:sticky;
     top:0;
-    z-index:10;
+    z-index:20;
 }
 
 .brand{
     display:flex;
     align-items:center;
     gap:10px;
-
     font-size:20px;
     font-weight:800;
 }
@@ -56,46 +55,34 @@ header{
 .logo{
     width:38px;
     height:38px;
-
     border-radius:12px;
-
     background:#1677ff;
     color:white;
-
     display:grid;
     place-items:center;
-
     font-weight:900;
-
-    box-shadow:
-        0 8px 20px rgba(22,119,255,.20);
+    box-shadow:0 8px 20px rgba(22,119,255,.20);
 }
 
 .back{
     border:0;
     background:#eef5ff;
     color:#1667d9;
-
     padding:10px 15px;
-
     border-radius:12px;
-
     font-weight:700;
-
     cursor:pointer;
 }
 
 main{
     max-width:900px;
     margin:auto;
-
     padding:34px 18px 60px;
 }
 
 h1{
     font-size:34px;
     letter-spacing:-1px;
-
     margin-bottom:8px;
 }
 
@@ -106,16 +93,10 @@ h1{
 
 .step{
     background:white;
-
     border:1px solid #e4ebf5;
-
     border-radius:22px;
-
     padding:22px;
-
-    box-shadow:
-        0 12px 35px rgba(34,75,130,.06);
-
+    box-shadow:0 12px 35px rgba(34,75,130,.06);
     margin-bottom:16px;
 }
 
@@ -124,26 +105,12 @@ h1{
     margin-bottom:16px;
 }
 
-.options{
-    display:grid;
-
-    grid-template-columns:
-        repeat(2,1fr);
-
-    gap:12px;
-}
-
 .option{
     border:1.5px solid #dfe8f5;
-
     background:#fbfdff;
-
     border-radius:16px;
-
     padding:16px;
-
     cursor:pointer;
-
     transition:.18s;
 }
 
@@ -153,11 +120,8 @@ h1{
 
 .option.selected{
     border-color:#1677ff;
-
     background:#eef6ff;
-
-    box-shadow:
-        0 0 0 3px rgba(22,119,255,.08);
+    box-shadow:0 0 0 3px rgba(22,119,255,.08);
 }
 
 .option strong{
@@ -170,79 +134,102 @@ h1{
     color:#72829a;
 }
 
-.number{
-    font-size:18px;
+.country-option{
+    width:100%;
+}
+
+.number-picker{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    border:1.5px solid #dfe8f5;
+    background:#fbfdff;
+    border-radius:16px;
+    padding:17px;
+    cursor:pointer;
+    text-align:left;
+}
+
+.number-picker:hover{
+    border-color:#73aefc;
+}
+
+.number-picker strong{
+    display:block;
+    font-size:17px;
+    margin-bottom:5px;
+}
+
+.number-picker span{
+    color:#72829a;
+    font-size:13px;
+}
+
+.number-picker .arrow{
+    color:#1677ff;
+    font-size:25px;
     font-weight:800;
 }
 
-.price{
+.selected-preview{
+    margin-top:12px;
     color:#1677ff;
-    font-weight:800;
+    font-size:13px;
+    font-weight:700;
+}
+
+.usage-options{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
 }
 
 .summary{
     position:sticky;
     bottom:14px;
-
-    background:rgba(255,255,255,.96);
-
+    background:rgba(255,255,255,.97);
     backdrop-filter:blur(18px);
-
     border:1px solid #dfe8f5;
-
     border-radius:20px;
-
     padding:18px;
-
-    box-shadow:
-        0 15px 40px rgba(31,72,125,.14);
+    box-shadow:0 15px 40px rgba(31,72,125,.14);
+    z-index:5;
 }
 
 .row{
     display:flex;
-
     justify-content:space-between;
-
     gap:15px;
-
     margin:8px 0;
-
     color:#64748b;
+}
+
+.row strong{
+    text-align:right;
+    overflow-wrap:anywhere;
 }
 
 .row.total{
     border-top:1px solid #e7edf5;
-
     padding-top:12px;
-
     margin-top:12px;
-
     color:#10233f;
-
     font-weight:800;
-
     font-size:18px;
 }
 
 .primary{
     width:100%;
-
     border:0;
-
     background:#1677ff;
-
     color:white;
-
     padding:15px;
-
     border-radius:14px;
-
     font-size:16px;
-
     font-weight:800;
-
     margin-top:14px;
-
     cursor:pointer;
 }
 
@@ -253,24 +240,20 @@ h1{
 
 .notice{
     font-size:12px;
-
     color:#73829a;
-
     margin-top:12px;
-
     line-height:1.5;
 }
 
 .success{
     display:none;
-
     text-align:center;
-
     padding:25px 10px;
 }
 
 .check{
     font-size:42px;
+    color:#1677ff;
     margin-bottom:10px;
 }
 
@@ -280,28 +263,117 @@ h1{
 
 .orderid{
     margin-top:14px;
-
     background:#f1f6ff;
-
     padding:12px;
-
     border-radius:12px;
-
     font-family:monospace;
-
     font-size:13px;
-
     word-break:break-all;
+}
+
+/* POPUP */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(12,32,61,.48);
+    backdrop-filter:blur(8px);
+    z-index:100;
+    padding:20px;
+    align-items:center;
+    justify-content:center;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-card{
+    width:100%;
+    max-width:520px;
+    max-height:85vh;
+    overflow-y:auto;
+    background:white;
+    border-radius:24px;
+    padding:22px;
+    box-shadow:0 25px 80px rgba(10,35,75,.25);
+    animation:popIn .18s ease-out;
+}
+
+@keyframes popIn{
+    from{
+        opacity:0;
+        transform:translateY(15px) scale(.98);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+}
+
+.modal-header h2{
+    font-size:21px;
+}
+
+.close-modal{
+    border:0;
+    background:#eef5ff;
+    color:#1667d9;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.number-list{
+    display:grid;
+    gap:12px;
+}
+
+.number-option{
+    width:100%;
+    border:1.5px solid #dfe8f5;
+    background:#fbfdff;
+    border-radius:16px;
+    padding:15px;
+    text-align:left;
+    cursor:pointer;
+}
+
+.number-option:hover{
+    border-color:#1677ff;
+    background:#eef6ff;
+}
+
+.number-option strong{
+    display:block;
+    font-size:17px;
+    margin-bottom:5px;
+}
+
+.number-option span{
+    color:#72829a;
+    font-size:13px;
+}
+
+.number-option b{
+    color:#1677ff;
 }
 
 @media(max-width:650px){
 
     h1{
         font-size:29px;
-    }
-
-    .options{
-        grid-template-columns:1fr;
     }
 
     main{
@@ -311,6 +383,15 @@ h1{
     .step{
         padding:18px;
     }
+
+    .usage-options{
+        grid-template-columns:1fr;
+    }
+
+    .summary{
+        position:relative;
+        bottom:auto;
+    }
 }
 </style>
 </head>
@@ -318,21 +399,15 @@ h1{
 <body>
 
 <header>
-
     <div class="brand">
         <div class="logo">N</div>
         Numora
     </div>
 
-    <button
-        class="back"
-        onclick="goBack()"
-    >
+    <button class="back" onclick="goBack()">
         Dashboard
     </button>
-
 </header>
-
 
 <main>
 
@@ -342,170 +417,116 @@ h1{
         Choose your number and tell us how you plan to use it.
     </p>
 
-
     <div id="purchaseForm">
-
 
         <!-- COUNTRY -->
 
         <section class="step">
-
             <h2>1. Choose a country</h2>
 
-            <div class="options">
-
-                <div
-                    class="option selected"
-                    data-country="United States"
-                    onclick="selectCountry(this)"
-                >
-
-                    <strong>
-                        🇺🇸 United States
-                    </strong>
-
-                    <span>
-                        US numbers • SMS capable
-                    </span>
-
-                </div>
-
+            <div
+                class="option selected country-option"
+                data-country="United States"
+                onclick="selectCountry(this)"
+            >
+                <strong>🇺🇸 United States</strong>
+                <span>US numbers • SMS capable</span>
             </div>
-
         </section>
-
 
         <!-- NUMBER -->
 
         <section class="step">
-
             <h2>2. Choose your number</h2>
 
+            <button
+                class="number-picker"
+                onclick="openNumberModal()"
+            >
+                <div>
+                    <strong id="pickerTitle">
+                        Select a number
+                    </strong>
+
+                    <span id="pickerSubtitle">
+                        Tap to view available numbers
+                    </span>
+                </div>
+
+                <div class="arrow">›</div>
+            </button>
+
             <div
-                class="options"
-                id="numbers"
+                class="selected-preview"
+                id="selectedPreview"
             ></div>
-
         </section>
-
 
         <!-- USAGE -->
 
         <section class="step">
-
             <h2>3. What will you use it for?</h2>
 
-            <div class="options">
-
+            <div class="usage-options">
 
                 <div
                     class="option selected"
                     data-usage="SMS"
                     onclick="selectUsage(this)"
                 >
-
-                    <strong>
-                        SMS
-                    </strong>
-
-                    <span>
-                        Send and receive text messages
-                    </span>
-
+                    <strong>SMS</strong>
+                    <span>Send and receive text messages</span>
                 </div>
-
 
                 <div
                     class="option"
                     data-usage="WhatsApp"
                     onclick="selectUsage(this)"
                 >
-
-                    <strong>
-                        WhatsApp
-                    </strong>
-
-                    <span>
-                        Request a number for WhatsApp use
-                    </span>
-
+                    <strong>WhatsApp</strong>
+                    <span>Request a number for WhatsApp use</span>
                 </div>
-
 
                 <div
                     class="option"
                     data-usage="SMS + WhatsApp"
                     onclick="selectUsage(this)"
                 >
-
-                    <strong>
-                        SMS + WhatsApp
-                    </strong>
-
-                    <span>
-                        Use both where supported
-                    </span>
-
+                    <strong>SMS + WhatsApp</strong>
+                    <span>Use both where supported</span>
                 </div>
 
             </div>
 
-
             <div class="notice">
-
                 WhatsApp compatibility is not a guarantee that
                 WhatsApp will accept or verify a number.
 
                 Numora will only provide numbers through legitimate
                 carrier/provider channels.
-
             </div>
-
         </section>
-
 
         <!-- SUMMARY -->
 
         <section class="summary">
 
             <div class="row">
-
-                <span>
-                    Number
-                </span>
-
+                <span>Number</span>
                 <strong id="summaryNumber">
                     Select a number
                 </strong>
-
             </div>
-
 
             <div class="row">
-
-                <span>
-                    Usage
-                </span>
-
-                <strong id="summaryUsage">
-                    SMS
-                </strong>
-
+                <span>Usage</span>
+                <strong id="summaryUsage">SMS</strong>
             </div>
-
 
             <div class="row total">
-
-                <span>
-                    Monthly price
-                </span>
-
-                <span id="summaryPrice">
-                    $0.00
-                </span>
-
+                <span>Monthly price</span>
+                <span id="summaryPrice">$0.00</span>
             </div>
-
 
             <button
                 id="continueBtn"
@@ -516,55 +537,60 @@ h1{
                 Continue
             </button>
 
-
             <div class="notice">
-
                 Payment and real number provisioning will be
                 connected after this stage.
-
             </div>
-
         </section>
 
     </div>
 
-
     <!-- SUCCESS -->
 
-    <div
-        id="success"
-        class="success"
-    >
+    <div id="success" class="success">
 
-        <div class="check">
-            ✓
-        </div>
+        <div class="check">✓</div>
 
-        <h2>
-            Order created
-        </h2>
+        <h2>Order created</h2>
 
-        <p>
-            Your Numora order is waiting for payment.
-        </p>
+        <p>Your Numora order is waiting for payment.</p>
 
-        <div
-            class="orderid"
-            id="orderId"
-        ></div>
+        <div class="orderid" id="orderId"></div>
 
-
-        <button
-            class="primary"
-            onclick="goBack()"
-        >
+        <button class="primary" onclick="goBack()">
             Return to Dashboard
         </button>
-
     </div>
 
 </main>
 
+<!-- NUMBER SELECTION POPUP -->
+
+<div
+    class="modal"
+    id="numberModal"
+    onclick="closeModalOutside(event)"
+>
+    <div class="modal-card">
+
+        <div class="modal-header">
+            <h2>Choose your number</h2>
+
+            <button
+                class="close-modal"
+                onclick="closeNumberModal()"
+            >
+                ×
+            </button>
+        </div>
+
+        <div
+            class="number-list"
+            id="numbers"
+        ></div>
+
+    </div>
+</div>
 
 <script type="module">
 
@@ -574,14 +600,14 @@ import {
 from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
-
 import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
 }
 from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-
 
 import {
     getFirestore,
@@ -593,10 +619,12 @@ from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
+/* CORRECT FIREBASE CONFIG */
+
 const firebaseConfig = {
 
     apiKey:
-    "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccRgSg",
+    "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
 
     authDomain:
     "numora-c9a3b.firebaseapp.com",
@@ -618,27 +646,12 @@ const firebaseConfig = {
 };
 
 
-const app =
-    initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 
-const auth =
-    getAuth(app);
-
-
-const db =
-    getFirestore(app);
-
-
-/*
-    DEMO NUMBERS
-
-    These are NOT real available
-    Twilio numbers yet.
-
-    Twilio will replace this
-    later.
-*/
+/* DEMO NUMBERS */
 
 const DEMO_NUMBERS = [
 
@@ -670,13 +683,11 @@ const DEMO_NUMBERS = [
 
 
 let currentUser = null;
-
 let selectedNumber = null;
-
 let selectedUsage = "SMS";
 
 
-/* BACK */
+/* NAVIGATION */
 
 window.goBack = function(){
 
@@ -713,49 +724,80 @@ window.selectUsage = function(el){
 
     el.classList.add("selected");
 
-    selectedUsage =
-        el.dataset.usage;
+    selectedUsage = el.dataset.usage;
 
     document
         .getElementById("summaryUsage")
-        .textContent =
-        selectedUsage;
+        .textContent = selectedUsage;
 
 };
 
 
-/* NUMBERS */
+/* OPEN NUMBER POPUP */
+
+window.openNumberModal = function(){
+
+    document
+        .getElementById("numberModal")
+        .classList.add("show");
+
+};
+
+
+/* CLOSE NUMBER POPUP */
+
+window.closeNumberModal = function(){
+
+    document
+        .getElementById("numberModal")
+        .classList.remove("show");
+
+};
+
+
+window.closeModalOutside = function(event){
+
+    if(
+        event.target.id === "numberModal"
+    ){
+
+        closeNumberModal();
+
+    }
+
+};
+
+
+/* RENDER NUMBERS */
 
 function renderNumbers(){
 
     const box =
         document.getElementById("numbers");
 
+    box.innerHTML = DEMO_NUMBERS.map(
+        (item,index) => `
 
-    box.innerHTML =
-        DEMO_NUMBERS.map((item,index) => `
+        <button
+            class="number-option"
+            data-index="${index}"
+            onclick="selectNumber(this)"
+        >
 
-            <div
-                class="option"
-                data-index="${index}"
-                onclick="selectNumber(this)"
-            >
+            <strong>${item.number}</strong>
 
-                <strong class="number">
-                    ${item.number}
-                </strong>
+            <span>
+                ${item.area}
+                •
+                <b>
+                    $${item.price.toFixed(2)}/month
+                </b>
+            </span>
 
-                <span>
-                    ${item.area}
-                    •
-                    <b class="price">
-                        $${item.price.toFixed(2)}/month
-                    </b>
-                </span>
+        </button>
 
-            </div>
-
-        `).join("");
+    `
+    ).join("");
 
 }
 
@@ -767,41 +809,66 @@ window.selectNumber = function(el){
     document
         .querySelectorAll("[data-index]")
         .forEach(item =>
-            item.classList.remove("selected")
+            item.style.borderColor = ""
         );
 
-
-    el.classList.add("selected");
-
+    const index =
+        Number(el.dataset.index);
 
     selectedNumber =
-        DEMO_NUMBERS[
-            Number(el.dataset.index)
-        ];
-
+        DEMO_NUMBERS[index];
 
     document
         .getElementById("summaryNumber")
         .textContent =
         selectedNumber.number;
 
-
     document
         .getElementById("summaryPrice")
         .textContent =
-        "$" +
-        selectedNumber.price.toFixed(2);
+        "$" + selectedNumber.price.toFixed(2);
 
+    document
+        .getElementById("pickerTitle")
+        .textContent =
+        selectedNumber.number;
+
+    document
+        .getElementById("pickerSubtitle")
+        .textContent =
+        selectedNumber.area +
+        " • $" +
+        selectedNumber.price.toFixed(2) +
+        "/month";
+
+    document
+        .getElementById("selectedPreview")
+        .textContent =
+        "Selected: " + selectedNumber.number;
 
     document
         .getElementById("continueBtn")
-        .disabled =
-        false;
+        .disabled = false;
+
+    closeNumberModal();
 
 };
 
 
-/* AUTH */
+/* AUTHENTICATION */
+
+setPersistence(
+    auth,
+    browserLocalPersistence
+).catch(error => {
+
+    console.error(
+        "Persistence error:",
+        error
+    );
+
+});
+
 
 onAuthStateChanged(
     auth,
@@ -814,12 +881,10 @@ onAuthStateChanged(
             );
 
             return;
+
         }
 
-
-        currentUser =
-            user;
-
+        currentUser = user;
 
         renderNumbers();
 
@@ -829,8 +894,7 @@ onAuthStateChanged(
 
 /* CREATE ORDER */
 
-window.createOrder =
-async function(){
+window.createOrder = async function(){
 
     if(
         !currentUser ||
@@ -838,29 +902,22 @@ async function(){
     ){
 
         return;
-    }
 
+    }
 
     const button =
         document.getElementById(
             "continueBtn"
         );
 
-
     button.disabled = true;
-
-    button.textContent =
-        "Creating order…";
-
+    button.textContent = "Creating order…";
 
     try{
 
         const orderRef =
             await addDoc(
-                collection(
-                    db,
-                    "orders"
-                ),
+                collection(db, "orders"),
                 {
 
                     userId:
@@ -904,31 +961,18 @@ async function(){
                 }
             );
 
+        document
+            .getElementById("purchaseForm")
+            .style.display = "none";
 
         document
-            .getElementById(
-                "purchaseForm"
-            )
-            .style.display =
-            "none";
-
+            .getElementById("success")
+            .style.display = "block";
 
         document
-            .getElementById(
-                "success"
-            )
-            .style.display =
-            "block";
-
-
-        document
-            .getElementById(
-                "orderId"
-            )
+            .getElementById("orderId")
             .textContent =
-            "Order ID: " +
-            orderRef.id;
-
+            "Order ID: " + orderRef.id;
 
     }
 
@@ -940,13 +984,8 @@ async function(){
             "Could not create your order. Please try again."
         );
 
-
-        button.disabled =
-            false;
-
-
-        button.textContent =
-            "Continue";
+        button.disabled = false;
+        button.textContent = "Continue";
 
     }
 
