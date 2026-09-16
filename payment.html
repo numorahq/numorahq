@@ -423,6 +423,156 @@ main{
 
 }
 
+
+/* =========================================================
+   BANK TRANSFER DETAILS
+   Added only for payment functionality.
+========================================================= */
+
+.transfer-details{
+
+    display:none;
+
+    margin-top:20px;
+
+    text-align:left;
+
+    background:#eef6ff;
+
+    border:1px solid #dceaff;
+
+    border-radius:18px;
+
+    padding:18px;
+
+}
+
+.transfer-title{
+
+    font-size:16px;
+
+    font-weight:800;
+
+    color:#10233f;
+
+    margin-bottom:6px;
+
+}
+
+.transfer-note{
+
+    color:#6d7f98;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    margin-bottom:16px;
+
+}
+
+.transfer-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:13px 0;
+
+    border-bottom:1px solid #dce7f5;
+
+}
+
+.transfer-row:last-child{
+
+    border-bottom:0;
+
+}
+
+.transfer-row span{
+
+    color:#6b7c94;
+
+    font-size:13px;
+
+}
+
+.transfer-row strong{
+
+    color:#10233f;
+
+    font-size:14px;
+
+    text-align:right;
+
+    word-break:break-word;
+
+}
+
+.account-number{
+
+    font-size:22px !important;
+
+    color:#1677ff !important;
+
+    letter-spacing:.5px;
+
+}
+
+.copy-button{
+
+    margin-top:15px;
+
+    width:100%;
+
+    border:0;
+
+    background:#ffffff;
+
+    color:#1667d9;
+
+    border:1px solid #d5e5fa;
+
+    padding:13px;
+
+    border-radius:13px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+}
+
+.copy-button:active{
+
+    transform:scale(.99);
+
+}
+
+.expiry-warning{
+
+    margin-top:14px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#ffffff;
+
+    color:#65758c;
+
+    font-size:12px;
+
+    line-height:1.5;
+
+    text-align:center;
+
+}
+
 .loading{
 
     text-align:center;
@@ -542,6 +692,12 @@ main{
     .detail-row{
 
         font-size:14px;
+
+    }
+
+    .transfer-row{
+
+        align-items:flex-start;
 
     }
 
@@ -792,6 +948,115 @@ main{
                 id="paymentStatus"
             ></div>
 
+
+            <!-- BANK TRANSFER DETAILS -->
+
+            <div
+                class="transfer-details"
+                id="transferDetails"
+            >
+
+                <div class="transfer-title">
+                    Bank Transfer Details
+                </div>
+
+                <div class="transfer-note">
+                    Transfer the exact order amount to the
+                    temporary account below.
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Bank
+                    </span>
+
+                    <strong id="transferBank">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Account name
+                    </span>
+
+                    <strong id="transferAccountName">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Account number
+                    </span>
+
+                    <strong
+                        id="transferAccountNumber"
+                        class="account-number"
+                    >
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Amount
+                    </span>
+
+                    <strong id="transferAmount">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Reference
+                    </span>
+
+                    <strong id="transferReference">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="expiry-warning">
+
+                    This temporary account expires at
+                    <strong id="transferExpiry">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <button
+                    class="copy-button"
+                    id="copyAccountButton"
+                    onclick="copyAccountNumber()"
+                >
+
+                    Copy Account Number
+
+                </button>
+
+            </div>
+
+
         </section>
 
 
@@ -824,7 +1089,8 @@ from
 import {
     getFirestore,
     doc,
-    getDoc
+    getDoc,
+    updateDoc
 }
 from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
@@ -868,6 +1134,12 @@ const auth =
 
 const db =
     getFirestore(app);
+
+
+/* RENDER BACKEND */
+
+const BACKEND_URL =
+    "https://numora-backend-cle6.onrender.com";
 
 
 /* ORDER ID */
@@ -920,6 +1192,87 @@ function showError(message){
         .getElementById("errorMessage")
         .textContent =
         message;
+
+}
+
+
+/* PAYMENT STATUS */
+
+function showPaymentStatus(
+    message,
+    isError = false
+){
+
+    const status =
+        document.getElementById(
+            "paymentStatus"
+        );
+
+
+    status.style.display =
+        "block";
+
+
+    status.textContent =
+        message;
+
+
+    if(isError){
+
+        status.style.background =
+            "#fff1f1";
+
+        status.style.color =
+            "#a63d3d";
+
+    }else{
+
+        status.style.background =
+            "#f5f8fc";
+
+        status.style.color =
+            "#65758c";
+
+    }
+
+}
+
+
+/* FORMAT DATE */
+
+function formatTransferExpiry(
+    value
+){
+
+    if(!value){
+
+        return "the stated expiry time";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
+
+        return value;
+
+    }
+
+
+    return date.toLocaleString(
+        "en-NG",
+        {
+            dateStyle:"medium",
+            timeStyle:"short"
+        }
+    );
 
 }
 
@@ -981,9 +1334,6 @@ async function loadOrder(){
 
         /*
          * SECURITY CHECK
-         *
-         * Make sure the order belongs
-         * to the signed-in customer.
          */
 
         if(
@@ -1078,22 +1428,427 @@ async function loadOrder(){
 }
 
 
-/* TEMPORARY PAYMENT BUTTON */
+/* =========================================================
+   START PAYSTACK BANK TRANSFER
+========================================================= */
 
-window.startPayment = function(){
+window.startPayment = async function(){
 
-    const status =
+    const button =
         document.getElementById(
-            "paymentStatus"
+            "payButton"
         );
 
 
-    status.style.display =
-        "block";
+    if(!currentUser){
+
+        showPaymentStatus(
+            "Your session has expired. Please sign in again.",
+            true
+        );
+
+        return;
+
+    }
 
 
-    status.textContent =
-        "Paystack bank transfer will be connected here next. Your order has been saved safely in Numora.";
+    if(!currentOrder){
+
+        showPaymentStatus(
+            "Your order could not be loaded. Please return to the dashboard and try again.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    const amount =
+        Number(
+            currentOrder.price || 0
+        );
+
+
+    if(
+        !amount ||
+        amount <= 0
+    ){
+
+        showPaymentStatus(
+            "The order amount is invalid.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if(!currentUser.email){
+
+        showPaymentStatus(
+            "Your Google account does not have an email address available for payment.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Generating Bank Details...";
+
+
+    showPaymentStatus(
+        "Connecting securely to Paystack..."
+    );
+
+
+    try{
+
+        /*
+         * Generate a unique reference for this
+         * payment attempt.
+         */
+
+        const reference =
+            "NUMORA-" +
+            orderId +
+            "-" +
+            Date.now();
+
+
+        const response =
+            await fetch(
+                BACKEND_URL +
+                "/api/paystack/bank-transfer",
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        email:
+                            currentUser.email,
+
+                        amount:
+                            amount,
+
+                        reference:
+                            reference
+
+                    })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Paystack response:",
+            result
+        );
+
+
+        if(
+            !response.ok ||
+            !result.success
+        ){
+
+            throw new Error(
+                result.message ||
+                "Unable to create bank transfer."
+            );
+
+        }
+
+
+        const transfer =
+            result.data;
+
+
+        /*
+         * Paystack's Pay with Transfer response
+         * contains these fields:
+         *
+         * reference
+         * status
+         * account_name
+         * account_number
+         * bank.name
+         * account_expires_at
+         */
+
+        const accountNumber =
+            transfer.account_number;
+
+
+        const accountName =
+            transfer.account_name;
+
+
+        const bankName =
+            transfer.bank &&
+            transfer.bank.name
+                ? transfer.bank.name
+                : "Paystack Bank";
+
+
+        const paymentReference =
+            transfer.reference ||
+            reference;
+
+
+        const expiry =
+            transfer.account_expires_at;
+
+
+        if(!accountNumber){
+
+            throw new Error(
+                "Paystack did not return a temporary bank account. Please try again."
+            );
+
+        }
+
+
+        /*
+         * Save the Paystack payment information
+         * to this customer's order.
+         */
+
+        try{
+
+            const orderRef =
+                doc(
+                    db,
+                    "orders",
+                    orderId
+                );
+
+
+            await updateDoc(
+                orderRef,
+                {
+
+                    paymentStatus:
+                        "Awaiting bank transfer",
+
+                    paymentReference:
+                        paymentReference,
+
+                    paymentProvider:
+                        "Paystack",
+
+                    paymentChannel:
+                        "bank_transfer",
+
+                    transferAccountNumber:
+                        accountNumber,
+
+                    transferAccountName:
+                        accountName || "",
+
+                    transferBank:
+                        bankName,
+
+                    transferExpiresAt:
+                        expiry || null
+
+                }
+            );
+
+        }
+
+        catch(updateError){
+
+            console.warn(
+                "Order payment details could not be saved:",
+                updateError
+            );
+
+        }
+
+
+        /*
+         * DISPLAY BANK DETAILS
+         */
+
+        document
+            .getElementById(
+                "transferBank"
+            )
+            .textContent =
+            bankName;
+
+
+        document
+            .getElementById(
+                "transferAccountName"
+            )
+            .textContent =
+            accountName ||
+            "Numora";
+
+
+        document
+            .getElementById(
+                "transferAccountNumber"
+            )
+            .textContent =
+            accountNumber;
+
+
+        document
+            .getElementById(
+                "transferAmount"
+            )
+            .textContent =
+            "₦" +
+            amount.toLocaleString(
+                "en-NG"
+            );
+
+
+        document
+            .getElementById(
+                "transferReference"
+            )
+            .textContent =
+            paymentReference;
+
+
+        document
+            .getElementById(
+                "transferExpiry"
+            )
+            .textContent =
+            formatTransferExpiry(
+                expiry
+            );
+
+
+        document
+            .getElementById(
+                "transferDetails"
+            )
+            .style.display =
+            "block";
+
+
+        button.style.display =
+            "none";
+
+
+        showPaymentStatus(
+            "Your temporary bank transfer account is ready. Transfer the exact amount shown below."
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "BANK TRANSFER ERROR:",
+            error
+        );
+
+
+        showPaymentStatus(
+            error.message ||
+            "Unable to create your bank transfer. Please try again.",
+            true
+        );
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Continue to Bank Transfer";
+
+    }
+
+};
+
+
+/* COPY ACCOUNT NUMBER */
+
+window.copyAccountNumber =
+function(){
+
+    const accountNumber =
+        document
+            .getElementById(
+                "transferAccountNumber"
+            )
+            .textContent;
+
+
+    if(
+        !accountNumber ||
+        accountNumber === "—"
+    ){
+
+        return;
+
+    }
+
+
+    navigator
+        .clipboard
+        .writeText(
+            accountNumber
+        )
+        .then(() => {
+
+            const button =
+                document.getElementById(
+                    "copyAccountButton"
+                );
+
+
+            const originalText =
+                button.textContent;
+
+
+            button.textContent =
+                "Account Number Copied";
+
+
+            setTimeout(
+                () => {
+
+                    button.textContent =
+                        originalText;
+
+                },
+                1800
+            );
+
+        })
+        .catch(error => {
+
+            console.error(
+                "COPY ERROR:",
+                error
+            );
+
+        });
 
 };
 
