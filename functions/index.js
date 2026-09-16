@@ -1,4 +1,6 @@
 const express = require("express");
+const crypto = require("crypto");
+const admin = require("firebase-admin");
 
 const app = express();
 
@@ -7,8 +9,58 @@ const PORT = process.env.PORT || 3000;
 
 /*
 =========================================================
+FIREBASE ADMIN
+=========================================================
+*/
+
+let firebaseInitialized = false;
+
+try {
+
+    const serviceAccount =
+        JSON.parse(
+            process.env.FIREBASE_SERVICE_ACCOUNT_JSON
+        );
+
+    admin.initializeApp({
+        credential:
+            admin.credential.cert(
+                serviceAccount
+            )
+    });
+
+    firebaseInitialized = true;
+
+    console.log(
+        "Firebase Admin initialized."
+    );
+
+}
+catch(error){
+
+    console.error(
+        "Firebase Admin initialization failed:",
+        error.message
+    );
+
+}
+
+
+/*
+=========================================================
+FIRESTORE
+=========================================================
+*/
+
+const db =
+    firebaseInitialized
+        ? admin.firestore()
+        : null;
+
+
+/*
+=========================================================
 CORS
-Allows the Numora website to communicate with Render.
 =========================================================
 */
 
@@ -29,7 +81,9 @@ app.use((req, res, next) => {
         "Content-Type, Authorization"
     );
 
-    if (req.method === "OPTIONS") {
+    if(
+        req.method === "OPTIONS"
+    ){
 
         return res.sendStatus(204);
 
@@ -40,20 +94,44 @@ app.use((req, res, next) => {
 });
 
 
-app.use(express.json());
+/*
+=========================================================
+RAW BODY + JSON
+
+Paystack webhook signatures are calculated from
+the original request body.
+
+We keep the raw body available as req.rawBody.
+=========================================================
+*/
+
+app.use(
+    express.json({
+        verify: (
+            req,
+            res,
+            buffer
+        ) => {
+
+            req.rawBody =
+                Buffer.from(buffer);
+
+        }
+    })
+);
 
 
 /*
 =========================================================
-PAYSTACK SECRET KEY
+PAYSTACK SECRET
 =========================================================
 */
 
-const getPaystackSecretKey = () => {
+function getPaystackSecretKey(){
 
     return process.env.PAYSTACK_SECRET_KEY;
 
-};
+}
 
 
 /*
@@ -62,26 +140,34 @@ HEALTH CHECK
 =========================================================
 */
 
-app.get("/", (req, res) => {
+app.get(
+    "/",
+    (req, res) => {
 
-    res.status(200).json({
+        res.status(200).json({
 
-        success: true,
+            success: true,
 
-        service:
-            "Numora Backend",
+            service:
+                "Numora Backend",
 
-        status:
-            "online"
+            status:
+                "online",
 
-    });
+            firebase:
+                firebaseInitialized
+                    ? "connected"
+                    : "not connected"
 
-});
+        });
+
+    }
+);
 
 
 /*
 =========================================================
-CREATE PAYSTACK BANK TRANSFER
+CREATE BANK TRANSFER
 =========================================================
 */
 
@@ -102,7 +188,7 @@ app.post(
                 getPaystackSecretKey();
 
 
-            if (!secretKey) {
+            if(!secretKey){
 
                 return res.status(500).json({
 
@@ -116,13 +202,7 @@ app.post(
             }
 
 
-            /*
-            -------------------------------------------------
-            VALIDATE REQUEST
-            -------------------------------------------------
-            */
-
-            if (!email) {
+            if(!email){
 
                 return res.status(400).json({
 
@@ -136,10 +216,10 @@ app.post(
             }
 
 
-            if (
+            if(
                 !amount ||
                 Number(amount) <= 0
-            ) {
+            ){
 
                 return res.status(400).json({
 
@@ -153,7 +233,7 @@ app.post(
             }
 
 
-            if (!reference) {
+            if(!reference){
 
                 return res.status(400).json({
 
@@ -167,23 +247,11 @@ app.post(
             }
 
 
-            /*
-            -------------------------------------------------
-            CONVERT NAIRA TO KOBO
-            -------------------------------------------------
-            */
-
             const amountInKobo =
                 Math.round(
                     Number(amount) * 100
                 );
 
-
-            /*
-            -------------------------------------------------
-            CREATE PAYSTACK CHARGE
-            -------------------------------------------------
-            */
 
             const paystackResponse =
                 await fetch(
@@ -238,16 +306,10 @@ app.post(
                 await paystackResponse.json();
 
 
-            /*
-            -------------------------------------------------
-            PAYSTACK ERROR
-            -------------------------------------------------
-            */
-
-            if (!paystackResponse.ok) {
+            if(!paystackResponse.ok){
 
                 console.error(
-                    "Paystack error:",
+                    "Paystack charge error:",
                     data
                 );
 
@@ -267,12 +329,6 @@ app.post(
             }
 
 
-            /*
-            -------------------------------------------------
-            SUCCESS
-            -------------------------------------------------
-            */
-
             return res.status(200).json({
 
                 success: true,
@@ -288,7 +344,7 @@ app.post(
         }
 
 
-        catch (error) {
+        catch(error){
 
             console.error(
                 "Bank transfer error:",
@@ -316,11 +372,15 @@ app.post(
 VERIFY PAYMENT
 =========================================================
 
-Used when the customer taps:
+Used by:
 
 "I Have Paid"
 
-The secret Paystack key stays on the Render server.
+We verify directly with Paystack.
+
+IMPORTANT:
+The frontend does NOT decide whether payment succeeded.
+Paystack decides.
 =========================================================
 */
 
@@ -331,7 +391,8 @@ app.post(
         try {
 
             const {
-                reference
+                reference,
+                expectedAmount
             } = req.body;
 
 
@@ -339,7 +400,7 @@ app.post(
                 getPaystackSecretKey();
 
 
-            if (!secretKey) {
+            if(!secretKey){
 
                 return res.status(500).json({
 
@@ -353,13 +414,7 @@ app.post(
             }
 
 
-            /*
-            -------------------------------------------------
-            VALIDATE REFERENCE
-            -------------------------------------------------
-            */
-
-            if (!reference) {
+            if(!reference){
 
                 return res.status(400).json({
 
@@ -373,16 +428,12 @@ app.post(
             }
 
 
-            /*
-            -------------------------------------------------
-            ASK PAYSTACK FOR TRANSACTION STATUS
-            -------------------------------------------------
-            */
-
-            const paystackResponse =
+            const response =
                 await fetch(
                     "https://api.paystack.co/transaction/verify/" +
-                    encodeURIComponent(reference),
+                    encodeURIComponent(
+                        reference
+                    ),
                     {
 
                         method:
@@ -402,32 +453,26 @@ app.post(
                 );
 
 
-            const data =
-                await paystackResponse.json();
+            const result =
+                await response.json();
 
 
-            /*
-            -------------------------------------------------
-            PAYSTACK ERROR
-            -------------------------------------------------
-            */
-
-            if (!paystackResponse.ok) {
+            if(!response.ok){
 
                 console.error(
-                    "Paystack verification error:",
-                    data
+                    "Paystack verify error:",
+                    result
                 );
 
 
                 return res.status(
-                    paystackResponse.status
+                    response.status
                 ).json({
 
                     success: false,
 
                     message:
-                        data.message ||
+                        result.message ||
                         "Unable to verify payment."
 
                 });
@@ -435,27 +480,63 @@ app.post(
             }
 
 
-            /*
-            -------------------------------------------------
-            TRANSACTION RESULT
-            -------------------------------------------------
-            */
-
             const transaction =
-                data.data || {};
+                result.data || {};
+
 
             const status =
-                transaction.status || "unknown";
+                transaction.status ||
+                "unknown";
+
+
+            const paidAmount =
+                Number(
+                    transaction.amount || 0
+                );
 
 
             /*
             -------------------------------------------------
-            DO NOT CALL A PAYMENT SUCCESSFUL JUST BECAUSE
-            THE VERIFY API REQUEST ITSELF SUCCEEDED.
+            EXPECTED AMOUNT
+
+            Firestore stores price in Naira.
+            Paystack returns amount in kobo.
             -------------------------------------------------
             */
 
-            if (status === "success") {
+            let amountMatches = true;
+
+
+            if(
+                expectedAmount !== undefined &&
+                expectedAmount !== null
+            ){
+
+                const expectedKobo =
+                    Math.round(
+                        Number(
+                            expectedAmount
+                        ) * 100
+                    );
+
+
+                amountMatches =
+                    paidAmount ===
+                    expectedKobo;
+
+            }
+
+
+            /*
+            -------------------------------------------------
+            PAYMENT SUCCESS
+            -------------------------------------------------
+            */
+
+            if(
+                status === "success" &&
+                amountMatches
+            ){
 
                 return res.status(200).json({
 
@@ -470,13 +551,14 @@ app.post(
                         transaction.reference,
 
                     amount:
-                        transaction.amount,
+                        paidAmount,
 
                     currency:
                         transaction.currency,
 
                     paidAt:
-                        transaction.paid_at || null
+                        transaction.paid_at ||
+                        null
 
                 });
 
@@ -485,7 +567,38 @@ app.post(
 
             /*
             -------------------------------------------------
-            PAYMENT NOT SUCCESSFUL YET
+            WRONG AMOUNT
+            -------------------------------------------------
+            */
+
+            if(
+                status === "success" &&
+                !amountMatches
+            ){
+
+                return res.status(200).json({
+
+                    success: true,
+
+                    paid: false,
+
+                    status:
+                        status,
+
+                    amountMismatch:
+                        true,
+
+                    message:
+                        "Payment was received, but the amount does not match the order."
+
+                });
+
+            }
+
+
+            /*
+            -------------------------------------------------
+            PAYMENT STILL PENDING
             -------------------------------------------------
             */
 
@@ -510,7 +623,7 @@ app.post(
         }
 
 
-        catch (error) {
+        catch(error){
 
             console.error(
                 "Payment verification error:",
@@ -538,35 +651,31 @@ app.post(
 PAYSTACK WEBHOOK
 =========================================================
 
-Paystack sends successful payment events here.
+Paystack sends:
 
-IMPORTANT:
-This endpoint is only the starting point for the
-automatic fulfillment system.
+charge.success
 
-We will connect Firestore/order activation after
-verification is tested.
+when a payment succeeds.
+
+This is what will eventually activate the customer's
+number automatically.
 =========================================================
 */
 
 app.post(
     "/api/paystack/webhook",
-    (req, res) => {
+    async (req, res) => {
 
         try {
-
-            const crypto =
-                require("crypto");
-
 
             const secretKey =
                 getPaystackSecretKey();
 
 
-            if (!secretKey) {
+            if(!secretKey){
 
                 console.error(
-                    "Webhook rejected: Paystack secret key missing."
+                    "Webhook: Paystack secret key missing."
                 );
 
                 return res.sendStatus(200);
@@ -580,10 +689,10 @@ app.post(
                 ];
 
 
-            if (!signature) {
+            if(!signature){
 
                 console.warn(
-                    "Webhook received without Paystack signature."
+                    "Webhook: missing signature."
                 );
 
                 return res.sendStatus(200);
@@ -593,13 +702,9 @@ app.post(
 
             /*
             -------------------------------------------------
-            RECREATE PAYSTACK SIGNATURE
+            VERIFY RAW PAYSTACK SIGNATURE
             -------------------------------------------------
             */
-
-            const rawBody =
-                JSON.stringify(req.body);
-
 
             const expectedSignature =
                 crypto
@@ -607,23 +712,27 @@ app.post(
                         "sha512",
                         secretKey
                     )
-                    .update(rawBody)
+                    .update(
+                        req.rawBody
+                    )
                     .digest("hex");
 
 
-            /*
-            -------------------------------------------------
-            SECURITY CHECK
-            -------------------------------------------------
-            */
+            const signaturesMatch =
+                crypto.timingSafeEqual(
+                    Buffer.from(
+                        signature
+                    ),
+                    Buffer.from(
+                        expectedSignature
+                    )
+                );
 
-            if (
-                signature !==
-                expectedSignature
-            ) {
+
+            if(!signaturesMatch){
 
                 console.warn(
-                    "Invalid Paystack webhook signature."
+                    "Webhook: invalid Paystack signature."
                 );
 
                 return res.sendStatus(200);
@@ -636,90 +745,247 @@ app.post(
 
 
             console.log(
-                "Paystack webhook received:",
+                "Paystack event:",
                 event.event
             );
 
 
             /*
             -------------------------------------------------
-            SUCCESSFUL PAYMENT
+            ONLY PROCESS SUCCESSFUL CHARGES
             -------------------------------------------------
             */
 
-            if (
-                event.event ===
+            if(
+                event.event !==
                 "charge.success"
-            ) {
+            ){
 
-                const payment =
-                    event.data || {};
+                return res.sendStatus(200);
+
+            }
 
 
-                console.log(
-                    "PAYMENT SUCCESS:",
-                    {
+            const payment =
+                event.data || {};
 
-                        reference:
-                            payment.reference,
 
-                        amount:
-                            payment.amount,
+            const reference =
+                payment.reference;
 
-                        currency:
-                            payment.currency,
 
-                        channel:
-                            payment.channel,
-
-                        paidAt:
-                            payment.paid_at
-
-                    }
+            const amount =
+                Number(
+                    payment.amount || 0
                 );
 
 
-                /*
-                -------------------------------------------------
-                FIRESTORE ORDER UPDATE WILL BE CONNECTED HERE.
-                -------------------------------------------------
+            const currency =
+                payment.currency;
 
-                After we connect Firebase Admin:
 
-                order.paymentStatus
-                    = "Paid"
+            console.log(
+                "Successful payment:",
+                {
+                    reference,
+                    amount,
+                    currency
+                }
+            );
 
-                order.status
-                    = "Activating"
 
-                Then the number activation process runs.
-                -------------------------------------------------
-                */
+            /*
+            -------------------------------------------------
+            FIRESTORE REQUIRED
+            -------------------------------------------------
+            */
+
+            if(!db){
+
+                console.error(
+                    "Webhook: Firestore unavailable."
+                );
+
+                return res.sendStatus(200);
+
+            }
+
+
+            if(!reference){
+
+                console.warn(
+                    "Webhook: payment has no reference."
+                );
+
+                return res.sendStatus(200);
 
             }
 
 
             /*
             -------------------------------------------------
-            ACKNOWLEDGE PAYSTACK
+            FIND ORDER BY PAYMENT REFERENCE
             -------------------------------------------------
             */
+
+            const ordersSnapshot =
+                await db
+                    .collection("orders")
+                    .where(
+                        "paymentReference",
+                        "==",
+                        reference
+                    )
+                    .limit(1)
+                    .get();
+
+
+            if(
+                ordersSnapshot.empty
+            ){
+
+                console.warn(
+                    "Webhook: no order found for reference:",
+                    reference
+                );
+
+                return res.sendStatus(200);
+
+            }
+
+
+            const orderDoc =
+                ordersSnapshot.docs[0];
+
+
+            const order =
+                orderDoc.data();
+
+
+            /*
+            -------------------------------------------------
+            VERIFY ORDER AMOUNT
+            -------------------------------------------------
+            */
+
+            const expectedAmount =
+                Math.round(
+                    Number(
+                        order.price || 0
+                    ) * 100
+                );
+
+
+            if(
+                amount !==
+                expectedAmount
+            ){
+
+                console.error(
+                    "Webhook amount mismatch:",
+                    {
+                        reference,
+                        expectedAmount,
+                        receivedAmount:
+                            amount
+                    }
+                );
+
+                return res.sendStatus(200);
+
+            }
+
+
+            /*
+            -------------------------------------------------
+            PREVENT DUPLICATE PROCESSING
+            -------------------------------------------------
+            */
+
+            if(
+                order.paymentStatus ===
+                "Paid"
+            ){
+
+                console.log(
+                    "Order already marked Paid:",
+                    orderDoc.id
+                );
+
+                return res.sendStatus(200);
+
+            }
+
+
+            /*
+            -------------------------------------------------
+            MARK ORDER AS PAID
+            -------------------------------------------------
+            */
+
+            await orderDoc.ref.update({
+
+                paymentStatus:
+                    "Paid",
+
+                paymentProvider:
+                    "Paystack",
+
+                paymentChannel:
+                    payment.channel ||
+                    "bank_transfer",
+
+                paymentConfirmedAt:
+                    admin.firestore.FieldValue.serverTimestamp(),
+
+                paymentTransactionId:
+                    payment.id ||
+                    null,
+
+                status:
+                    "Activating"
+
+            });
+
+
+            console.log(
+                "ORDER MARKED PAID:",
+                orderDoc.id
+            );
+
+
+            /*
+            -------------------------------------------------
+            NUMBER ACTIVATION
+            -------------------------------------------------
+
+            TWILIO ACTIVATION WILL BE CONNECTED HERE.
+
+            Current lifecycle:
+
+            Awaiting payment
+                    ↓
+                  Paid
+                    ↓
+                Activating
+                    ↓
+                  Active
+
+            -------------------------------------------------
+            */
+
 
             return res.sendStatus(200);
 
         }
 
 
-        catch (error) {
+        catch(error){
 
             console.error(
-                "Webhook error:",
+                "Paystack webhook error:",
                 error
             );
-
-            /*
-            Always acknowledge the webhook for now.
-            */
 
             return res.sendStatus(200);
 
