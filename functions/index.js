@@ -61,6 +61,20 @@ const db =
 
 /*
 =========================================================
+CONFIGURATION
+=========================================================
+*/
+
+const NUMORA_BACKEND_URL =
+    process.env.NUMORA_BACKEND_URL ||
+    "https://numora-backend-cle6.onrender.com";
+
+const TWILIO_INCOMING_SMS_URL =
+    `${NUMORA_BACKEND_URL}/api/twilio/incoming-sms`;
+
+
+/*
+=========================================================
 CORS
 =========================================================
 */
@@ -165,6 +179,41 @@ function getTwilioClient(){
 
 /*
 =========================================================
+FIRESTORE TIMESTAMP
+=========================================================
+*/
+
+function serverTimestamp(){
+
+    return admin.firestore.FieldValue
+        .serverTimestamp();
+
+}
+
+
+/*
+=========================================================
+NORMALIZE PHONE NUMBER
+=========================================================
+*/
+
+function normalizePhoneNumber(value){
+
+    if(!value){
+
+        return "";
+
+    }
+
+    return String(value)
+        .trim()
+        .replace(/\s+/g, "");
+
+}
+
+
+/*
+=========================================================
 HEALTH CHECK
 =========================================================
 */
@@ -192,6 +241,11 @@ app.get(
                 process.env.TWILIO_ACCOUNT_SID &&
                 process.env.TWILIO_AUTH_TOKEN
                     ? "configured"
+                    : "not configured",
+
+            paystack:
+                process.env.PAYSTACK_SECRET_KEY
+                    ? "configured"
                     : "not configured"
 
         });
@@ -210,9 +264,7 @@ IMPORTANT:
 This endpoint ONLY tests the Twilio connection and
 searches available numbers.
 
-It does NOT purchase a number.
-It does NOT charge anything.
-It does NOT activate anything.
+It DOES NOT purchase a number.
 
 =========================================================
 */
@@ -229,12 +281,6 @@ app.get(
             const authToken =
                 process.env.TWILIO_AUTH_TOKEN;
 
-
-            /*
-            -------------------------------------------------
-            CHECK ENVIRONMENT VARIABLES
-            -------------------------------------------------
-            */
 
             if(
                 !accountSid ||
@@ -255,12 +301,6 @@ app.get(
 
             }
 
-
-            /*
-            -------------------------------------------------
-            CREATE TWILIO CLIENT
-            -------------------------------------------------
-            */
 
             const client =
                 getTwilioClient();
@@ -283,29 +323,12 @@ app.get(
             }
 
 
-            /*
-            -------------------------------------------------
-            VERIFY TWILIO ACCOUNT
-            -------------------------------------------------
-            */
-
             const account =
                 await client
                     .api
                     .accounts(accountSid)
                     .fetch();
 
-
-            /*
-            -------------------------------------------------
-            SEARCH AVAILABLE US NUMBERS
-            -------------------------------------------------
-
-            We only search.
-
-            Nothing is purchased here.
-            -------------------------------------------------
-            */
 
             const availableNumbers =
                 await client
@@ -324,15 +347,6 @@ app.get(
 
                     });
 
-
-            /*
-            -------------------------------------------------
-            RETURN SAFE TEST RESULT
-            -------------------------------------------------
-
-            NEVER return the Auth Token.
-            -------------------------------------------------
-            */
 
             return res.status(200).json({
 
@@ -618,6 +632,829 @@ app.post(
 
 /*
 =========================================================
+FIND ORDER BY PAYMENT REFERENCE
+=========================================================
+*/
+
+async function findOrderByPaymentReference(
+    reference
+){
+
+    if(!db){
+
+        return null;
+
+    }
+
+
+    const snapshot =
+        await db
+            .collection("orders")
+            .where(
+                "paymentReference",
+                "==",
+                reference
+            )
+            .limit(1)
+            .get();
+
+
+    if(snapshot.empty){
+
+        return null;
+
+    }
+
+
+    return snapshot.docs[0];
+
+}
+
+
+/*
+=========================================================
+VERIFY PAYSTACK TRANSACTION
+=========================================================
+*/
+
+async function verifyPaystackTransaction(
+    reference
+){
+
+    const secretKey =
+        getPaystackSecretKey();
+
+
+    if(!secretKey){
+
+        throw new Error(
+            "Paystack secret key is not configured."
+        );
+
+    }
+
+
+    const response =
+        await fetch(
+            "https://api.paystack.co/transaction/verify/" +
+            encodeURIComponent(
+                reference
+            ),
+            {
+
+                method:
+                    "GET",
+
+                headers: {
+
+                    "Authorization":
+                        `Bearer ${secretKey}`,
+
+                    "Content-Type":
+                        "application/json"
+
+                }
+
+            }
+        );
+
+
+    const result =
+        await response.json();
+
+
+    if(!response.ok){
+
+        throw new Error(
+            result.message ||
+            "Unable to verify Paystack transaction."
+        );
+
+    }
+
+
+    return result.data || {};
+
+}
+
+
+/*
+=========================================================
+PROVISION EXACT TWILIO NUMBER
+=========================================================
+
+IMPORTANT:
+
+This function purchases ONLY the exact number selected
+by the customer.
+
+It does NOT silently replace an unavailable number.
+
+=========================================================
+*/
+
+async function provisionOrder(
+    orderDoc
+){
+
+    if(!db){
+
+        throw new Error(
+            "Firestore is unavailable."
+        );
+
+    }
+
+
+    const client =
+        getTwilioClient();
+
+
+    if(!client){
+
+        throw new Error(
+            "Twilio is not configured."
+        );
+
+    }
+
+
+    const orderRef =
+        orderDoc.ref;
+
+    const order =
+        orderDoc.data();
+
+
+    /*
+    -------------------------------------------------------
+    ALREADY ACTIVE
+    -------------------------------------------------------
+    */
+
+    if(
+        order.provisioningStatus ===
+        "Active"
+        ||
+        order.status ===
+        "Active"
+    ){
+
+        return {
+
+            success: true,
+
+            alreadyActive: true,
+
+            phoneNumber:
+                order.phoneNumber,
+
+            sid:
+                order.twilioPhoneNumberSid
+
+        };
+
+    }
+
+
+    /*
+    -------------------------------------------------------
+    CHECK REQUIRED NUMBER
+    -------------------------------------------------------
+    */
+
+    const selectedNumber =
+        normalizePhoneNumber(
+            order.phoneNumber
+        );
+
+
+    if(!selectedNumber){
+
+        await orderRef.update({
+
+            status:
+                "Provisioning error",
+
+            provisioningStatus:
+                "Failed",
+
+            provisioningError:
+                "The order does not contain a selected phone number.",
+
+            provisioningUpdatedAt:
+                serverTimestamp()
+
+        });
+
+
+        throw new Error(
+            "Order does not contain a selected phone number."
+        );
+
+    }
+
+
+    /*
+    -------------------------------------------------------
+    ATOMIC PROVISIONING LOCK
+    -------------------------------------------------------
+    */
+
+    const lockResult =
+        await db.runTransaction(
+            async transaction => {
+
+                const freshSnapshot =
+                    await transaction.get(
+                        orderRef
+                    );
+
+
+                if(!freshSnapshot.exists){
+
+                    return {
+
+                        locked: false,
+
+                        reason:
+                            "missing"
+
+                    };
+
+                }
+
+
+                const freshOrder =
+                    freshSnapshot.data();
+
+
+                if(
+                    freshOrder.provisioningStatus ===
+                    "Active"
+                    ||
+                    freshOrder.status ===
+                    "Active"
+                ){
+
+                    return {
+
+                        locked: false,
+
+                        reason:
+                            "already-active",
+
+                        phoneNumber:
+                            freshOrder.phoneNumber,
+
+                        sid:
+                            freshOrder.twilioPhoneNumberSid
+
+                    };
+
+                }
+
+
+                if(
+                    freshOrder.provisioningStatus ===
+                    "Processing"
+                ){
+
+                    return {
+
+                        locked: false,
+
+                        reason:
+                            "already-processing"
+
+                    };
+
+                }
+
+
+                transaction.update(
+                    orderRef,
+                    {
+
+                        provisioningStatus:
+                            "Processing",
+
+                        provisioningStartedAt:
+                            serverTimestamp(),
+
+                        status:
+                            "Activating"
+
+                    }
+                );
+
+
+                return {
+
+                    locked: true,
+
+                    reason:
+                        "locked"
+
+                };
+
+            }
+        );
+
+
+    if(
+        !lockResult.locked
+    ){
+
+        if(
+            lockResult.reason ===
+            "already-active"
+        ){
+
+            return {
+
+                success: true,
+
+                alreadyActive: true,
+
+                phoneNumber:
+                    lockResult.phoneNumber,
+
+                sid:
+                    lockResult.sid
+
+            };
+
+        }
+
+
+        if(
+            lockResult.reason ===
+            "already-processing"
+        ){
+
+            return {
+
+                success: true,
+
+                alreadyProcessing: true
+
+            };
+
+        }
+
+
+        throw new Error(
+            "Unable to start provisioning."
+        );
+
+    }
+
+
+    /*
+    -------------------------------------------------------
+    RE-CHECK ORDER
+    -------------------------------------------------------
+    */
+
+    const currentSnapshot =
+        await orderRef.get();
+
+
+    if(!currentSnapshot.exists){
+
+        throw new Error(
+            "Order no longer exists."
+        );
+
+    }
+
+
+    const currentOrder =
+        currentSnapshot.data();
+
+
+    /*
+    -------------------------------------------------------
+    VERIFY NUMBER IS STILL AVAILABLE
+    -------------------------------------------------------
+
+    We search Twilio inventory for the exact number.
+
+    If it is gone, we DO NOT purchase another number.
+    -------------------------------------------------------
+    */
+
+    let exactNumberAvailable =
+        false;
+
+
+    try {
+
+        const availableNumbers =
+            await client
+                .availablePhoneNumbers(
+                    "US"
+                )
+                .local
+                .list({
+
+                    phoneNumber:
+                        selectedNumber,
+
+                    smsEnabled:
+                        true,
+
+                    voiceEnabled:
+                        true,
+
+                    limit:
+                        1
+
+                });
+
+
+        exactNumberAvailable =
+            availableNumbers.some(
+                number =>
+                    normalizePhoneNumber(
+                        number.phoneNumber
+                    ) ===
+                    selectedNumber
+            );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Exact number availability check failed:",
+            error
+        );
+
+
+        await orderRef.update({
+
+            status:
+                "Provisioning error",
+
+            provisioningStatus:
+                "Failed",
+
+            provisioningError:
+                error.message ||
+                "Unable to verify selected number availability.",
+
+            provisioningUpdatedAt:
+                serverTimestamp()
+
+        });
+
+
+        throw error;
+
+    }
+
+
+    if(!exactNumberAvailable){
+
+        await orderRef.update({
+
+            status:
+                "Number unavailable",
+
+            provisioningStatus:
+                "Unavailable",
+
+            twilioPurchaseStatus:
+                "Not purchased",
+
+            provisioningError:
+                "The selected Twilio number is no longer available.",
+
+            provisioningUpdatedAt:
+                serverTimestamp()
+
+        });
+
+
+        return {
+
+            success: false,
+
+            unavailable: true,
+
+            message:
+                "The selected number is no longer available."
+
+        };
+
+    }
+
+
+    /*
+    -------------------------------------------------------
+    PURCHASE EXACT NUMBER
+    -------------------------------------------------------
+    */
+
+    let purchasedNumber;
+
+
+    try {
+
+        purchasedNumber =
+            await client
+                .incomingPhoneNumbers
+                .create({
+
+                    phoneNumber:
+                        selectedNumber,
+
+                    smsUrl:
+                        TWILIO_INCOMING_SMS_URL,
+
+                    smsMethod:
+                        "POST"
+
+                });
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Twilio number purchase failed:",
+            error
+        );
+
+
+        await orderRef.update({
+
+            status:
+                "Provisioning error",
+
+            provisioningStatus:
+                "Failed",
+
+            twilioPurchaseStatus:
+                "Failed",
+
+            provisioningError:
+                error.message ||
+                "Twilio could not purchase the selected number.",
+
+            provisioningUpdatedAt:
+                serverTimestamp()
+
+        });
+
+
+        throw error;
+
+    }
+
+
+    /*
+    -------------------------------------------------------
+    SAVE SUCCESSFUL PROVISIONING
+    -------------------------------------------------------
+    */
+
+    const purchasedAt =
+        admin.firestore.Timestamp.now();
+
+
+    await orderRef.update({
+
+        status:
+            "Active",
+
+        paymentStatus:
+            "Paid",
+
+        provisioningStatus:
+            "Active",
+
+        twilioPurchaseStatus:
+            "Purchased",
+
+        twilioPhoneNumberSid:
+            purchasedNumber.sid,
+
+        phoneNumber:
+            purchasedNumber.phoneNumber,
+
+        twilioPhoneNumber:
+            purchasedNumber.phoneNumber,
+
+        twilioFriendlyName:
+            purchasedNumber.friendlyName ||
+            null,
+
+        twilioSmsUrl:
+            TWILIO_INCOMING_SMS_URL,
+
+        activatedAt:
+            purchasedAt,
+
+        provisioningCompletedAt:
+            purchasedAt,
+
+        provisioningError:
+            null,
+
+        provisioningUpdatedAt:
+            purchasedAt
+
+    });
+
+
+    console.log(
+        "TWILIO NUMBER PURCHASED:",
+        {
+            orderId:
+                orderDoc.id,
+
+            phoneNumber:
+                purchasedNumber.phoneNumber,
+
+            sid:
+                purchasedNumber.sid
+
+        }
+    );
+
+
+    return {
+
+        success: true,
+
+        active: true,
+
+        phoneNumber:
+            purchasedNumber.phoneNumber,
+
+        sid:
+            purchasedNumber.sid
+
+    };
+
+}
+
+
+/*
+=========================================================
+PROCESS VERIFIED PAYMENT
+=========================================================
+*/
+
+async function processVerifiedPayment(
+    orderDoc,
+    payment
+){
+
+    const orderRef =
+        orderDoc.ref;
+
+    const order =
+        orderDoc.data();
+
+
+    const expectedAmount =
+        Math.round(
+            Number(
+                order.price || 0
+            ) * 100
+        );
+
+
+    const paidAmount =
+        Number(
+            payment.amount || 0
+        );
+
+
+    if(
+        paidAmount !==
+        expectedAmount
+    ){
+
+        await orderRef.update({
+
+            paymentStatus:
+                "Amount mismatch",
+
+            status:
+                "Payment amount mismatch",
+
+            paymentError:
+                "The Paystack payment amount does not match the order amount.",
+
+            paymentUpdatedAt:
+                serverTimestamp()
+
+        });
+
+
+        return {
+
+            success: false,
+
+            amountMismatch: true
+
+        };
+
+    }
+
+
+    /*
+    -------------------------------------------------------
+    ALREADY PAID
+    -------------------------------------------------------
+    */
+
+    if(
+        order.paymentStatus ===
+        "Paid"
+        &&
+        (
+            order.provisioningStatus ===
+            "Active"
+            ||
+            order.status ===
+            "Active"
+        )
+    ){
+
+        return {
+
+            success: true,
+
+            alreadyActive: true
+
+        };
+
+    }
+
+
+    /*
+    -------------------------------------------------------
+    MARK PAYMENT PAID
+    -------------------------------------------------------
+    */
+
+    await orderRef.update({
+
+        paymentStatus:
+            "Paid",
+
+        paymentProvider:
+            "Paystack",
+
+        paymentChannel:
+            payment.channel ||
+            "bank_transfer",
+
+        paymentConfirmedAt:
+            order.paymentConfirmedAt ||
+            serverTimestamp(),
+
+        paymentTransactionId:
+            payment.id ||
+            order.paymentTransactionId ||
+            null,
+
+        status:
+            "Activating",
+
+        paymentError:
+            null
+
+    });
+
+
+    console.log(
+        "ORDER PAYMENT CONFIRMED:",
+        orderDoc.id
+    );
+
+
+    /*
+    -------------------------------------------------------
+    PROVISION TWILIO NUMBER
+    -------------------------------------------------------
+    */
+
+    return await provisionOrder(
+        orderDoc
+    );
+
+}
+
+
+/*
+=========================================================
 VERIFY PAYMENT
 =========================================================
 */
@@ -629,27 +1466,8 @@ app.post(
         try {
 
             const {
-                reference,
-                expectedAmount
+                reference
             } = req.body;
-
-
-            const secretKey =
-                getPaystackSecretKey();
-
-
-            if(!secretKey){
-
-                return res.status(500).json({
-
-                    success: false,
-
-                    message:
-                        "Paystack secret key is not configured."
-
-                });
-
-            }
 
 
             if(!reference){
@@ -666,65 +1484,64 @@ app.post(
             }
 
 
-            const response =
-                await fetch(
-                    "https://api.paystack.co/transaction/verify/" +
-                    encodeURIComponent(
-                        reference
-                    ),
-                    {
+            if(!db){
 
-                        method:
-                            "GET",
-
-                        headers: {
-
-                            "Authorization":
-                                `Bearer ${secretKey}`,
-
-                            "Content-Type":
-                                "application/json"
-
-                        }
-
-                    }
-                );
-
-
-            const result =
-                await response.json();
-
-
-            if(!response.ok){
-
-                console.error(
-                    "Paystack verify error:",
-                    result
-                );
-
-
-                return res.status(
-                    response.status
-                ).json({
+                return res.status(500).json({
 
                     success: false,
 
                     message:
-                        result.message ||
-                        "Unable to verify payment."
+                        "Firestore is unavailable."
 
                 });
 
             }
 
 
+            const orderDoc =
+                await findOrderByPaymentReference(
+                    reference
+                );
+
+
+            if(!orderDoc){
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    paid: false,
+
+                    message:
+                        "No Numora order was found for this payment reference."
+
+                });
+
+            }
+
+
+            const order =
+                orderDoc.data();
+
+
+            /*
+            -------------------------------------------------
+            VERIFY TRANSACTION DIRECTLY WITH PAYSTACK
+            -------------------------------------------------
+            */
+
             const transaction =
-                result.data || {};
+                await verifyPaystackTransaction(
+                    reference
+                );
 
 
-            const status =
-                transaction.status ||
-                "unknown";
+            const expectedAmount =
+                Math.round(
+                    Number(
+                        order.price || 0
+                    ) * 100
+                );
 
 
             const paidAmount =
@@ -733,64 +1550,14 @@ app.post(
                 );
 
 
-            let amountMatches = true;
+            const amountMatches =
+                paidAmount ===
+                expectedAmount;
 
 
             if(
-                expectedAmount !== undefined &&
-                expectedAmount !== null
-            ){
-
-                const expectedKobo =
-                    Math.round(
-                        Number(
-                            expectedAmount
-                        ) * 100
-                    );
-
-
-                amountMatches =
-                    paidAmount ===
-                    expectedKobo;
-
-            }
-
-
-            if(
-                status === "success" &&
-                amountMatches
-            ){
-
-                return res.status(200).json({
-
-                    success: true,
-
-                    paid: true,
-
-                    status:
-                        status,
-
-                    reference:
-                        transaction.reference,
-
-                    amount:
-                        paidAmount,
-
-                    currency:
-                        transaction.currency,
-
-                    paidAt:
-                        transaction.paid_at ||
-                        null
-
-                });
-
-            }
-
-
-            if(
-                status === "success" &&
-                !amountMatches
+                transaction.status !==
+                "success"
             ){
 
                 return res.status(200).json({
@@ -800,10 +1567,40 @@ app.post(
                     paid: false,
 
                     status:
-                        status,
+                        transaction.status ||
+                        "unknown",
+
+                    reference:
+                        transaction.reference ||
+                        reference,
+
+                    message:
+                        "Payment has not been confirmed yet."
+
+                });
+
+            }
+
+
+            if(!amountMatches){
+
+                return res.status(200).json({
+
+                    success: true,
+
+                    paid: false,
 
                     amountMismatch:
                         true,
+
+                    status:
+                        transaction.status,
+
+                    amount:
+                        paidAmount,
+
+                    expectedAmount:
+                        expectedAmount,
 
                     message:
                         "Payment was received, but the amount does not match the order."
@@ -813,21 +1610,46 @@ app.post(
             }
 
 
+            /*
+            -------------------------------------------------
+            PAYMENT IS VERIFIED
+
+            The backend now also activates the number.
+            -------------------------------------------------
+            */
+
+            const provisioningResult =
+                await processVerifiedPayment(
+                    orderDoc,
+                    transaction
+                );
+
+
             return res.status(200).json({
 
                 success: true,
 
-                paid: false,
+                paid: true,
 
                 status:
-                    status,
+                    transaction.status,
 
                 reference:
                     transaction.reference ||
                     reference,
 
-                message:
-                    "Payment has not been confirmed yet."
+                amount:
+                    paidAmount,
+
+                currency:
+                    transaction.currency,
+
+                paidAt:
+                    transaction.paid_at ||
+                    null,
+
+                activation:
+                    provisioningResult
 
             });
 
@@ -847,6 +1669,7 @@ app.post(
                 success: false,
 
                 message:
+                    error.message ||
                     "Unable to verify payment."
 
             });
@@ -1028,21 +1851,13 @@ app.post(
             }
 
 
-            const ordersSnapshot =
-                await db
-                    .collection("orders")
-                    .where(
-                        "paymentReference",
-                        "==",
-                        reference
-                    )
-                    .limit(1)
-                    .get();
+            const orderDoc =
+                await findOrderByPaymentReference(
+                    reference
+                );
 
 
-            if(
-                ordersSnapshot.empty
-            ){
+            if(!orderDoc){
 
                 console.warn(
                     "Webhook: no order found for reference:",
@@ -1052,10 +1867,6 @@ app.post(
                 return res.sendStatus(200);
 
             }
-
-
-            const orderDoc =
-                ordersSnapshot.docs[0];
 
 
             const order =
@@ -1085,18 +1896,47 @@ app.post(
                     }
                 );
 
+                await orderDoc.ref.update({
+
+                    paymentStatus:
+                        "Amount mismatch",
+
+                    status:
+                        "Payment amount mismatch",
+
+                    paymentError:
+                        "Paystack amount does not match the Numora order.",
+
+                    paymentUpdatedAt:
+                        serverTimestamp()
+
+                });
+
+
                 return res.sendStatus(200);
 
             }
 
 
+            /*
+            -------------------------------------------------
+            IDEMPOTENCY
+
+            Even if Paystack sends the webhook multiple times,
+            provisioning is protected.
+            -------------------------------------------------
+            */
+
             if(
-                order.paymentStatus ===
-                "Paid"
+                order.provisioningStatus ===
+                "Active"
+                ||
+                order.status ===
+                "Active"
             ){
 
                 console.log(
-                    "Order already marked Paid:",
+                    "Order already active:",
                     orderDoc.id
                 );
 
@@ -1105,56 +1945,29 @@ app.post(
             }
 
 
-            await orderDoc.ref.update({
-
-                paymentStatus:
-                    "Paid",
-
-                paymentProvider:
-                    "Paystack",
-
-                paymentChannel:
-                    payment.channel ||
-                    "bank_transfer",
-
-                paymentConfirmedAt:
-                    admin.firestore.FieldValue.serverTimestamp(),
-
-                paymentTransactionId:
-                    payment.id ||
-                    null,
-
-                status:
-                    "Activating"
-
-            });
-
-
-            console.log(
-                "ORDER MARKED PAID:",
-                orderDoc.id
-            );
-
-
             /*
             -------------------------------------------------
-            TWILIO ACTIVATION WILL BE CONNECTED HERE
-            -------------------------------------------------
-
-            Future flow:
-
-            Paid
-              ↓
-            Activating
-              ↓
-            Purchase Twilio number
-              ↓
-            Save Twilio SID
-              ↓
-            Active
-
+            PROCESS PAYMENT + PROVISION NUMBER
             -------------------------------------------------
             */
+
+            try {
+
+                await processVerifiedPayment(
+                    orderDoc,
+                    payment
+                );
+
+            }
+
+            catch(error){
+
+                console.error(
+                    "Webhook provisioning error:",
+                    error
+                );
+
+            }
 
 
             return res.sendStatus(200);
@@ -1169,7 +1982,335 @@ app.post(
                 error
             );
 
+            /*
+            Always acknowledge Paystack so it does not
+            repeatedly hammer the endpoint.
+            */
+
             return res.sendStatus(200);
+
+        }
+
+    }
+);
+
+
+/*
+=========================================================
+TWILIO INCOMING SMS WEBHOOK
+=========================================================
+
+Twilio sends incoming SMS messages here.
+
+The webhook finds the active Numora order that owns
+the receiving Twilio number and stores the message
+inside:
+
+orders/{orderId}/messages/{messageId}
+
+=========================================================
+*/
+
+app.post(
+    "/api/twilio/incoming-sms",
+    async (req, res) => {
+
+        try {
+
+            const {
+
+                MessageSid,
+                SmsSid,
+                AccountSid,
+                From,
+                To,
+                Body,
+                NumMedia
+
+            } = req.body;
+
+
+            console.log(
+                "Incoming Twilio SMS:",
+                {
+                    MessageSid,
+                    SmsSid,
+                    AccountSid,
+                    From,
+                    To
+                }
+            );
+
+
+            if(!db){
+
+                console.error(
+                    "Incoming SMS: Firestore unavailable."
+                );
+
+                return res
+                    .type("text/xml")
+                    .send(
+                        "<Response></Response>"
+                    );
+
+            }
+
+
+            const receivingNumber =
+                normalizePhoneNumber(
+                    To
+                );
+
+
+            if(!receivingNumber){
+
+                console.warn(
+                    "Incoming SMS: missing To number."
+                );
+
+                return res
+                    .type("text/xml")
+                    .send(
+                        "<Response></Response>"
+                    );
+
+            }
+
+
+            /*
+            -------------------------------------------------
+            FIND ORDER BY PURCHASED NUMBER
+            -------------------------------------------------
+            */
+
+            const orderSnapshot =
+                await db
+                    .collection("orders")
+                    .where(
+                        "phoneNumber",
+                        "==",
+                        receivingNumber
+                    )
+                    .where(
+                        "provisioningStatus",
+                        "==",
+                        "Active"
+                    )
+                    .limit(1)
+                    .get();
+
+
+            let orderDoc =
+                orderSnapshot.empty
+                    ? null
+                    : orderSnapshot.docs[0];
+
+
+            /*
+            -------------------------------------------------
+            FALLBACK TO TWILIO PHONE NUMBER FIELD
+            -------------------------------------------------
+            */
+
+            if(!orderDoc){
+
+                const fallbackSnapshot =
+                    await db
+                        .collection("orders")
+                        .where(
+                            "twilioPhoneNumber",
+                            "==",
+                            receivingNumber
+                        )
+                        .where(
+                            "provisioningStatus",
+                            "==",
+                            "Active"
+                        )
+                        .limit(1)
+                        .get();
+
+
+                if(
+                    !fallbackSnapshot.empty
+                ){
+
+                    orderDoc =
+                        fallbackSnapshot.docs[0];
+
+                }
+
+            }
+
+
+            if(!orderDoc){
+
+                console.warn(
+                    "Incoming SMS: no active Numora order found for:",
+                    receivingNumber
+                );
+
+                return res
+                    .type("text/xml")
+                    .send(
+                        "<Response></Response>"
+                    );
+
+            }
+
+
+            const orderId =
+                orderDoc.id;
+
+
+            /*
+            -------------------------------------------------
+            SAVE MESSAGE
+            -------------------------------------------------
+            */
+
+            const messageId =
+                MessageSid ||
+                SmsSid ||
+                crypto.randomUUID();
+
+
+            const messageRef =
+                orderDoc.ref
+                    .collection("messages")
+                    .doc(
+                        messageId
+                    );
+
+
+            const messageData = {
+
+                messageSid:
+                    MessageSid ||
+                    SmsSid ||
+                    null,
+
+                smsSid:
+                    SmsSid ||
+                    MessageSid ||
+                    null,
+
+                accountSid:
+                    AccountSid ||
+                    null,
+
+                from:
+                    From ||
+                    null,
+
+                to:
+                    To ||
+                    null,
+
+                body:
+                    Body ||
+                    "",
+
+                numMedia:
+                    Number(
+                        NumMedia || 0
+                    ),
+
+                receivedAt:
+                    serverTimestamp(),
+
+                type:
+                    "SMS"
+
+            };
+
+
+            await messageRef.set(
+                messageData,
+                {
+                    merge: true
+                }
+            );
+
+
+            /*
+            -------------------------------------------------
+            UPDATE ORDER WITH LATEST MESSAGE
+            -------------------------------------------------
+            */
+
+            await orderDoc.ref.update({
+
+                lastMessage:
+                    Body ||
+                    "",
+
+                lastMessageFrom:
+                    From ||
+                    null,
+
+                lastMessageTo:
+                    To ||
+                    null,
+
+                lastMessageSid:
+                    MessageSid ||
+                    SmsSid ||
+                    null,
+
+                lastMessageAt:
+                    serverTimestamp(),
+
+                lastMessageReceivedAt:
+                    serverTimestamp(),
+
+                messageCount:
+                    admin.firestore.FieldValue
+                        .increment(1)
+
+            });
+
+
+            console.log(
+                "Incoming SMS saved:",
+                {
+                    orderId,
+                    messageId
+                }
+            );
+
+
+            /*
+            -------------------------------------------------
+            TWILIO RESPONSE
+
+            No automatic reply is sent.
+            -------------------------------------------------
+            */
+
+            return res
+                .type("text/xml")
+                .send(
+                    "<Response></Response>"
+                );
+
+        }
+
+
+        catch(error){
+
+            console.error(
+                "Incoming SMS webhook error:",
+                error
+            );
+
+
+            return res
+                .type("text/xml")
+                .send(
+                    "<Response></Response>"
+                );
 
         }
 
@@ -1189,6 +2330,11 @@ app.listen(
 
         console.log(
             `Numora backend running on port ${PORT}`
+        );
+
+        console.log(
+            "Twilio incoming SMS URL:",
+            TWILIO_INCOMING_SMS_URL
         );
 
     }
