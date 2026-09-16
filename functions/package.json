@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "express": "^5.1.0",
-    "firebase-admin": "^13.5.0"
+    "firebase-admin": "^13.5.0",
+    "twilio": "^5.10.0"
   }
 }
