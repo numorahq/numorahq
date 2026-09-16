@@ -426,7 +426,6 @@ main{
 
 /* =========================================================
    BANK TRANSFER DETAILS
-   Added only for payment functionality.
 ========================================================= */
 
 .transfer-details{
@@ -550,6 +549,166 @@ main{
 .copy-button:active{
 
     transform:scale(.99);
+
+}
+
+
+/* =========================================================
+   I HAVE PAID BUTTON
+========================================================= */
+
+.paid-button{
+
+    margin-top:12px;
+
+    width:100%;
+
+    border:0;
+
+    background:#1677ff;
+
+    color:white;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    font-size:15px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 10px 25px rgba(22,119,255,.16);
+
+}
+
+.paid-button:hover{
+
+    background:#086bea;
+
+}
+
+.paid-button:disabled{
+
+    opacity:.55;
+
+    cursor:not-allowed;
+
+}
+
+
+/* =========================================================
+   PAYMENT CONFIRMED
+========================================================= */
+
+.payment-confirmed{
+
+    display:none;
+
+    margin-top:16px;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:#eefaf4;
+
+    border:1px solid #cfeedd;
+
+    text-align:center;
+
+}
+
+.payment-confirmed-icon{
+
+    width:52px;
+
+    height:52px;
+
+    margin:0 auto 12px;
+
+    border-radius:50%;
+
+    background:#ffffff;
+
+    color:#168653;
+
+    display:grid;
+
+    place-items:center;
+
+    font-size:25px;
+
+    font-weight:900;
+
+}
+
+.payment-confirmed h3{
+
+    color:#176c47;
+
+    font-size:18px;
+
+    margin-bottom:6px;
+
+}
+
+.payment-confirmed p{
+
+    color:#56806d;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    margin:0;
+
+}
+
+
+/* =========================================================
+   PAYMENT PENDING
+========================================================= */
+
+.payment-pending{
+
+    display:none;
+
+    margin-top:16px;
+
+    padding:16px;
+
+    border-radius:16px;
+
+    background:#fff8e9;
+
+    border:1px solid #f4e1b5;
+
+    text-align:center;
+
+}
+
+.payment-pending h3{
+
+    color:#87651b;
+
+    font-size:16px;
+
+    margin-bottom:6px;
+
+}
+
+.payment-pending p{
+
+    color:#806f4b;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    margin:0;
 
 }
 
@@ -1054,6 +1213,63 @@ main{
 
                 </button>
 
+
+                <!-- I HAVE PAID -->
+
+                <button
+                    class="paid-button"
+                    id="paidButton"
+                    onclick="verifyPayment()"
+                >
+
+                    I Have Paid
+
+                </button>
+
+
+                <!-- PAYMENT CONFIRMED -->
+
+                <div
+                    class="payment-confirmed"
+                    id="paymentConfirmed"
+                >
+
+                    <div class="payment-confirmed-icon">
+                        ✓
+                    </div>
+
+                    <h3>
+                        Payment Confirmed
+                    </h3>
+
+                    <p>
+                        Your payment has been received successfully.
+                        Your number is now being prepared.
+                    </p>
+
+                </div>
+
+
+                <!-- PAYMENT PENDING -->
+
+                <div
+                    class="payment-pending"
+                    id="paymentPending"
+                >
+
+                    <h3>
+                        Payment Not Confirmed Yet
+                    </h3>
+
+                    <p>
+                        We haven't received the transfer yet.
+                        If you have already paid, please wait a
+                        moment and try again.
+                    </p>
+
+                </div>
+
+
             </div>
 
 
@@ -1398,6 +1614,23 @@ async function loadOrder(){
             );
 
 
+        /*
+         * IF PAYMENT DETAILS ALREADY EXIST,
+         * RESTORE THEM WHEN PAGE IS REOPENED.
+         */
+
+        if(
+            order.transferAccountNumber &&
+            order.paymentReference
+        ){
+
+            displayExistingTransferDetails(
+                order
+            );
+
+        }
+
+
         document
             .getElementById("loading")
             .style.display =
@@ -1422,6 +1655,104 @@ async function loadOrder(){
         showError(
             "We couldn't load your order. Please try again."
         );
+
+    }
+
+}
+
+
+/* =========================================================
+   DISPLAY EXISTING TRANSFER DETAILS
+========================================================= */
+
+function displayExistingTransferDetails(
+    order
+){
+
+    document
+        .getElementById(
+            "transferBank"
+        )
+        .textContent =
+        order.transferBank ||
+        "Paystack Bank";
+
+
+    document
+        .getElementById(
+            "transferAccountName"
+        )
+        .textContent =
+        order.transferAccountName ||
+        "Numora";
+
+
+    document
+        .getElementById(
+            "transferAccountNumber"
+        )
+        .textContent =
+        order.transferAccountNumber;
+
+
+    document
+        .getElementById(
+            "transferAmount"
+        )
+        .textContent =
+        "₦" +
+        Number(
+            order.price || 0
+        ).toLocaleString(
+            "en-NG"
+        );
+
+
+    document
+        .getElementById(
+            "transferReference"
+        )
+        .textContent =
+        order.paymentReference;
+
+
+    document
+        .getElementById(
+            "transferExpiry"
+        )
+        .textContent =
+        formatTransferExpiry(
+            order.transferExpiresAt
+        );
+
+
+    document
+        .getElementById(
+            "transferDetails"
+        )
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById(
+            "payButton"
+        )
+        .style.display =
+        "none";
+
+
+    /*
+     * If the order has already been paid,
+     * show the appropriate state.
+     */
+
+    if(
+        order.paymentStatus ===
+        "Paid"
+    ){
+
+        showConfirmedState();
 
     }
 
@@ -1513,8 +1844,7 @@ window.startPayment = async function(){
     try{
 
         /*
-         * Generate a unique reference for this
-         * payment attempt.
+         * Generate a unique reference.
          */
 
         const reference =
@@ -1529,6 +1859,7 @@ window.startPayment = async function(){
                 BACKEND_URL +
                 "/api/paystack/bank-transfer",
                 {
+
                     method:"POST",
 
                     headers:{
@@ -1580,18 +1911,6 @@ window.startPayment = async function(){
             result.data;
 
 
-        /*
-         * Paystack's Pay with Transfer response
-         * contains these fields:
-         *
-         * reference
-         * status
-         * account_name
-         * account_number
-         * bank.name
-         * account_expires_at
-         */
-
         const accountNumber =
             transfer.account_number;
 
@@ -1626,8 +1945,7 @@ window.startPayment = async function(){
 
 
         /*
-         * Save the Paystack payment information
-         * to this customer's order.
+         * Save payment information to order.
          */
 
         try{
@@ -1671,6 +1989,41 @@ window.startPayment = async function(){
                 }
             );
 
+
+            /*
+             * Keep local order state updated.
+             */
+
+            currentOrder = {
+
+                ...currentOrder,
+
+                paymentStatus:
+                    "Awaiting bank transfer",
+
+                paymentReference:
+                    paymentReference,
+
+                paymentProvider:
+                    "Paystack",
+
+                paymentChannel:
+                    "bank_transfer",
+
+                transferAccountNumber:
+                    accountNumber,
+
+                transferAccountName:
+                    accountName || "",
+
+                transferBank:
+                    bankName,
+
+                transferExpiresAt:
+                    expiry || null
+
+            };
+
         }
 
         catch(updateError){
@@ -1687,74 +2040,13 @@ window.startPayment = async function(){
          * DISPLAY BANK DETAILS
          */
 
-        document
-            .getElementById(
-                "transferBank"
-            )
-            .textContent =
-            bankName;
-
-
-        document
-            .getElementById(
-                "transferAccountName"
-            )
-            .textContent =
-            accountName ||
-            "Numora";
-
-
-        document
-            .getElementById(
-                "transferAccountNumber"
-            )
-            .textContent =
-            accountNumber;
-
-
-        document
-            .getElementById(
-                "transferAmount"
-            )
-            .textContent =
-            "₦" +
-            amount.toLocaleString(
-                "en-NG"
-            );
-
-
-        document
-            .getElementById(
-                "transferReference"
-            )
-            .textContent =
-            paymentReference;
-
-
-        document
-            .getElementById(
-                "transferExpiry"
-            )
-            .textContent =
-            formatTransferExpiry(
-                expiry
-            );
-
-
-        document
-            .getElementById(
-                "transferDetails"
-            )
-            .style.display =
-            "block";
-
-
-        button.style.display =
-            "none";
+        displayExistingTransferDetails(
+            currentOrder
+        );
 
 
         showPaymentStatus(
-            "Your temporary bank transfer account is ready. Transfer the exact amount shown below."
+            "Your temporary bank transfer account is ready. Transfer the exact amount shown below, then tap “I Have Paid”."
         );
 
     }
@@ -1786,6 +2078,246 @@ window.startPayment = async function(){
 };
 
 
+/* =========================================================
+   VERIFY PAYMENT
+========================================================= */
+
+window.verifyPayment = async function(){
+
+    const button =
+        document.getElementById(
+            "paidButton"
+        );
+
+
+    if(!currentUser){
+
+        showPaymentStatus(
+            "Your session has expired. Please sign in again.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if(!currentOrder){
+
+        showPaymentStatus(
+            "Your order could not be loaded.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    const reference =
+        currentOrder.paymentReference;
+
+
+    if(!reference){
+
+        showPaymentStatus(
+            "No Paystack payment reference was found. Please generate your bank transfer details first.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Checking Payment...";
+
+
+    document
+        .getElementById(
+            "paymentPending"
+        )
+        .style.display =
+        "none";
+
+
+    showPaymentStatus(
+        "Checking Paystack for your payment..."
+    );
+
+
+    try{
+
+        const response =
+            await fetch(
+                BACKEND_URL +
+                "/api/paystack/verify",
+                {
+
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        reference:
+                            reference
+
+                    })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Payment verification:",
+            result
+        );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                result.message ||
+                "Payment verification failed."
+            );
+
+        }
+
+
+        /*
+         * PAYMENT CONFIRMED
+         */
+
+        if(
+            result.paid === true
+        ){
+
+            showConfirmedState();
+
+            return;
+
+        }
+
+
+        /*
+         * PAYMENT NOT CONFIRMED
+         */
+
+        document
+            .getElementById(
+                "paymentPending"
+            )
+            .style.display =
+            "block";
+
+
+        showPaymentStatus(
+            "Paystack has not confirmed the transfer yet."
+        );
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "I Have Paid";
+
+    }
+
+    catch(error){
+
+        console.error(
+            "VERIFY PAYMENT ERROR:",
+            error
+        );
+
+
+        showPaymentStatus(
+            error.message ||
+            "Unable to check your payment. Please try again.",
+            true
+        );
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "I Have Paid";
+
+    }
+
+};
+
+
+/* =========================================================
+   SHOW CONFIRMED STATE
+========================================================= */
+
+function showConfirmedState(){
+
+    document
+        .getElementById(
+            "paymentPending"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "paymentConfirmed"
+        )
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById(
+            "paidButton"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "orderStatus"
+        )
+        .textContent =
+        "Payment confirmed";
+
+
+    showPaymentStatus(
+        "Payment confirmed successfully."
+    );
+
+
+    /*
+     * IMPORTANT:
+     *
+     * Number activation will be connected
+     * to the secure backend/webhook next.
+     */
+
+}
+
+
 /* COPY ACCOUNT NUMBER */
 
 window.copyAccountNumber =
@@ -1809,46 +2341,53 @@ function(){
     }
 
 
-    navigator
-        .clipboard
-        .writeText(
-            accountNumber
-        )
-        .then(() => {
+    if(
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ){
 
-            const button =
-                document.getElementById(
-                    "copyAccountButton"
+        navigator
+            .clipboard
+            .writeText(
+                accountNumber
+            )
+            .then(() => {
+
+                const button =
+                    document.getElementById(
+                        "copyAccountButton"
+                    );
+
+
+                const originalText =
+                    button.textContent;
+
+
+                button.textContent =
+                    "Account Number Copied";
+
+
+                setTimeout(
+                    () => {
+
+                        button.textContent =
+                            originalText;
+
+                    },
+                    1800
                 );
 
+            })
+            .catch(error => {
 
-            const originalText =
-                button.textContent;
+                console.error(
+                    "COPY ERROR:",
+                    error
+                );
 
+            });
 
-            button.textContent =
-                "Account Number Copied";
-
-
-            setTimeout(
-                () => {
-
-                    button.textContent =
-                        originalText;
-
-                },
-                1800
-            );
-
-        })
-        .catch(error => {
-
-            console.error(
-                "COPY ERROR:",
-                error
-            );
-
-        });
+    }
 
 };
 
