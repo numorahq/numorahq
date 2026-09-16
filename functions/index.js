@@ -1,6 +1,7 @@
 const express = require("express");
 const crypto = require("crypto");
 const admin = require("firebase-admin");
+const twilio = require("twilio");
 
 const app = express();
 
@@ -97,11 +98,6 @@ app.use((req, res, next) => {
 /*
 =========================================================
 RAW BODY + JSON
-
-Paystack webhook signatures are calculated from
-the original request body.
-
-We keep the raw body available as req.rawBody.
 =========================================================
 */
 
@@ -136,6 +132,39 @@ function getPaystackSecretKey(){
 
 /*
 =========================================================
+TWILIO CLIENT
+=========================================================
+*/
+
+function getTwilioClient(){
+
+    const accountSid =
+        process.env.TWILIO_ACCOUNT_SID;
+
+    const authToken =
+        process.env.TWILIO_AUTH_TOKEN;
+
+
+    if(
+        !accountSid ||
+        !authToken
+    ){
+
+        return null;
+
+    }
+
+
+    return twilio(
+        accountSid,
+        authToken
+    );
+
+}
+
+
+/*
+=========================================================
 HEALTH CHECK
 =========================================================
 */
@@ -157,9 +186,229 @@ app.get(
             firebase:
                 firebaseInitialized
                     ? "connected"
-                    : "not connected"
+                    : "not connected",
+
+            twilio:
+                process.env.TWILIO_ACCOUNT_SID &&
+                process.env.TWILIO_AUTH_TOKEN
+                    ? "configured"
+                    : "not configured"
 
         });
+
+    }
+);
+
+
+/*
+=========================================================
+TWILIO TEST
+=========================================================
+
+IMPORTANT:
+
+This endpoint ONLY tests the Twilio connection and
+searches available numbers.
+
+It does NOT purchase a number.
+It does NOT charge anything.
+It does NOT activate anything.
+
+=========================================================
+*/
+
+app.get(
+    "/api/twilio/test",
+    async (req, res) => {
+
+        try {
+
+            const accountSid =
+                process.env.TWILIO_ACCOUNT_SID;
+
+            const authToken =
+                process.env.TWILIO_AUTH_TOKEN;
+
+
+            /*
+            -------------------------------------------------
+            CHECK ENVIRONMENT VARIABLES
+            -------------------------------------------------
+            */
+
+            if(
+                !accountSid ||
+                !authToken
+            ){
+
+                return res.status(500).json({
+
+                    success: false,
+
+                    twilio:
+                        "not configured",
+
+                    message:
+                        "Twilio Account SID or Auth Token is missing from Render environment variables."
+
+                });
+
+            }
+
+
+            /*
+            -------------------------------------------------
+            CREATE TWILIO CLIENT
+            -------------------------------------------------
+            */
+
+            const client =
+                getTwilioClient();
+
+
+            if(!client){
+
+                return res.status(500).json({
+
+                    success: false,
+
+                    twilio:
+                        "not connected",
+
+                    message:
+                        "Unable to create Twilio client."
+
+                });
+
+            }
+
+
+            /*
+            -------------------------------------------------
+            VERIFY TWILIO ACCOUNT
+            -------------------------------------------------
+            */
+
+            const account =
+                await client
+                    .api
+                    .accounts(accountSid)
+                    .fetch();
+
+
+            /*
+            -------------------------------------------------
+            SEARCH AVAILABLE US NUMBERS
+            -------------------------------------------------
+
+            We only search.
+
+            Nothing is purchased here.
+            -------------------------------------------------
+            */
+
+            const availableNumbers =
+                await client
+                    .availablePhoneNumbers("US")
+                    .local
+                    .list({
+
+                        smsEnabled:
+                            true,
+
+                        voiceEnabled:
+                            true,
+
+                        limit:
+                            5
+
+                    });
+
+
+            /*
+            -------------------------------------------------
+            RETURN SAFE TEST RESULT
+            -------------------------------------------------
+
+            NEVER return the Auth Token.
+            -------------------------------------------------
+            */
+
+            return res.status(200).json({
+
+                success: true,
+
+                twilio:
+                    "connected",
+
+                account: {
+
+                    sid:
+                        account.sid,
+
+                    status:
+                        account.status,
+
+                    type:
+                        account.type
+
+                },
+
+                availableNumbers:
+                    availableNumbers.map(
+                        number => ({
+
+                            phoneNumber:
+                                number.phoneNumber,
+
+                            friendlyName:
+                                number.friendlyName,
+
+                            locality:
+                                number.locality,
+
+                            region:
+                                number.region,
+
+                            isoCountry:
+                                number.isoCountry,
+
+                            capabilities:
+                                number.capabilities
+
+                        })
+                    ),
+
+                message:
+                    "Twilio connection is working. Available numbers were searched successfully. No number was purchased."
+
+            });
+
+        }
+
+
+        catch(error){
+
+            console.error(
+                "Twilio test error:",
+                error
+            );
+
+
+            return res.status(500).json({
+
+                success: false,
+
+                twilio:
+                    "connection failed",
+
+                message:
+                    error.message ||
+                    "Unable to connect to Twilio."
+
+            });
+
+        }
 
     }
 );
@@ -371,17 +620,6 @@ app.post(
 =========================================================
 VERIFY PAYMENT
 =========================================================
-
-Used by:
-
-"I Have Paid"
-
-We verify directly with Paystack.
-
-IMPORTANT:
-The frontend does NOT decide whether payment succeeded.
-Paystack decides.
-=========================================================
 */
 
 app.post(
@@ -495,15 +733,6 @@ app.post(
                 );
 
 
-            /*
-            -------------------------------------------------
-            EXPECTED AMOUNT
-
-            Firestore stores price in Naira.
-            Paystack returns amount in kobo.
-            -------------------------------------------------
-            */
-
             let amountMatches = true;
 
 
@@ -526,12 +755,6 @@ app.post(
 
             }
 
-
-            /*
-            -------------------------------------------------
-            PAYMENT SUCCESS
-            -------------------------------------------------
-            */
 
             if(
                 status === "success" &&
@@ -565,12 +788,6 @@ app.post(
             }
 
 
-            /*
-            -------------------------------------------------
-            WRONG AMOUNT
-            -------------------------------------------------
-            */
-
             if(
                 status === "success" &&
                 !amountMatches
@@ -595,12 +812,6 @@ app.post(
 
             }
 
-
-            /*
-            -------------------------------------------------
-            PAYMENT STILL PENDING
-            -------------------------------------------------
-            */
 
             return res.status(200).json({
 
@@ -650,16 +861,6 @@ app.post(
 =========================================================
 PAYSTACK WEBHOOK
 =========================================================
-
-Paystack sends:
-
-charge.success
-
-when a payment succeeds.
-
-This is what will eventually activate the customer's
-number automatically.
-=========================================================
 */
 
 app.post(
@@ -700,12 +901,6 @@ app.post(
             }
 
 
-            /*
-            -------------------------------------------------
-            VERIFY RAW PAYSTACK SIGNATURE
-            -------------------------------------------------
-            */
-
             const expectedSignature =
                 crypto
                     .createHmac(
@@ -718,14 +913,37 @@ app.post(
                     .digest("hex");
 
 
+            const receivedBuffer =
+                Buffer.from(
+                    signature,
+                    "utf8"
+                );
+
+            const expectedBuffer =
+                Buffer.from(
+                    expectedSignature,
+                    "utf8"
+                );
+
+
+            if(
+                receivedBuffer.length !==
+                expectedBuffer.length
+            ){
+
+                console.warn(
+                    "Webhook: invalid signature length."
+                );
+
+                return res.sendStatus(200);
+
+            }
+
+
             const signaturesMatch =
                 crypto.timingSafeEqual(
-                    Buffer.from(
-                        signature
-                    ),
-                    Buffer.from(
-                        expectedSignature
-                    )
+                    receivedBuffer,
+                    expectedBuffer
                 );
 
 
@@ -749,12 +967,6 @@ app.post(
                 event.event
             );
 
-
-            /*
-            -------------------------------------------------
-            ONLY PROCESS SUCCESSFUL CHARGES
-            -------------------------------------------------
-            */
 
             if(
                 event.event !==
@@ -794,12 +1006,6 @@ app.post(
             );
 
 
-            /*
-            -------------------------------------------------
-            FIRESTORE REQUIRED
-            -------------------------------------------------
-            */
-
             if(!db){
 
                 console.error(
@@ -821,12 +1027,6 @@ app.post(
 
             }
 
-
-            /*
-            -------------------------------------------------
-            FIND ORDER BY PAYMENT REFERENCE
-            -------------------------------------------------
-            */
 
             const ordersSnapshot =
                 await db
@@ -862,12 +1062,6 @@ app.post(
                 orderDoc.data();
 
 
-            /*
-            -------------------------------------------------
-            VERIFY ORDER AMOUNT
-            -------------------------------------------------
-            */
-
             const expectedAmount =
                 Math.round(
                     Number(
@@ -896,12 +1090,6 @@ app.post(
             }
 
 
-            /*
-            -------------------------------------------------
-            PREVENT DUPLICATE PROCESSING
-            -------------------------------------------------
-            */
-
             if(
                 order.paymentStatus ===
                 "Paid"
@@ -916,12 +1104,6 @@ app.post(
 
             }
 
-
-            /*
-            -------------------------------------------------
-            MARK ORDER AS PAID
-            -------------------------------------------------
-            */
 
             await orderDoc.ref.update({
 
@@ -956,20 +1138,20 @@ app.post(
 
             /*
             -------------------------------------------------
-            NUMBER ACTIVATION
+            TWILIO ACTIVATION WILL BE CONNECTED HERE
             -------------------------------------------------
 
-            TWILIO ACTIVATION WILL BE CONNECTED HERE.
+            Future flow:
 
-            Current lifecycle:
-
-            Awaiting payment
-                    ↓
-                  Paid
-                    ↓
-                Activating
-                    ↓
-                  Active
+            Paid
+              ↓
+            Activating
+              ↓
+            Purchase Twilio number
+              ↓
+            Save Twilio SID
+              ↓
+            Active
 
             -------------------------------------------------
             */
