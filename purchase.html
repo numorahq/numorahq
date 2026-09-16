@@ -55,6 +55,7 @@ body {
 .header {
     width: 100%;
     padding: 18px 24px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -80,6 +81,7 @@ body {
 .logo {
     width: 40px;
     height: 40px;
+
     border-radius: 13px;
 
     background:
@@ -915,6 +917,32 @@ body {
     line-height: 1.6;
 }
 
+.loading-numbers {
+    text-align: center;
+
+    padding: 30px 10px;
+
+    color: #71849b;
+
+    font-size: 13px;
+}
+
+.number-spinner {
+    width: 25px;
+    height: 25px;
+
+    margin: 0 auto 12px;
+
+    border-radius: 50%;
+
+    border: 3px solid #dcecff;
+
+    border-top-color: #247ff0;
+
+    animation:
+        spin 0.8s linear infinite;
+}
+
 /* =========================================================
    AUTH LOADING
 ========================================================= */
@@ -1109,7 +1137,7 @@ body {
 
         <p>
             Choose your country, select what you need the
-            number for, then choose an eligible number.
+            number for, then choose an available number.
         </p>
 
     </div>
@@ -1153,7 +1181,7 @@ body {
                 >
 
                     <option value="US">
-                        🇺🇸 United States
+                        United States
                     </option>
 
                 </select>
@@ -1318,8 +1346,8 @@ body {
                         </div>
 
                         <div class="card-description">
-                            Only numbers compatible with your
-                            selected product will be shown.
+                            Numbers are loaded directly from
+                            Numora's live provider inventory.
                         </div>
 
                     </div>
@@ -1353,7 +1381,7 @@ body {
                                 class="number-picker-subtitle"
                                 id="numberPickerSubtitle"
                             >
-                                Your eligible numbers will appear here.
+                                Available numbers will appear here.
                             </div>
 
                         </div>
@@ -1392,7 +1420,7 @@ body {
                 >
 
                     <div class="compatibility-title">
-                        ✓ WhatsApp compatibility status
+                        ✓ Provider capability
                     </div>
 
                     <div
@@ -1401,7 +1429,7 @@ body {
                     ></div>
 
                     <div class="compatibility-warning">
-                        Compatibility testing does not guarantee
+                        Provider capabilities do not guarantee
                         that WhatsApp or Meta will accept registration
                         or verification.
                     </div>
@@ -1571,8 +1599,8 @@ body {
 
 
                 <div class="secure-note">
-                    Your order will be created first.
-                    Payment is handled on the next step.
+                    Your number is not purchased until
+                    your payment has been verified.
                 </div>
 
             </div>
@@ -1616,7 +1644,7 @@ body {
             class="modal-subtitle"
             id="modalSubtitle"
         >
-            Available numbers for your selected product.
+            Available numbers will be loaded from Numora.
         </div>
 
 
@@ -1625,9 +1653,9 @@ body {
             id="modalWarning"
             style="display:none;"
         >
-            Numbers shown as WhatsApp compatible are marked
-            as compatible in Numora's current inventory.
-            This does not guarantee approval by WhatsApp or Meta.
+            These numbers are returned from the provider's
+            current inventory. Selecting a number does not
+            purchase it or reserve it.
         </div>
 
 
@@ -1694,6 +1722,24 @@ const firebaseConfig = {
         "G-6ELM21FDPH"
 
 };
+
+
+/* =========================================================
+   NUMORA BACKEND
+========================================================= */
+
+const BACKEND_URL =
+    "https://numora-backend-cle6.onrender.com";
+
+
+/*
+ * This endpoint only searches the provider inventory.
+ *
+ * IMPORTANT:
+ * It does NOT purchase a number.
+ */
+const AVAILABLE_NUMBERS_ENDPOINT =
+    `${BACKEND_URL}/api/twilio/test`;
 
 
 /* =========================================================
@@ -1805,6 +1851,8 @@ let selectedNumber = null;
 
 let authFinished = false;
 
+let availableNumbers = [];
+
 
 /* =========================================================
    PRODUCTS
@@ -1858,60 +1906,8 @@ const PRODUCTS = {
 
 
 /* =========================================================
-   DEMO NUMBERS
-========================================================= */
-
-const DEMO_NUMBERS = [
-
-    {
-        id: "demo-ny",
-        number: "+1 (212) 555-0148",
-        area: "New York",
-        smsCapable: true,
-        whatsappCompatible: true,
-        demo: true
-    },
-
-    {
-        id: "demo-miami",
-        number: "+1 (305) 555-0182",
-        area: "Miami",
-        smsCapable: true,
-        whatsappCompatible: false,
-        demo: true
-    },
-
-    {
-        id: "demo-sf",
-        number: "+1 (415) 555-0136",
-        area: "San Francisco",
-        smsCapable: true,
-        whatsappCompatible: true,
-        demo: true
-    },
-
-    {
-        id: "demo-la",
-        number: "+1 (213) 555-0174",
-        area: "Los Angeles",
-        smsCapable: true,
-        whatsappCompatible: false,
-        demo: true
-    }
-
-];
-
-
-/* =========================================================
    AUTHENTICATION
 ========================================================= */
-
-/*
-   We do NOT immediately redirect while Firebase is
-   determining the existing Google session.
-
-   Firebase gets the existing browser session first.
-*/
 
 async function initializeAuthentication() {
 
@@ -1971,12 +1967,6 @@ async function initializeAuthentication() {
 
             }
 
-
-            /*
-             * No user exists.
-             * Send them to the actual Numora homepage,
-             * NOT the dashboard.
-             */
 
             window.location.replace(
                 "/numorahq/"
@@ -2064,15 +2054,15 @@ function selectUsage(productName) {
 
 
     numberPickerTitle.textContent =
-        "Choose an eligible number";
+        "Choose an available number";
 
 
     numberPickerSubtitle.textContent =
         product.requiresWhatsApp
 
-            ? "WhatsApp-compatible numbers only"
+            ? "Numbers with SMS + voice capability"
 
-            : "SMS-capable numbers only";
+            : "Numbers with SMS capability";
 
 
     selectedNumberBox.classList.remove(
@@ -2106,6 +2096,225 @@ function selectUsage(productName) {
 
 
 /* =========================================================
+   LOAD REAL NUMBERS
+========================================================= */
+
+async function loadAvailableNumbers() {
+
+    numberList.innerHTML = `
+
+        <div class="loading-numbers">
+
+            <div class="number-spinner"></div>
+
+            Checking available numbers...
+
+        </div>
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                AVAILABLE_NUMBERS_ENDPOINT,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    },
+
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Provider inventory request failed (${response.status})`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        /*
+         * The current Numora test endpoint returns:
+         *
+         * {
+         *   success: true,
+         *   numbers: [...]
+         * }
+         *
+         * We deliberately accept only the numbers array.
+         */
+
+        if (
+            !data ||
+            !Array.isArray(data.numbers)
+        ) {
+
+            throw new Error(
+                "Invalid number inventory response."
+            );
+
+        }
+
+
+        availableNumbers =
+            data.numbers
+                .map(normalizeProviderNumber)
+                .filter(Boolean);
+
+
+        renderEligibleNumbers();
+
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load real numbers:",
+            error
+        );
+
+
+        availableNumbers =
+            [];
+
+
+        numberList.innerHTML = `
+
+            <div class="no-results">
+
+                We couldn't load available numbers
+                right now.
+
+                <br><br>
+
+                Please close this window and try again.
+
+                <br><br>
+
+                <small>
+                    ${escapeHTML(
+                        error.message ||
+                        "Provider inventory unavailable."
+                    )}
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   NORMALIZE PROVIDER NUMBER
+========================================================= */
+
+function normalizeProviderNumber(number) {
+
+    if (
+        !number ||
+        typeof number !== "object"
+    ) {
+
+        return null;
+
+    }
+
+
+    const phoneNumber =
+        number.phoneNumber ||
+        number.phone_number ||
+        number.number ||
+        "";
+
+
+    if (!phoneNumber) {
+        return null;
+    }
+
+
+    const capabilities =
+        number.capabilities || {};
+
+
+    const smsCapable =
+        Boolean(
+            number.smsCapable ??
+            number.smsEnabled ??
+            capabilities.sms
+        );
+
+
+    const voiceCapable =
+        Boolean(
+            number.voiceCapable ??
+            number.voiceEnabled ??
+            capabilities.voice
+        );
+
+
+    return {
+
+        /*
+         * This is the real Twilio number.
+         */
+        number:
+            phoneNumber,
+
+        area:
+            number.locality ||
+            number.region ||
+            "United States",
+
+        region:
+            number.region ||
+            "",
+
+        locality:
+            number.locality ||
+            "",
+
+        isoCountry:
+            number.isoCountry ||
+            "US",
+
+        smsCapable:
+            smsCapable,
+
+        voiceCapable:
+            voiceCapable,
+
+        /*
+         * No fake compatibility flag is created.
+         *
+         * WhatsApp eligibility is NOT claimed from a demo
+         * inventory. The actual product/backend workflow
+         * must determine whether the selected number can
+         * support the requested service.
+         */
+        whatsappCompatible:
+            false
+
+    };
+
+}
+
+
+/* =========================================================
    ELIGIBLE NUMBERS
 ========================================================= */
 
@@ -2120,12 +2329,12 @@ function getEligibleNumbers() {
         PRODUCTS[selectedUsage];
 
 
-    return DEMO_NUMBERS.filter(
+    return availableNumbers.filter(
         (number) => {
 
             if (
-                product.requiresWhatsApp &&
-                !number.whatsappCompatible
+                product.requiresSMS &&
+                !number.smsCapable
             ) {
 
                 return false;
@@ -2133,8 +2342,15 @@ function getEligibleNumbers() {
             }
 
 
+            /*
+             * Twilio local numbers returned by our current
+             * endpoint have SMS + voice capabilities.
+             *
+             * WhatsApp compatibility is not inferred here.
+             */
+
             if (
-                product.requiresSMS &&
+                product.requiresWhatsApp &&
                 !number.smsCapable
             ) {
 
@@ -2157,7 +2373,7 @@ function getEligibleNumbers() {
 
 numberPicker.addEventListener(
     "click",
-    () => {
+    async () => {
 
         if (
             numberPicker.disabled ||
@@ -2170,6 +2386,8 @@ numberPicker.addEventListener(
 
 
         openNumberModal();
+
+        await loadAvailableNumbers();
 
     }
 );
@@ -2185,18 +2403,46 @@ function openNumberModal() {
         PRODUCTS[selectedUsage];
 
 
-    const eligibleNumbers =
-        getEligibleNumbers();
-
-
     modalSubtitle.textContent =
-        `Available numbers for ${selectedUsage}.`;
+        `Available US numbers for ${selectedUsage}.`;
 
 
     modalWarning.style.display =
-        product.requiresWhatsApp
-            ? "block"
-            : "none";
+        "block";
+
+
+    numberList.innerHTML = `
+
+        <div class="loading-numbers">
+
+            <div class="number-spinner"></div>
+
+            Checking available numbers...
+
+        </div>
+
+    `;
+
+
+    numberModal.classList.add(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   RENDER ELIGIBLE NUMBERS
+========================================================= */
+
+function renderEligibleNumbers() {
+
+    const product =
+        PRODUCTS[selectedUsage];
+
+
+    const eligibleNumbers =
+        getEligibleNumbers();
 
 
     numberList.innerHTML =
@@ -2211,102 +2457,101 @@ function openNumberModal() {
 
             <div class="no-results">
 
-                No eligible numbers are currently
-                available for this product.
+                No available numbers currently match
+                this product.
 
                 <br><br>
 
-                Please try another product or
-                check again later.
+                Please try again later.
 
             </div>
 
         `;
 
-    } else {
-
-        eligibleNumbers.forEach(
-            (number) => {
-
-                const button =
-                    document.createElement(
-                        "button"
-                    );
-
-
-                button.type =
-                    "button";
-
-
-                button.className =
-                    "number-option";
-
-
-                const statusHTML =
-                    product.requiresWhatsApp
-
-                        ? `
-                            <span class="status-badge">
-                                ✓ Compatibility available
-                            </span>
-                          `
-
-                        : `
-                            <span class="status-badge sms">
-                                ✓ SMS capable
-                            </span>
-                          `;
-
-
-                button.innerHTML = `
-
-                    <div class="number-option-top">
-
-                        <div>
-
-                            <div class="number-option-number">
-                                ${number.number}
-                            </div>
-
-                            <div class="number-option-area">
-                                ${number.area}
-                            </div>
-
-                        </div>
-
-                        ${statusHTML}
-
-                    </div>
-
-                `;
-
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        selectNumber(
-                            number
-                        );
-
-                        closeNumberModal();
-
-                    }
-                );
-
-
-                numberList.appendChild(
-                    button
-                );
-
-            }
-        );
+        return;
 
     }
 
 
-    numberModal.classList.add(
-        "show"
+    eligibleNumbers.forEach(
+        (number) => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+
+            button.className =
+                "number-option";
+
+
+            const statusHTML =
+                product.requiresWhatsApp
+
+                    ? `
+                        <span class="status-badge">
+                            ✓ SMS capable
+                        </span>
+                      `
+
+                    : `
+                        <span class="status-badge sms">
+                            ✓ SMS capable
+                        </span>
+                      `;
+
+
+            button.innerHTML = `
+
+                <div class="number-option-top">
+
+                    <div>
+
+                        <div class="number-option-number">
+                            ${escapeHTML(number.number)}
+                        </div>
+
+                        <div class="number-option-area">
+                            ${escapeHTML(
+                                number.locality ||
+                                number.region ||
+                                "United States"
+                            )}
+                        </div>
+
+                    </div>
+
+                    ${statusHTML}
+
+                </div>
+
+            `;
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    selectNumber(
+                        number
+                    );
+
+                    closeNumberModal();
+
+                }
+            );
+
+
+            numberList.appendChild(
+                button
+            );
+
+        }
     );
 
 }
@@ -2362,7 +2607,9 @@ function selectNumber(number) {
 
 
     selectedArea.textContent =
-        number.area;
+        number.locality ||
+        number.region ||
+        "United States";
 
 
     selectedNumberBox.classList.add(
@@ -2384,12 +2631,7 @@ function selectNumber(number) {
 
 
         compatibilityText.textContent =
-
-            number.demo
-
-                ? "This demo number is marked as compatible in Numora's demo inventory. Production numbers will only be listed after the real provider compatibility workflow."
-
-                : "This number is currently marked as WhatsApp compatible in Numora's inventory. WhatsApp or Meta may still apply its own registration and verification rules.";
+            "This number has SMS capability from the provider. WhatsApp registration is subject to WhatsApp/Meta's own eligibility and verification rules.";
 
     } else {
 
@@ -2405,7 +2647,7 @@ function selectNumber(number) {
 
 
     numberPickerSubtitle.textContent =
-        `${number.area} • Eligible for ${selectedUsage}`;
+        `${number.locality || number.region || "United States"} • Available from provider`;
 
 
     updateSummary();
@@ -2438,7 +2680,7 @@ countrySelect.addEventListener(
         if (selectedUsage) {
 
             numberPickerTitle.textContent =
-                "Choose an eligible number";
+                "Choose an available number";
 
         }
 
@@ -2542,7 +2784,7 @@ function formatNaira(amount) {
 
 
 /* =========================================================
-   CREATE ORDER
+   CREATE PENDING ORDER
 ========================================================= */
 
 continueButton.addEventListener(
@@ -2594,6 +2836,18 @@ async function createOrder() {
 
     try {
 
+        /*
+         * IMPORTANT:
+         *
+         * This creates ONLY a pending Firestore order.
+         *
+         * It does NOT call Twilio.
+         * It does NOT purchase the number.
+         *
+         * Twilio provisioning happens later, after the
+         * backend receives and verifies successful payment.
+         */
+
         const orderData = {
 
             userId:
@@ -2611,8 +2865,26 @@ async function createOrder() {
             phoneNumber:
                 selectedNumber.number,
 
+            /*
+             * Keep the provider location information
+             * for the backend/order record.
+             */
+
             area:
-                selectedNumber.area,
+                selectedNumber.locality ||
+                selectedNumber.region ||
+                "United States",
+
+            locality:
+                selectedNumber.locality ||
+                "",
+
+            region:
+                selectedNumber.region ||
+                "",
+
+            provider:
+                "twilio",
 
             product:
                 selectedUsage,
@@ -2626,10 +2898,23 @@ async function createOrder() {
             currency:
                 "NGN",
 
-            whatsappCompatible:
+            /*
+             * This is informational only.
+             * It is NOT a WhatsApp approval guarantee.
+             */
+
+            smsCapable:
                 Boolean(
-                    selectedNumber.whatsappCompatible
+                    selectedNumber.smsCapable
                 ),
+
+            voiceCapable:
+                Boolean(
+                    selectedNumber.voiceCapable
+                ),
+
+            whatsappCompatible:
+                false,
 
             verificationWindowHours:
                 product.verificationHours,
@@ -2642,6 +2927,20 @@ async function createOrder() {
 
             paymentStatus:
                 "Unpaid",
+
+            provisioningStatus:
+                "Not started",
+
+            twilioPurchaseStatus:
+                "Not purchased",
+
+            /*
+             * No Twilio SID exists yet because the number
+             * has NOT been purchased.
+             */
+
+            twilioPhoneNumberSid:
+                null,
 
             createdAt:
                 serverTimestamp()
@@ -2659,36 +2958,80 @@ async function createOrder() {
             );
 
 
+        /*
+         * Go to the payment page.
+         *
+         * The payment page/webhook is responsible for
+         * payment verification.
+         *
+         * This page NEVER purchases the number.
+         */
+
         window.location.href =
             `/numorahq/payment.html?orderId=${encodeURIComponent(
                 orderRef.id
             )}`;
 
 
-   } catch (error) {
+    } catch (error) {
 
-    console.error(
-        "Order creation failed:",
-        error
-    );
-
-
-    alert(
-        "Order creation failed:\n\n" +
-        (error.code || "Unknown error") +
-        "\n\n" +
-        (error.message || "No additional information.")
-    );
+        console.error(
+            "Order creation failed:",
+            error
+        );
 
 
-    continueButton.disabled =
-        false;
+        alert(
+            "Order creation failed:\n\n" +
+            (error.code || "Unknown error") +
+            "\n\n" +
+            (error.message ||
+                "No additional information.")
+        );
 
 
-    continueButton.textContent =
-        "Continue to Payment";
+        continueButton.disabled =
+            false;
+
+
+        continueButton.textContent =
+            "Continue to Payment";
+
+    }
 
 }
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
 }
 
 
