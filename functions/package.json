@@ -1,20 +1,12 @@
 {
-  "name": "numora-functions",
-  "description": "Numora Paystack payment functions",
-  "scripts": {
-    "serve": "firebase emulators:start --only functions",
-    "shell": "firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
-  "engines": {
-    "node": "20"
-  },
+  "name": "numora-backend",
+  "version": "1.0.0",
+  "description": "Numora backend API",
   "main": "index.js",
-  "dependencies": {
-    "firebase-admin": "^13.0.0",
-    "firebase-functions": "^6.0.0"
+  "scripts": {
+    "start": "node index.js"
   },
-  "private": true
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }
