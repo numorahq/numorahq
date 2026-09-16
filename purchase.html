@@ -13,14 +13,14 @@
 
 <style>
 
-/* =========================================================
-   GLOBAL
-========================================================= */
-
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
+}
+
+body{
+
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -28,10 +28,6 @@
         "SF Pro Text",
         Arial,
         sans-serif;
-}
-
-body{
-    min-height:100vh;
 
     background:
         linear-gradient(
@@ -42,439 +38,479 @@ body{
         );
 
     color:#111827;
+    min-height:100vh;
 }
-
 
 /* =========================================================
    HEADER
 ========================================================= */
 
 header{
-    position:sticky;
-    top:0;
-    z-index:50;
 
-    width:100%;
+    height:70px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 22px;
 
     background:rgba(255,255,255,0.78);
 
     backdrop-filter:blur(20px);
     -webkit-backdrop-filter:blur(20px);
 
-    border-bottom:1px solid rgba(226,232,240,0.8);
-}
+    border-bottom:1px solid rgba(226,232,240,0.9);
 
-.header-inner{
-    max-width:1100px;
-    margin:auto;
-
-    min-height:72px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:0 20px;
+    position:sticky;
+    top:0;
+    z-index:100;
 }
 
 .brand{
+
     display:flex;
     align-items:center;
-    gap:11px;
+    gap:10px;
 
-    color:#111827;
-    text-decoration:none;
+    font-size:19px;
+    font-weight:700;
 }
 
-.brand-logo{
-    width:38px;
-    height:38px;
+.logo{
+
+    width:36px;
+    height:36px;
 
     border-radius:12px;
-
-    background:#111827;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
-    color:#fff;
+    color:white;
 
-    font-size:17px;
-    font-weight:800;
+    background:
+        linear-gradient(
+            145deg,
+            #111827,
+            #334155
+        );
 
     box-shadow:
-        0 7px 18px rgba(15,23,42,0.12);
+        0 5px 15px rgba(15,23,42,0.15);
 }
 
-.brand-name{
-    font-size:19px;
-    font-weight:800;
-    letter-spacing:-0.4px;
-}
-
-.back-btn{
-    text-decoration:none;
-
-    color:#111827;
-
-    font-size:14px;
-    font-weight:700;
-
-    padding:10px 15px;
+.dashboard-btn{
 
     border:1px solid #e2e8f0;
 
-    border-radius:12px;
-
     background:rgba(255,255,255,0.75);
 
-    transition:0.2s;
-}
+    color:#111827;
 
-.back-btn:active{
-    transform:scale(0.97);
-}
+    padding:10px 15px;
 
+    border-radius:12px;
+
+    font-size:14px;
+    font-weight:600;
+
+    cursor:pointer;
+}
 
 /* =========================================================
    MAIN
 ========================================================= */
 
 main{
-    max-width:900px;
+
+    width:100%;
+    max-width:1100px;
+
     margin:0 auto;
 
-    padding:34px 18px 60px;
+    padding:42px 20px 60px;
 }
 
-.page-title{
-    margin-bottom:24px;
+.hero{
+
+    margin-bottom:30px;
 }
 
-.page-title h1{
-    font-size:30px;
-    line-height:1.15;
+.hero h1{
 
-    letter-spacing:-0.9px;
+    font-size:32px;
+    letter-spacing:-0.8px;
 
-    font-weight:850;
+    margin-bottom:8px;
 }
 
-.page-title p{
-    margin-top:8px;
+.hero p{
 
     color:#64748b;
-
     font-size:15px;
-    line-height:1.55;
 }
 
-
 /* =========================================================
-   PRODUCT CARD
+   COUNTRY
 ========================================================= */
 
-.product-card{
+.section-title{
+
+    font-size:15px;
+    font-weight:700;
+
+    margin-bottom:10px;
+}
+
+.country-card{
+
     background:rgba(255,255,255,0.82);
 
-    border:1px solid rgba(226,232,240,0.9);
+    border:1px solid #e2e8f0;
 
-    border-radius:22px;
+    border-radius:18px;
+
+    padding:17px;
+
+    margin-bottom:28px;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,0.04);
+}
+
+.country-name{
+
+    font-weight:600;
+}
+
+.country-code{
+
+    color:#64748b;
+    font-size:14px;
+
+    margin-top:4px;
+}
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+.products{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:16px;
+}
+
+.product-card{
+
+    background:
+        rgba(255,255,255,0.82);
+
+    border:1px solid #e2e8f0;
+
+    border-radius:20px;
+
+    padding:21px;
+
+    cursor:pointer;
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,0.04);
+}
+
+.product-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 14px 35px rgba(15,23,42,0.08);
+}
+
+.product-card.selected{
+
+    border:2px solid #111827;
 
     padding:20px;
 
     box-shadow:
-        0 15px 40px rgba(15,23,42,0.055);
-
-    margin-bottom:18px;
-}
-
-.product-top{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-
-    gap:15px;
+        0 12px 35px rgba(15,23,42,0.09);
 }
 
 .product-name{
-    font-size:18px;
-    font-weight:800;
 
-    color:#111827;
+    font-size:17px;
+    font-weight:700;
+
+    margin-bottom:9px;
 }
 
 .product-description{
-    margin-top:5px;
 
     color:#64748b;
 
     font-size:13px;
-    line-height:1.45;
+
+    line-height:1.5;
+
+    min-height:40px;
 }
 
-.product-price{
-    white-space:nowrap;
+.price{
 
-    font-size:19px;
-    font-weight:850;
+    margin-top:18px;
 
-    color:#111827;
+    font-size:24px;
+    font-weight:800;
 }
 
-.product-meta{
-    display:flex;
-    flex-wrap:wrap;
+.price span{
 
-    gap:8px;
+    font-size:12px;
 
-    margin-top:15px;
+    color:#64748b;
+
+    font-weight:500;
 }
 
-.meta{
-    padding:7px 10px;
+.product-button{
+
+    width:100%;
+
+    margin-top:18px;
+
+    border:none;
+
+    border-radius:13px;
+
+    background:#111827;
+
+    color:white;
+
+    padding:13px;
+
+    font-size:14px;
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.product-button:disabled{
+
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+/* =========================================================
+   NUMBER AREA
+========================================================= */
+
+.number-section{
+
+    margin-top:35px;
+}
+
+.number-list{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:12px;
+}
+
+.number-card{
 
     background:#f8fafc;
 
     border:1px solid #e2e8f0;
 
-    border-radius:10px;
+    border-radius:16px;
 
-    font-size:12px;
+    padding:17px;
 
-    color:#64748b;
+    cursor:pointer;
+
+    transition:.18s ease;
 }
 
+.number-card:hover{
+
+    border-color:#94a3b8;
+}
+
+.number-card.selected{
+
+    border:2px solid #111827;
+
+    padding:16px;
+
+    background:white;
+}
+
+.number{
+
+    font-size:17px;
+    font-weight:700;
+
+    letter-spacing:.2px;
+}
+
+.location{
+
+    margin-top:6px;
+
+    color:#64748b;
+
+    font-size:13px;
+}
+
+.capabilities{
+
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+
+    margin-top:11px;
+}
+
+.capability{
+
+    padding:5px 8px;
+
+    border-radius:8px;
+
+    background:#e2e8f0;
+
+    color:#475569;
+
+    font-size:11px;
+    font-weight:600;
+}
 
 /* =========================================================
-   WHATSAPP WARNING
+   WHATSAPP NOTICE
 ========================================================= */
 
-.whatsapp-warning{
-    display:none;
+.whatsapp-notice{
 
     margin-top:16px;
 
-    padding:14px 15px;
+    padding:14px 16px;
+
+    border-radius:14px;
 
     background:#fffaf0;
 
     border:1px solid #f3dfb1;
 
-    border-radius:14px;
-
     color:#806b3b;
 
     font-size:13px;
 
-    line-height:1.55;
+    line-height:1.5;
 }
-
-.whatsapp-warning strong{
-    display:block;
-
-    margin-bottom:4px;
-
-    color:#6f5b31;
-}
-
 
 /* =========================================================
-   NUMBER SECTION
+   PURCHASE AREA
 ========================================================= */
 
-.section-title{
-    margin:27px 0 12px;
+.purchase-area{
 
-    font-size:17px;
+    margin-top:30px;
 
-    font-weight:800;
-}
-
-.number-status{
-    color:#64748b;
-
-    font-size:13px;
-
-    margin-bottom:12px;
-}
-
-.number-list{
-    display:flex;
-    flex-direction:column;
-
-    gap:10px;
-}
-
-
-/* =========================================================
-   NUMBER OPTION
-========================================================= */
-
-.number-option{
-    width:100%;
-
-    padding:15px;
-
-    border-radius:16px;
-
-    border:1px solid #e2e8f0;
-
-    background:#f8fafc;
-
-    cursor:pointer;
-
-    transition:
-        transform 0.15s ease,
-        border-color 0.15s ease,
-        background 0.15s ease,
-        box-shadow 0.15s ease;
-
-    text-align:left;
-}
-
-.number-option:hover{
-    border-color:#cbd5e1;
-}
-
-.number-option:active{
-    transform:scale(0.99);
-}
-
-.number-option.selected{
-    border-color:#111827;
-
-    background:#fff;
-
-    box-shadow:
-        0 7px 20px rgba(15,23,42,0.08);
-}
-
-.number-main{
     display:flex;
 
     align-items:center;
     justify-content:space-between;
 
-    gap:12px;
+    gap:20px;
+
+    padding:20px;
+
+    background:
+        rgba(255,255,255,0.82);
+
+    border:1px solid #e2e8f0;
+
+    border-radius:20px;
 }
 
-.phone-number{
+.selected-info{
+
+    font-size:14px;
+}
+
+.selected-info strong{
+
+    display:block;
+
+    margin-top:4px;
+
     font-size:17px;
-
-    font-weight:800;
-
-    color:#111827;
-
-    letter-spacing:0.1px;
 }
 
-.radio{
-    width:20px;
-    height:20px;
+.purchase-btn{
 
-    border-radius:50%;
+    min-width:190px;
 
-    border:2px solid #cbd5e1;
+    border:none;
 
-    flex-shrink:0;
+    border-radius:13px;
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.number-option.selected .radio{
-    border-color:#111827;
-}
-
-.number-option.selected .radio::after{
-    content:"";
-
-    width:9px;
-    height:9px;
-
-    border-radius:50%;
+    padding:14px 20px;
 
     background:#111827;
-}
 
-.number-details{
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:7px;
-
-    margin-top:8px;
-}
-
-.detail{
-    font-size:11px;
-
-    color:#64748b;
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-.loading{
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    gap:10px;
-
-    padding:30px 10px;
-
-    color:#64748b;
+    color:white;
 
     font-size:14px;
+    font-weight:700;
+
+    cursor:pointer;
 }
 
-.spinner{
-    width:19px;
-    height:19px;
+.purchase-btn:disabled{
 
-    border:2px solid #e2e8f0;
+    opacity:.45;
 
-    border-top-color:#111827;
-
-    border-radius:50%;
-
-    animation:spin 0.8s linear infinite;
+    cursor:not-allowed;
 }
-
-@keyframes spin{
-    to{
-        transform:rotate(360deg);
-    }
-}
-
 
 /* =========================================================
-   EMPTY / ERROR
+   MESSAGE
 ========================================================= */
 
-.message-box{
+.message{
+
     display:none;
 
-    padding:18px;
+    margin-top:20px;
 
-    border-radius:16px;
+    padding:14px 16px;
 
-    font-size:14px;
+    border-radius:14px;
 
-    line-height:1.55;
+    font-size:13px;
 
-    margin-top:12px;
+    line-height:1.5;
 }
 
-.error-box{
+.message.error{
+
+    display:block;
+
     background:#fff1f2;
 
     border:1px solid #fecdd3;
@@ -482,293 +518,298 @@ main{
     color:#9f1239;
 }
 
-.info-box{
+.message.success{
+
+    display:block;
+
+    background:#f0fdf4;
+
+    border:1px solid #bbf7d0;
+
+    color:#166534;
+}
+
+/* =========================================================
+   ACTIVATION OVERLAY
+========================================================= */
+
+.activation-overlay{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:500;
+
+    background:rgba(15,23,42,.30);
+
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+}
+
+.activation-overlay.show{
+
+    display:flex;
+}
+
+.activation-card{
+
+    width:100%;
+    max-width:430px;
+
+    max-height:80vh;
+
+    overflow:auto;
+
+    background:
+        rgba(255,255,255,.96);
+
+    border:1px solid #e2e8f0;
+
+    border-radius:24px;
+
+    padding:23px;
+
+    box-shadow:
+        0 25px 70px rgba(15,23,42,.20);
+}
+
+.activation-top{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    justify-content:space-between;
+
+    gap:15px;
+}
+
+.activation-title{
+
+    font-size:19px;
+    font-weight:800;
+}
+
+.close-btn{
+
+    width:34px;
+    height:34px;
+
+    border-radius:10px;
+
+    border:1px solid #e2e8f0;
+
+    background:#f8fafc;
+
+    cursor:pointer;
+
+    font-size:17px;
+}
+
+.activation-status{
+
+    margin-top:18px;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    background:#f8fafc;
+
+    border:1px solid #e2e8f0;
+}
+
+.status-label{
+
+    color:#64748b;
+
+    font-size:12px;
+}
+
+.active-number{
+
+    margin-top:5px;
+
+    font-size:21px;
+    font-weight:800;
+}
+
+.waiting{
+
+    margin-top:12px;
+
+    font-size:13px;
+
+    color:#64748b;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+}
+
+.dot{
+
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+
+    background:#111827;
+
+    animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+
+    0%,100%{
+        opacity:.35;
+    }
+
+    50%{
+        opacity:1;
+    }
+}
+
+.sms-list{
+
+    margin-top:18px;
+}
+
+.sms-title{
+
+    font-size:14px;
+    font-weight:700;
+
+    margin-bottom:10px;
+}
+
+.sms-empty{
+
+    padding:16px;
+
+    border-radius:14px;
+
     background:#f8fafc;
 
     border:1px solid #e2e8f0;
 
-    color:#64748b;
-}
-
-
-/* =========================================================
-   PURCHASE AREA
-========================================================= */
-
-.purchase-card{
-    margin-top:20px;
-
-    padding:20px;
-
-    background:rgba(255,255,255,0.82);
-
-    border:1px solid rgba(226,232,240,0.9);
-
-    border-radius:22px;
-
-    box-shadow:
-        0 15px 40px rgba(15,23,42,0.055);
-}
-
-.selected-label{
-    font-size:12px;
-
-    color:#64748b;
-
-    margin-bottom:5px;
-}
-
-.selected-number{
-    font-size:18px;
-
-    font-weight:850;
-
-    color:#111827;
-
-    min-height:24px;
-}
-
-.purchase-summary{
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:15px;
-
-    margin-top:17px;
-
-    padding-top:16px;
-
-    border-top:1px solid #e2e8f0;
-}
-
-.summary-label{
     color:#64748b;
 
     font-size:13px;
 }
 
-.summary-price{
-    font-size:20px;
+.sms-message{
 
-    font-weight:850;
+    padding:14px;
 
-    color:#111827;
-}
+    border-radius:14px;
 
-.purchase-btn{
-    width:100%;
-
-    margin-top:17px;
-
-    border:none;
-
-    border-radius:15px;
-
-    padding:15px 18px;
-
-    background:#111827;
-
-    color:#fff;
-
-    font-size:15px;
-
-    font-weight:800;
-
-    cursor:pointer;
-
-    transition:0.2s;
-
-    box-shadow:
-        0 10px 24px rgba(15,23,42,0.13);
-}
-
-.purchase-btn:active{
-    transform:scale(0.985);
-}
-
-.purchase-btn:disabled{
-    opacity:0.45;
-
-    cursor:not-allowed;
-
-    box-shadow:none;
-}
-
-
-/* =========================================================
-   MODAL
-========================================================= */
-
-.modal{
-    position:fixed;
-
-    inset:0;
-
-    z-index:100;
-
-    display:none;
-
-    align-items:flex-end;
-    justify-content:center;
-
-    background:rgba(15,23,42,0.28);
-
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
-}
-
-.modal.show{
-    display:flex;
-}
-
-.modal-box{
-    width:min(100%,520px);
-
-    background:#fff;
-
-    border-radius:25px 25px 0 0;
-
-    padding:25px 20px 30px;
-
-    box-shadow:
-        0 -10px 40px rgba(15,23,42,0.12);
-
-    animation:slideUp 0.2s ease;
-}
-
-@keyframes slideUp{
-    from{
-        transform:translateY(30px);
-        opacity:0;
-    }
-
-    to{
-        transform:translateY(0);
-        opacity:1;
-    }
-}
-
-.modal-box h2{
-    font-size:20px;
-
-    font-weight:850;
-}
-
-.modal-box p{
-    margin-top:8px;
-
-    color:#64748b;
-
-    font-size:14px;
-
-    line-height:1.55;
-}
-
-.modal-actions{
-    display:flex;
-
-    gap:10px;
-
-    margin-top:20px;
-}
-
-.modal-btn{
-    flex:1;
-
-    padding:13px;
-
-    border-radius:13px;
-
-    font-weight:800;
-
-    font-size:14px;
-
-    cursor:pointer;
-}
-
-.cancel-btn{
     background:#f8fafc;
 
     border:1px solid #e2e8f0;
 
-    color:#111827;
+    margin-bottom:9px;
 }
 
-.confirm-btn{
-    background:#111827;
+.sms-from{
 
-    border:1px solid #111827;
+    font-size:12px;
 
-    color:#fff;
+    color:#64748b;
+
+    margin-bottom:6px;
 }
 
+.sms-body{
+
+    font-size:15px;
+
+    line-height:1.45;
+
+    white-space:pre-wrap;
+
+    word-break:break-word;
+}
+
+.sms-time{
+
+    margin-top:7px;
+
+    font-size:11px;
+
+    color:#94a3b8;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading{
+
+    padding:25px;
+
+    text-align:center;
+
+    color:#64748b;
+
+    font-size:14px;
+}
 
 /* =========================================================
    MOBILE
 ========================================================= */
 
-@media(max-width:600px){
-
-    .header-inner{
-        min-height:66px;
-
-        padding:0 15px;
-    }
-
-    .brand-name{
-        font-size:17px;
-    }
-
-    .brand-logo{
-        width:35px;
-        height:35px;
-
-        border-radius:11px;
-    }
-
-    .back-btn{
-        padding:9px 12px;
-
-        font-size:13px;
-    }
+@media(max-width:760px){
 
     main{
+
         padding:
-            27px
-            14px
+            30px
+            15px
             45px;
     }
 
-    .page-title h1{
+    .hero h1{
+
         font-size:27px;
     }
 
-    .product-card,
-    .purchase-card{
-        border-radius:19px;
+    .products{
 
-        padding:17px;
+        grid-template-columns:1fr;
     }
 
-    .product-top{
-        gap:10px;
+    .number-list{
+
+        grid-template-columns:1fr;
     }
 
-    .product-name{
-        font-size:16px;
+    .purchase-area{
+
+        flex-direction:column;
+
+        align-items:stretch;
     }
 
-    .product-price{
-        font-size:17px;
+    .purchase-btn{
+
+        width:100%;
     }
 
-    .phone-number{
-        font-size:16px;
-    }
+    header{
 
+        padding:0 15px;
+    }
 }
 
 </style>
@@ -777,208 +818,113 @@ main{
 
 <body>
 
-
-<!-- =======================================================
-     HEADER
-======================================================= -->
-
 <header>
 
-    <div class="header-inner">
+    <div class="brand">
 
-        <a href="/dashboard.html" class="brand">
+        <div class="logo">
+            N
+        </div>
 
-            <div class="brand-logo">
-                N
-            </div>
-
-            <div class="brand-name">
-                Numora
-            </div>
-
-        </a>
-
-        <a
-            href="/dashboard.html"
-            class="back-btn"
-        >
-            Dashboard
-        </a>
+        <span>Numora</span>
 
     </div>
+
+    <button
+        class="dashboard-btn"
+        onclick="goDashboard()"
+    >
+        Dashboard
+    </button>
 
 </header>
 
 
-<!-- =======================================================
-     MAIN
-======================================================= -->
-
 <main>
 
-
-    <div class="page-title">
+    <section class="hero">
 
         <h1>
-            Purchase a Number
+            Get your Numora number.
         </h1>
 
         <p>
-            Choose a product and select an available US number
-            for your Numora account.
+            Choose a product and a real available number.
         </p>
 
-    </div>
+    </section>
 
-
-    <!-- ===================================================
-         PRODUCT
-    ==================================================== -->
-
-    <div class="product-card">
-
-        <div class="product-top">
-
-            <div>
-
-                <div
-                    class="product-name"
-                    id="productName"
-                >
-                    Loading product...
-                </div>
-
-                <div
-                    class="product-description"
-                    id="productDescription"
-                >
-                    Please wait while we load the product.
-                </div>
-
-            </div>
-
-            <div
-                class="product-price"
-                id="productPrice"
-            >
-                —
-            </div>
-
-        </div>
-
-        <div
-            class="product-meta"
-            id="productMeta"
-        ></div>
-
-
-        <div
-            class="whatsapp-warning"
-            id="whatsappWarning"
-        >
-
-            <strong>
-                WhatsApp eligibility notice
-            </strong>
-
-            SMS capability does not automatically mean that a
-            number will be accepted by WhatsApp for verification.
-            Numora only treats a number as WhatsApp-eligible when
-            verified eligibility information is available.
-            Do not assume that every SMS-capable number can receive
-            a WhatsApp verification code.
-
-        </div>
-
-    </div>
-
-
-    <!-- ===================================================
-         NUMBER SELECTION
-    ==================================================== -->
 
     <div class="section-title">
-        Available Numbers
+        Country
     </div>
 
-    <div
-        class="number-status"
-        id="numberStatus"
-    >
-        Searching for available numbers...
-    </div>
+    <div class="country-card">
 
+        <div class="country-name">
+            United States
+        </div>
 
-    <div
-        class="loading"
-        id="loadingBox"
-    >
-
-        <div class="spinner"></div>
-
-        <span>
-            Loading available numbers...
-        </span>
+        <div class="country-code">
+            +1
+        </div>
 
     </div>
 
 
-    <div
-        class="number-list"
-        id="numberList"
-    ></div>
-
-
-    <div
-        class="message-box error-box"
-        id="errorBox"
-    ></div>
-
-
-    <div
-        class="message-box info-box"
-        id="emptyBox"
-    >
-        No suitable numbers are currently available for
-        this product.
+    <div class="section-title">
+        Choose a product
     </div>
 
 
-    <!-- ===================================================
-         PURCHASE
-    ==================================================== -->
+    <section
+        class="products"
+        id="products"
+    ></section>
 
-    <div class="purchase-card">
 
-        <div class="selected-label">
-            Selected number
+    <div class="number-section">
+
+        <div class="section-title">
+            Available numbers
         </div>
 
         <div
-            class="selected-number"
-            id="selectedNumber"
+            id="numberList"
+            class="number-list"
         >
-            No number selected
+            <div class="loading">
+                Loading available numbers...
+            </div>
         </div>
 
-        <div class="purchase-summary">
+        <div class="whatsapp-notice">
 
-            <div class="summary-label">
-                Total
-            </div>
+            <strong>WhatsApp notice:</strong>
+            SMS capability does not guarantee WhatsApp acceptance.
+            WhatsApp may independently determine whether a number can
+            be used for verification.
 
-            <div
-                class="summary-price"
-                id="summaryPrice"
-            >
-                —
-            </div>
+        </div>
+
+    </div>
+
+
+    <div class="purchase-area">
+
+        <div class="selected-info">
+
+            Selected number
+
+            <strong id="selectedNumber">
+                None selected
+            </strong>
 
         </div>
 
         <button
+            id="purchaseButton"
             class="purchase-btn"
-            id="purchaseBtn"
             disabled
         >
             Continue to Payment
@@ -987,43 +933,87 @@ main{
     </div>
 
 
+    <div
+        id="message"
+        class="message"
+    ></div>
+
 </main>
 
 
-<!-- =======================================================
-     CONFIRMATION MODAL
-======================================================= -->
+<!-- =========================================================
+     ACTIVATION OVERLAY
+========================================================= -->
 
 <div
-    class="modal"
-    id="confirmModal"
+    id="activationOverlay"
+    class="activation-overlay"
 >
 
-    <div class="modal-box">
+    <div class="activation-card">
 
-        <h2>
-            Confirm Number
-        </h2>
+        <div class="activation-top">
 
-        <p id="confirmText">
-            Please confirm your selected number.
-        </p>
+            <div>
 
-        <div class="modal-actions">
+                <div class="activation-title">
+                    Number activated
+                </div>
 
-            <button
-                class="modal-btn cancel-btn"
-                id="cancelBtn"
-            >
-                Cancel
-            </button>
+            </div>
 
             <button
-                class="modal-btn confirm-btn"
-                id="confirmBtn"
+                class="close-btn"
+                onclick="closeActivationOverlay()"
             >
-                Continue
+                ×
             </button>
+
+        </div>
+
+
+        <div class="activation-status">
+
+            <div class="status-label">
+                Your Numora number
+            </div>
+
+            <div
+                id="activeNumber"
+                class="active-number"
+            >
+                —
+            </div>
+
+            <div
+                id="waitingText"
+                class="waiting"
+            >
+
+                <span class="dot"></span>
+
+                Waiting for verification code…
+
+            </div>
+
+        </div>
+
+
+        <div class="sms-list">
+
+            <div class="sms-title">
+                Incoming messages
+            </div>
+
+            <div
+                id="smsList"
+            >
+
+                <div class="sms-empty">
+                    No messages received yet.
+                </div>
+
+            </div>
 
         </div>
 
@@ -1034,31 +1024,59 @@ main{
 
 <script type="module">
 
-/* =========================================================
-   FIREBASE
-========================================================= */
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
     getAuth,
-    onAuthStateChanged
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 import {
     getFirestore,
     collection,
     addDoc,
-    serverTimestamp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    serverTimestamp,
+    doc,
+    onSnapshot,
+    query,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-import {
-    app
-}
-from "./firebase.js";
 
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+
+    authDomain:
+        "numora-c9a3b.firebaseapp.com",
+
+    projectId:
+        "numora-c9a3b",
+
+    storageBucket:
+        "numora-c9a3b.firebasestorage.app",
+
+    messagingSenderId:
+        "778502274031",
+
+    appId:
+        "1:778502274031:web:4cf57beed3703cbe5dd41a",
+
+    measurementId:
+        "G-6ELM21FDPH"
+};
+
+const app =
+    initializeApp(firebaseConfig);
 
 const auth =
     getAuth(app);
@@ -1082,80 +1100,69 @@ const AVAILABLE_NUMBERS_ENDPOINT =
    PRODUCTS
 ========================================================= */
 
-const PRODUCTS = {
+const products = {
 
     whatsapp: {
 
-        name:
-            "WhatsApp Verification",
+        id:"whatsapp",
 
-        price:
-            3000,
+        name:"WhatsApp Verification",
 
-        usage:
-            "WhatsApp verification",
+        price:3000,
 
-        requiresSMS:
-            true,
+        currency:"NGN",
 
-        requiresVoice:
-            false,
+        usage:"WhatsApp verification",
 
-        requiresWhatsApp:
-            true,
+        requiresSMS:true,
 
-        verificationWindowHours:
-            24
+        requiresVoice:false,
 
+        requiresWhatsApp:true,
+
+        verificationWindowHours:24
     },
-
 
     sms: {
 
-        name:
-            "SMS Only",
+        id:"sms",
 
-        price:
-            5000,
+        name:"SMS Only",
 
-        usage:
-            "SMS rental",
+        price:5000,
 
-        requiresSMS:
-            true,
+        currency:"NGN",
 
-        requiresVoice:
-            false,
+        usage:"SMS rental",
 
-        requiresWhatsApp:
-            false
+        requiresSMS:true,
 
+        requiresVoice:false,
+
+        requiresWhatsApp:false,
+
+        verificationWindowHours:null
     },
-
 
     whatsapp_sms: {
 
-        name:
-            "WhatsApp + SMS",
+        id:"whatsapp_sms",
 
-        price:
-            6000,
+        name:"WhatsApp + SMS",
 
-        usage:
-            "WhatsApp verification and SMS rental",
+        price:6000,
 
-        requiresSMS:
-            true,
+        currency:"NGN",
 
-        requiresVoice:
-            false,
+        usage:"WhatsApp verification and SMS rental",
 
-        requiresWhatsApp:
-            true,
+        requiresSMS:true,
 
-        verificationWindowHours:
-            24
+        requiresVoice:false,
 
+        requiresWhatsApp:true,
+
+        verificationWindowHours:24
     }
 
 };
@@ -1165,352 +1172,263 @@ const PRODUCTS = {
    STATE
 ========================================================= */
 
-let currentUser =
-    null;
+let currentUser = null;
 
-let selectedProduct =
-    null;
+let selectedProduct = null;
 
-let availableNumbers =
-    [];
+let selectedNumber = null;
 
-let selectedNumber =
-    null;
+let availableNumbers = [];
 
 
 /* =========================================================
-   DOM
+   ELEMENTS
 ========================================================= */
 
-const productName =
-    document.getElementById("productName");
+const productsEl =
+    document.getElementById("products");
 
-const productDescription =
-    document.getElementById("productDescription");
-
-const productPrice =
-    document.getElementById("productPrice");
-
-const productMeta =
-    document.getElementById("productMeta");
-
-const whatsappWarning =
-    document.getElementById("whatsappWarning");
-
-const loadingBox =
-    document.getElementById("loadingBox");
-
-const numberList =
+const numberListEl =
     document.getElementById("numberList");
 
-const numberStatus =
-    document.getElementById("numberStatus");
-
-const errorBox =
-    document.getElementById("errorBox");
-
-const emptyBox =
-    document.getElementById("emptyBox");
-
-const selectedNumberElement =
+const selectedNumberEl =
     document.getElementById("selectedNumber");
 
-const summaryPrice =
-    document.getElementById("summaryPrice");
+const purchaseButton =
+    document.getElementById("purchaseButton");
 
-const purchaseBtn =
-    document.getElementById("purchaseBtn");
+const messageEl =
+    document.getElementById("message");
 
-const confirmModal =
-    document.getElementById("confirmModal");
+const activationOverlay =
+    document.getElementById("activationOverlay");
 
-const confirmText =
-    document.getElementById("confirmText");
+const activeNumberEl =
+    document.getElementById("activeNumber");
 
-const cancelBtn =
-    document.getElementById("cancelBtn");
+const smsListEl =
+    document.getElementById("smsList");
 
-const confirmBtn =
-    document.getElementById("confirmBtn");
+const waitingTextEl =
+    document.getElementById("waitingText");
 
 
 /* =========================================================
-   FORMAT PRICE
+   AUTH
 ========================================================= */
 
-function formatPrice(
-    amount
-){
+await setPersistence(
+    auth,
+    browserLocalPersistence
+);
 
-    return new Intl.NumberFormat(
-        "en-NG",
-        {
-            style:
-                "currency",
+onAuthStateChanged(
+    auth,
+    user => {
 
-            currency:
-                "NGN",
+        if(!user){
 
-            maximumFractionDigits:
-                0
+            window.location.href =
+                "/numorahq/";
+
+            return;
         }
-    ).format(amount);
+
+        currentUser = user;
+
+    }
+);
+
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+function renderProducts(){
+
+    productsEl.innerHTML = "";
+
+    Object.values(products)
+        .forEach(product => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "product-card";
+
+            card.dataset.id =
+                product.id;
+
+            card.innerHTML = `
+
+                <div class="product-name">
+                    ${product.name}
+                </div>
+
+                <div class="product-description">
+                    ${product.usage}
+                </div>
+
+                <div class="price">
+                    ₦${product.price.toLocaleString()}
+                    <span>
+                        ${
+                            product.id === "whatsapp"
+                                ? "/ 24 hours"
+                                : "/ rental"
+                        }
+                    </span>
+                </div>
+
+                <button
+                    class="product-button"
+                    type="button"
+                >
+                    Select
+                </button>
+
+            `;
+
+            card.addEventListener(
+                "click",
+                () => selectProduct(product.id)
+            );
+
+            productsEl.appendChild(card);
+
+        });
+
+}
+
+
+function selectProduct(id){
+
+    selectedProduct =
+        products[id];
+
+    document
+        .querySelectorAll(".product-card")
+        .forEach(card => {
+
+            card.classList.toggle(
+                "selected",
+                card.dataset.id === id
+            );
+
+        });
+
+    selectedNumber = null;
+
+    selectedNumberEl.textContent =
+        "None selected";
+
+    purchaseButton.disabled =
+        true;
+
+    renderNumbers();
 
 }
 
 
 /* =========================================================
-   GET PRODUCT
+   CAPABILITY HELPERS
 ========================================================= */
 
-function getProductFromURL(){
+function getCapabilities(number){
 
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
+    return number.capabilities || {};
 
-    const productKey =
-        params.get("product") ||
-        params.get("type") ||
-        "sms";
+}
 
-    return (
-        PRODUCTS[productKey]
-        ? {
-            key:
-                productKey,
 
-            ...PRODUCTS[productKey]
-        }
-        : {
-            key:
-                "sms",
+function isSmsCapable(number){
 
-            ...PRODUCTS.sms
-        }
+    const capabilities =
+        getCapabilities(number);
+
+    return Boolean(
+        number.smsCapable ??
+        number.smsEnabled ??
+        capabilities.sms ??
+        capabilities.SMS
+    );
+
+}
+
+
+function isVoiceCapable(number){
+
+    const capabilities =
+        getCapabilities(number);
+
+    return Boolean(
+        number.voiceCapable ??
+        number.voiceEnabled ??
+        capabilities.voice ??
+        capabilities.VOICE
+    );
+
+}
+
+
+/*
+ * Important:
+ *
+ * SMS capability does NOT automatically mean
+ * WhatsApp eligibility.
+ *
+ * The backend must explicitly provide
+ * whatsappEligible / whatsappCompatible.
+ */
+
+function isWhatsAppEligible(number){
+
+    return Boolean(
+        number.whatsappEligible ??
+        number.whatsappCompatible ??
+        false
     );
 
 }
 
 
 /* =========================================================
-   DISPLAY PRODUCT
+   NUMBER FILTER
 ========================================================= */
 
-function displayProduct(){
+function numberMatchesProduct(number){
 
-    productName.textContent =
-        selectedProduct.name;
+    if(!selectedProduct){
 
-    productDescription.textContent =
-        selectedProduct.usage;
-
-    productPrice.textContent =
-        formatPrice(
-            selectedProduct.price
-        );
-
-    summaryPrice.textContent =
-        formatPrice(
-            selectedProduct.price
-        );
-
-
-    productMeta.innerHTML = "";
-
+        return false;
+    }
 
     if(
-        selectedProduct.requiresSMS
+        selectedProduct.requiresSMS &&
+        !isSmsCapable(number)
     ){
 
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "meta";
-
-        item.textContent =
-            "SMS capable";
-
-        productMeta.appendChild(
-            item
-        );
-
+        return false;
     }
-
 
     if(
-        selectedProduct.requiresVoice
+        selectedProduct.requiresVoice &&
+        !isVoiceCapable(number)
     ){
 
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "meta";
-
-        item.textContent =
-            "Voice capable";
-
-        productMeta.appendChild(
-            item
-        );
-
+        return false;
     }
-
 
     if(
-        selectedProduct.requiresWhatsApp
+        selectedProduct.requiresWhatsApp &&
+        !isWhatsAppEligible(number)
     ){
 
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "meta";
-
-        item.textContent =
-            "WhatsApp verification";
-
-        productMeta.appendChild(
-            item
-        );
-
-        whatsappWarning.style.display =
-            "block";
-
-    }
-    else{
-
-        whatsappWarning.style.display =
-            "none";
-
+        return false;
     }
 
-}
-
-
-/* =========================================================
-   NORMALIZE PROVIDER NUMBER
-========================================================= */
-
-function normalizeProviderNumber(
-    number
-){
-
-    if(!number){
-
-        return null;
-
-    }
-
-
-    const phoneNumber =
-        number.phoneNumber ||
-        number.phone_number ||
-        number.number;
-
-
-    if(!phoneNumber){
-
-        return null;
-
-    }
-
-
-    const capabilities =
-        number.capabilities ||
-        {};
-
-
-    /*
-     * IMPORTANT:
-     *
-     * Twilio returns:
-     *
-     * {
-     *     "SMS": true,
-     *     "MMS": true,
-     *     "voice": true
-     * }
-     *
-     * Therefore SMS must check BOTH
-     * capabilities.sms and capabilities.SMS.
-     */
-
-    const smsCapable =
-        Boolean(
-
-            number.smsCapable ??
-            number.smsEnabled ??
-            capabilities.sms ??
-            capabilities.SMS
-
-        );
-
-
-    const voiceCapable =
-        Boolean(
-
-            number.voiceCapable ??
-            number.voiceEnabled ??
-            capabilities.voice ??
-            capabilities.VOICE
-
-        );
-
-
-    /*
-     * Do NOT assume every Twilio SMS number
-     * is WhatsApp eligible.
-     *
-     * This value must come from a verified
-     * backend/provider eligibility mechanism.
-     */
-
-    const whatsappEligible =
-        Boolean(
-
-            number.whatsappEligible ??
-            number.whatsappCompatible ??
-            false
-
-        );
-
-
-    return {
-
-        number:
-            phoneNumber,
-
-        area:
-            number.area ||
-            number.areaCode ||
-            "",
-
-        region:
-            number.region ||
-            "",
-
-        locality:
-            number.locality ||
-            "",
-
-        isoCountry:
-            number.isoCountry ||
-            "US",
-
-        smsCapable:
-            smsCapable,
-
-        voiceCapable:
-            voiceCapable,
-
-        whatsappEligible:
-            whatsappEligible
-
-    };
+    return true;
 
 }
 
@@ -1521,194 +1439,55 @@ function normalizeProviderNumber(
 
 async function loadNumbers(){
 
-    loadingBox.style.display =
-        "flex";
-
-    errorBox.style.display =
-        "none";
-
-    emptyBox.style.display =
-        "none";
-
-    numberList.innerHTML =
-        "";
-
-    numberStatus.textContent =
-        "Searching for available numbers...";
-
+    numberListEl.innerHTML = `
+        <div class="loading">
+            Loading available numbers...
+        </div>
+    `;
 
     try{
 
         const response =
             await fetch(
-                AVAILABLE_NUMBERS_ENDPOINT,
-                {
-                    method:
-                        "GET",
-
-                    cache:
-                        "no-store"
-                }
+                AVAILABLE_NUMBERS_ENDPOINT
             );
 
-
-        if(!response.ok){
-
-            throw new Error(
-                `Server returned ${response.status}.`
-            );
-
-        }
-
-
-        const data =
+        const result =
             await response.json();
 
-
-        /*
-         * Current Numora backend returns:
-         *
-         * data.availableNumbers
-         *
-         * The fallback keeps compatibility with
-         * an older "numbers" response.
-         */
-
-        const rawNumbers =
-
-            Array.isArray(
-                data.availableNumbers
-            )
-
-            ? data.availableNumbers
-
-            : Array.isArray(
-                data.numbers
-            )
-
-            ? data.numbers
-
-            : null;
-
-
-        if(!rawNumbers){
+        if(
+            !response.ok ||
+            !result.success
+        ){
 
             throw new Error(
-                "Invalid number inventory response."
+                result.message ||
+                "Unable to load numbers."
             );
 
         }
 
-
         availableNumbers =
-
-            rawNumbers
-
-                .map(
-                    normalizeProviderNumber
-                )
-
-                .filter(
-                    Boolean
-                );
-
-
-        loadingBox.style.display =
-            "none";
-
+            Array.isArray(
+                result.availableNumbers
+            )
+                ? result.availableNumbers
+                : [];
 
         renderNumbers();
 
+    }catch(error){
+
+        console.error(error);
+
+        numberListEl.innerHTML = `
+            <div class="message error">
+                Unable to load available numbers.
+                Please try again.
+            </div>
+        `;
 
     }
-    catch(error){
-
-        console.error(
-            "Numora number inventory error:",
-            error
-        );
-
-
-        loadingBox.style.display =
-            "none";
-
-
-        errorBox.textContent =
-            "Unable to load available numbers right now. Please try again in a moment.";
-
-
-        errorBox.style.display =
-            "block";
-
-
-        numberStatus.textContent =
-            "Number inventory could not be loaded.";
-
-    }
-
-}
-
-
-/* =========================================================
-   ELIGIBILITY
-========================================================= */
-
-function getEligibleNumbers(){
-
-    return availableNumbers.filter(
-        number => {
-
-            /*
-             * SMS requirement
-             */
-
-            if(
-                selectedProduct.requiresSMS &&
-                !number.smsCapable
-            ){
-
-                return false;
-
-            }
-
-
-            /*
-             * Voice requirement
-             */
-
-            if(
-                selectedProduct.requiresVoice &&
-                !number.voiceCapable
-            ){
-
-                return false;
-
-            }
-
-
-            /*
-             * WhatsApp requirement
-             *
-             * This is intentionally strict.
-             *
-             * We do NOT treat SMS capability as
-             * WhatsApp eligibility.
-             */
-
-            if(
-                selectedProduct.requiresWhatsApp &&
-                !number.whatsappEligible
-            ){
-
-                return false;
-
-            }
-
-
-            return true;
-
-        }
-    );
 
 }
 
@@ -1719,148 +1498,103 @@ function getEligibleNumbers(){
 
 function renderNumbers(){
 
-    numberList.innerHTML =
-        "";
+    numberListEl.innerHTML = "";
 
-    selectedNumber =
-        null;
+    if(!selectedProduct){
 
-    selectedNumberElement.textContent =
-        "No number selected";
+        numberListEl.innerHTML = `
+            <div class="loading">
+                Select a product to see compatible numbers.
+            </div>
+        `;
 
-    purchaseBtn.disabled =
-        true;
+        return;
+    }
+
+    const matchingNumbers =
+        availableNumbers.filter(
+            numberMatchesProduct
+        );
 
 
-    const eligibleNumbers =
-        getEligibleNumbers();
+    if(!matchingNumbers.length){
 
-
-    /*
-     * WhatsApp products currently require
-     * a verified whatsappEligible flag.
-     *
-     * The Twilio inventory endpoint currently
-     * does not provide that flag.
-     */
-
-    if(
-        selectedProduct.requiresWhatsApp &&
-        eligibleNumbers.length === 0
-    ){
-
-        numberStatus.textContent =
-            "No confirmed WhatsApp-eligible numbers are available.";
-
-        emptyBox.textContent =
-            "No confirmed WhatsApp-eligible numbers are currently available. SMS capability alone does not confirm WhatsApp verification eligibility.";
-
-        emptyBox.style.display =
-            "block";
+        numberListEl.innerHTML = `
+            <div class="loading">
+                No numbers currently match this product.
+            </div>
+        `;
 
         return;
 
     }
 
 
-    if(
-        eligibleNumbers.length === 0
-    ){
-
-        numberStatus.textContent =
-            "No suitable numbers are currently available.";
-
-        emptyBox.textContent =
-            "No suitable numbers are currently available for this product. Please try again later.";
-
-        emptyBox.style.display =
-            "block";
-
-        return;
-
-    }
-
-
-    numberStatus.textContent =
-        `${eligibleNumbers.length} number${eligibleNumbers.length === 1 ? "" : "s"} available.`;
-
-
-    eligibleNumbers.forEach(
+    matchingNumbers.forEach(
         number => {
 
-            const option =
-                document.createElement("button");
+            const card =
+                document.createElement("div");
 
-            option.type =
-                "button";
+            card.className =
+                "number-card";
 
-            option.className =
-                "number-option";
+            if(
+                selectedNumber &&
+                selectedNumber.phoneNumber ===
+                    number.phoneNumber
+            ){
 
-
-            const locationParts = [];
-
-
-            if(number.locality){
-
-                locationParts.push(
-                    number.locality
+                card.classList.add(
+                    "selected"
                 );
 
             }
 
 
-            if(number.region){
+            const sms =
+                isSmsCapable(number);
 
-                locationParts.push(
-                    number.region
-                );
+            const voice =
+                isVoiceCapable(number);
 
-            }
+            card.innerHTML = `
 
-
-            const location =
-                locationParts.length
-                    ? locationParts.join(", ")
-                    : number.isoCountry;
-
-
-            option.innerHTML = `
-
-                <div class="number-main">
-
-                    <div class="phone-number">
-                        ${escapeHTML(number.number)}
-                    </div>
-
-                    <div class="radio"></div>
-
+                <div class="number">
+                    ${number.phoneNumber || "—"}
                 </div>
 
-                <div class="number-details">
+                <div class="location">
+                    ${
+                        number.locality ||
+                        number.region ||
+                        "United States"
+                    }
+                    ${
+                        number.region
+                            ? ", " + number.region
+                            : ""
+                    }
+                </div>
 
-                    <span class="detail">
-                        ${escapeHTML(location)}
-                    </span>
+                <div class="capabilities">
 
                     ${
-                        number.smsCapable
-                        ? `
-                            <span class="detail">
-                                SMS
-                            </span>
-                          `
-                        : ""
+                        sms
+                            ? `<span class="capability">SMS</span>`
+                            : ""
                     }
 
                     ${
-                        number.voiceCapable
-                        ? `
-                            <span class="detail">
-                                Voice
-                            </span>
-                          `
-                        : ""
+                        voice
+                            ? `<span class="capability">Voice</span>`
+                            : ""
+                    }
+
+                    ${
+                        number.capabilities?.MMS
+                            ? `<span class="capability">MMS</span>`
+                            : ""
                     }
 
                 </div>
@@ -1868,59 +1602,15 @@ function renderNumbers(){
             `;
 
 
-            option.addEventListener(
+            card.addEventListener(
                 "click",
-                () => {
-
-                    selectNumber(
-                        number,
-                        option
-                    );
-
-                }
+                () => selectNumber(number)
             );
 
 
-            numberList.appendChild(
-                option
-            );
+            numberListEl.appendChild(card);
 
         }
-    );
-
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHTML(
-    value
-){
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
     );
 
 }
@@ -1930,141 +1620,106 @@ function escapeHTML(
    SELECT NUMBER
 ========================================================= */
 
-function selectNumber(
-    number,
-    element
-){
-
-    document
-        .querySelectorAll(
-            ".number-option"
-        )
-        .forEach(
-            item => {
-
-                item.classList.remove(
-                    "selected"
-                );
-
-            }
-        );
-
-
-    element.classList.add(
-        "selected"
-    );
-
+function selectNumber(number){
 
     selectedNumber =
         number;
 
+    selectedNumberEl.textContent =
+        number.phoneNumber;
 
-    selectedNumberElement.textContent =
-        number.number;
+    purchaseButton.disabled =
+        !currentUser ||
+        !selectedProduct ||
+        !selectedNumber;
 
+    document
+        .querySelectorAll(".number-card")
+        .forEach(card => {
 
-    purchaseBtn.disabled =
-        false;
+            card.classList.toggle(
+                "selected",
+
+                card.querySelector(".number")
+                    ?.textContent.trim() ===
+                number.phoneNumber
+
+            );
+
+        });
 
 }
 
 
 /* =========================================================
-   PURCHASE CLICK
+   MESSAGE
 ========================================================= */
 
-purchaseBtn.addEventListener(
-    "click",
-    () => {
+function showMessage(
+    text,
+    type = "error"
+){
 
-        if(
-            !currentUser
-        ){
+    messageEl.textContent =
+        text;
 
-            alert(
-                "Please sign in before purchasing a number."
-            );
+    messageEl.className =
+        `message ${type}`;
 
-            return;
-
-        }
+}
 
 
-        if(
-            !selectedNumber
-        ){
+function clearMessage(){
 
-            return;
+    messageEl.textContent =
+        "";
 
-        }
+    messageEl.className =
+        "message";
 
-
-        confirmText.textContent =
-            `You selected ${selectedNumber.number}. You will continue to secure your number and proceed to payment.`;
-
-
-        confirmModal.classList.add(
-            "show"
-        );
-
-    }
-);
+}
 
 
 /* =========================================================
-   CANCEL MODAL
+   CREATE ORDER
 ========================================================= */
 
-cancelBtn.addEventListener(
-    "click",
-    () => {
-
-        confirmModal.classList.remove(
-            "show"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   CONFIRM PURCHASE
-========================================================= */
-
-confirmBtn.addEventListener(
+purchaseButton.addEventListener(
     "click",
     async () => {
 
+        clearMessage();
+
+        if(!currentUser){
+
+            showMessage(
+                "Please sign in first."
+            );
+
+            return;
+        }
+
         if(
-            !currentUser ||
+            !selectedProduct ||
             !selectedNumber
         ){
 
-            return;
+            showMessage(
+                "Please select a product and number."
+            );
 
+            return;
         }
 
 
-        confirmBtn.disabled =
+        purchaseButton.disabled =
             true;
 
-        confirmBtn.textContent =
+        purchaseButton.textContent =
             "Creating order...";
 
 
         try{
-
-            /*
-             * IMPORTANT:
-             *
-             * This ONLY creates the Firestore order.
-             *
-             * It does NOT purchase the Twilio number.
-             *
-             * Twilio provisioning happens after
-             * verified payment on the backend.
-             */
-
 
             const orderData = {
 
@@ -2074,33 +1729,32 @@ confirmBtn.addEventListener(
                 customerEmail:
                     currentUser.email || "",
 
-
                 country:
                     "United States",
 
                 countryCode:
                     "US",
 
-
                 phoneNumber:
-                    selectedNumber.number,
+                    selectedNumber.phoneNumber,
 
                 area:
-                    selectedNumber.area,
+                    selectedNumber.area ||
+                    null,
 
                 locality:
-                    selectedNumber.locality,
+                    selectedNumber.locality ||
+                    null,
 
                 region:
-                    selectedNumber.region,
-
+                    selectedNumber.region ||
+                    null,
 
                 provider:
                     "twilio",
 
-
                 product:
-                    selectedProduct.key,
+                    selectedProduct.id,
 
                 productName:
                     selectedProduct.name,
@@ -2108,35 +1762,30 @@ confirmBtn.addEventListener(
                 usage:
                     selectedProduct.usage,
 
-
                 price:
                     selectedProduct.price,
 
                 currency:
-                    "NGN",
-
+                    selectedProduct.currency,
 
                 smsCapable:
-                    selectedNumber.smsCapable,
+                    isSmsCapable(selectedNumber),
 
                 voiceCapable:
-                    selectedNumber.voiceCapable,
-
+                    isVoiceCapable(selectedNumber),
 
                 whatsappCompatible:
-                    selectedNumber.whatsappEligible,
+                    isWhatsAppEligible(selectedNumber),
 
                 whatsappEligible:
-                    selectedNumber.whatsappEligible,
-
+                    isWhatsAppEligible(selectedNumber),
 
                 verificationWindowHours:
-                    selectedProduct.verificationWindowHours ||
-                    null,
+                    selectedProduct
+                        .verificationWindowHours,
 
                 verificationExpiresAt:
                     null,
-
 
                 status:
                     "Awaiting payment",
@@ -2152,7 +1801,6 @@ confirmBtn.addEventListener(
 
                 twilioPhoneNumberSid:
                     null,
-
 
                 createdAt:
                     serverTimestamp()
@@ -2171,115 +1819,339 @@ confirmBtn.addEventListener(
 
 
             window.location.href =
-                `/payment.html?orderId=${encodeURIComponent(orderRef.id)}`;
+                `/payment.html?orderId=${
+                    encodeURIComponent(
+                        orderRef.id
+                    )
+                }`;
+
+
+        }catch(error){
+
+            console.error(error);
+
+            showMessage(
+                error.message ||
+                "Unable to create your order."
+            );
+
+            purchaseButton.disabled =
+                false;
+
+            purchaseButton.textContent =
+                "Continue to Payment";
 
         }
-        catch(error){
+
+    }
+);
+
+
+/* =========================================================
+   ACTIVATION OVERLAY
+========================================================= */
+
+function showActivationOverlay(
+    order
+){
+
+    activationOverlay
+        .classList.add("show");
+
+    activeNumberEl.textContent =
+        order.twilioPhoneNumber ||
+        order.phoneNumber ||
+        "—";
+
+
+    const isWhatsApp =
+        order.product === "whatsapp" ||
+        order.product === "whatsapp_sms" ||
+        order.whatsappEligible === true;
+
+
+    if(isWhatsApp){
+
+        waitingTextEl.style.display =
+            "flex";
+
+        waitingTextEl.innerHTML = `
+            <span class="dot"></span>
+            Waiting for verification code…
+        `;
+
+    }else{
+
+        waitingTextEl.style.display =
+            "none";
+
+    }
+
+}
+
+
+window.closeActivationOverlay =
+    function(){
+
+        activationOverlay
+            .classList.remove("show");
+
+    };
+
+
+/* =========================================================
+   LIVE ORDER MONITORING
+========================================================= */
+
+function monitorOrder(
+    orderId
+){
+
+    const orderRef =
+        doc(
+            db,
+            "orders",
+            orderId
+        );
+
+
+    onSnapshot(
+        orderRef,
+        snapshot => {
+
+            if(!snapshot.exists()){
+
+                return;
+            }
+
+
+            const order =
+                snapshot.data();
+
+
+            if(
+                order.userId !==
+                currentUser?.uid
+            ){
+
+                return;
+            }
+
+
+            if(
+                order.provisioningStatus ===
+                    "Active" &&
+                (
+                    order.twilioPhoneNumber ||
+                    order.phoneNumber
+                )
+            ){
+
+                showActivationOverlay(
+                    order
+                );
+
+                monitorMessages(
+                    orderId
+                );
+
+            }
+
+        },
+        error => {
 
             console.error(
-                "Order creation error:",
+                "Order listener error:",
                 error
             );
 
-
-            alert(
-                "Unable to create your order. Please try again."
-            );
-
-
-            confirmBtn.disabled =
-                false;
-
-            confirmBtn.textContent =
-                "Continue";
-
         }
+    );
 
-    }
-);
+}
 
 
 /* =========================================================
-   CLOSE MODAL WHEN CLICKING BACKDROP
+   LIVE SMS MONITORING
 ========================================================= */
 
-confirmModal.addEventListener(
-    "click",
-    event => {
+function monitorMessages(
+    orderId
+){
 
-        if(
-            event.target ===
-            confirmModal
-        ){
+    const messagesRef =
+        collection(
+            db,
+            "orders",
+            orderId,
+            "messages"
+        );
 
-            confirmModal.classList.remove(
-                "show"
+    const messagesQuery =
+        query(
+            messagesRef,
+            orderBy(
+                "createdAt",
+                "desc"
+            )
+        );
+
+
+    onSnapshot(
+        messagesQuery,
+        snapshot => {
+
+            if(snapshot.empty){
+
+                smsListEl.innerHTML = `
+                    <div class="sms-empty">
+                        No messages received yet.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            smsListEl.innerHTML = "";
+
+
+            snapshot.forEach(
+                messageSnapshot => {
+
+                    const message =
+                        messageSnapshot.data();
+
+
+                    const item =
+                        document.createElement(
+                            "div"
+                        );
+
+                    item.className =
+                        "sms-message";
+
+
+                    let time =
+                        "";
+
+                    if(
+                        message.createdAt
+                        ?.toDate
+                    ){
+
+                        time =
+                            message.createdAt
+                                .toDate()
+                                .toLocaleString();
+
+                    }
+
+
+                    item.innerHTML = `
+
+                        <div class="sms-from">
+                            From:
+                            ${
+                                message.from ||
+                                "Unknown"
+                            }
+                        </div>
+
+                        <div class="sms-body">
+                            ${
+                                message.body ||
+                                ""
+                            }
+                        </div>
+
+                        ${
+                            time
+                                ? `
+                                    <div class="sms-time">
+                                        ${time}
+                                    </div>
+                                `
+                                : ""
+                        }
+
+                    `;
+
+
+                    smsListEl.appendChild(
+                        item
+                    );
+
+                }
+            );
+
+        },
+        error => {
+
+            console.error(
+                "SMS listener error:",
+                error
             );
 
         }
+    );
 
-    }
-);
+}
 
 
 /* =========================================================
-   AUTH
+   DASHBOARD
 ========================================================= */
+
+window.goDashboard =
+    function(){
+
+        window.location.href =
+            "/numorahq/dashboard.html";
+
+    };
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+renderProducts();
+
+loadNumbers();
+
+
+/*
+ * If the user returned to this page with an orderId,
+ * immediately monitor that order.
+ */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const returningOrderId =
+    params.get("orderId");
+
 
 onAuthStateChanged(
     auth,
     user => {
 
-        currentUser =
-            user;
+        if(
+            user &&
+            returningOrderId
+        ){
 
-        if(!user){
-
-            /*
-             * Do not immediately destroy the page.
-             * Just disable purchase until the customer
-             * signs in.
-             */
-
-            purchaseBtn.disabled =
-                true;
-
-            purchaseBtn.textContent =
-                "Sign in to Continue";
-
-            return;
+            monitorOrder(
+                returningOrderId
+            );
 
         }
 
-
-        purchaseBtn.textContent =
-            "Continue to Payment";
-
-
-        /*
-         * Load inventory once authenticated.
-         */
-
-        loadNumbers();
-
     }
 );
-
-
-/* =========================================================
-   INITIAL PRODUCT
-========================================================= */
-
-selectedProduct =
-    getProductFromURL();
-
-displayProduct();
-
-
-/*
- * If Firebase auth takes a moment to resolve,
- * the auth listener above will load the numbers.
- */
 
 </script>
 
