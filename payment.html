@@ -30,20 +30,21 @@ body{
         sans-serif;
 
     background:#f4f8ff;
-
     color:#10233f;
 
     min-height:100vh;
+
 }
-
-
-/* =========================================================
-   HEADER
-========================================================= */
 
 header{
 
     height:70px;
+
+    background:rgba(255,255,255,.94);
+
+    backdrop-filter:blur(18px);
+
+    border-bottom:1px solid #e3ebf7;
 
     display:flex;
 
@@ -51,15 +52,14 @@ header{
 
     justify-content:space-between;
 
-    padding:0 20px;
+    padding:0 22px;
 
-    background:
-        rgba(255,255,255,.82);
+    position:sticky;
 
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
+    top:0;
 
-    border-bottom:1px solid #e3ebf7;
+    z-index:20;
+
 }
 
 .brand{
@@ -70,57 +70,52 @@ header{
 
     gap:10px;
 
-    font-size:19px;
+    font-size:20px;
 
-    font-weight:700;
+    font-weight:800;
+
 }
 
 .logo{
 
-    width:36px;
-    height:36px;
+    width:38px;
 
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
+    height:38px;
 
     border-radius:12px;
 
-    background:
-        linear-gradient(
-            145deg,
-            #111827,
-            #334155
-        );
+    background:#1677ff;
 
     color:white;
 
-    font-weight:800;
+    display:grid;
+
+    place-items:center;
+
+    font-weight:900;
+
+    box-shadow:
+        0 8px 20px rgba(22,119,255,.20);
+
 }
 
-.back-btn{
+.back{
 
-    border:1px solid #e3ebf7;
+    border:0;
 
-    background:white;
+    background:#eef5ff;
 
-    color:#10233f;
+    color:#1667d9;
 
-    padding:10px 14px;
+    padding:10px 15px;
 
     border-radius:12px;
 
-    font-weight:600;
+    font-weight:700;
 
     cursor:pointer;
+
 }
-
-
-/* =========================================================
-   MAIN
-========================================================= */
 
 main{
 
@@ -128,64 +123,120 @@ main{
 
     max-width:720px;
 
-    margin:0 auto;
+    margin:auto;
 
-    padding:35px 16px 60px;
+    padding:35px 18px 60px;
+
 }
 
-h1{
+.page-title{
 
-    font-size:29px;
+    text-align:center;
 
-    letter-spacing:-.5px;
+    margin-bottom:28px;
+
+}
+
+.page-title h1{
+
+    font-size:34px;
+
+    letter-spacing:-1px;
 
     margin-bottom:8px;
+
 }
 
-.subtitle{
+.page-title p{
 
-    color:#6b7c93;
+    color:#667895;
 
-    font-size:14px;
+    font-size:15px;
 
-    margin-bottom:25px;
 }
-
-
-/* =========================================================
-   CARDS
-========================================================= */
 
 .card{
 
-    background:
-        rgba(255,255,255,.9);
+    background:white;
 
-    border:1px solid #e3ebf7;
+    border:1px solid #e1e9f4;
 
-    border-radius:20px;
+    border-radius:24px;
 
-    padding:20px;
+    padding:24px;
+
+    box-shadow:
+        0 14px 40px rgba(34,75,130,.07);
 
     margin-bottom:16px;
 
-    box-shadow:
-        0 10px 30px rgba(36,76,120,.05);
 }
 
 .card-title{
 
-    font-size:15px;
+    font-size:18px;
 
-    font-weight:750;
+    font-weight:800;
 
-    margin-bottom:15px;
+    margin-bottom:18px;
+
 }
 
+.order-number{
 
-/* =========================================================
-   ORDER DETAILS
-========================================================= */
+    background:#eef6ff;
+
+    border:1px solid #dceaff;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+}
+
+.order-number .label{
+
+    color:#6d7f98;
+
+    font-size:13px;
+
+    margin-bottom:7px;
+
+}
+
+.phone-number{
+
+    font-size:25px;
+
+    font-weight:900;
+
+    color:#10233f;
+
+    letter-spacing:.3px;
+
+}
+
+.area{
+
+    margin-top:7px;
+
+    color:#6d7f98;
+
+    font-size:14px;
+
+}
+
+.details{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:0;
+
+}
 
 .detail-row{
 
@@ -195,33 +246,37 @@ h1{
 
     gap:20px;
 
-    padding:12px 0;
+    padding:15px 0;
 
-    border-bottom:1px solid #edf2f8;
+    border-bottom:1px solid #edf1f6;
 
-    font-size:14px;
 }
 
 .detail-row:last-child{
 
-    border-bottom:none;
+    border-bottom:0;
+
 }
 
-.detail-label{
+.detail-row span{
 
-    color:#718198;
+    color:#6b7c94;
+
 }
 
-.detail-value{
+.detail-row strong{
 
     text-align:right;
 
-    font-weight:600;
-
-    word-break:break-word;
 }
 
-.total-row{
+.total{
+
+    margin-top:8px;
+
+    padding-top:18px;
+
+    border-top:1px solid #dfe7f1;
 
     display:flex;
 
@@ -229,294 +284,420 @@ h1{
 
     align-items:center;
 
-    margin-top:5px;
-
-    padding-top:16px;
-
-    border-top:1px solid #e3ebf7;
 }
 
-.total-label{
+.total span{
+
+    font-size:17px;
 
     font-weight:700;
+
 }
 
-.total-value{
+.total strong{
 
-    font-size:22px;
+    color:#1677ff;
 
-    font-weight:800;
+    font-size:25px;
 
-    color:#10233f;
 }
-
-
-/* =========================================================
-   PAYMENT BOX
-========================================================= */
 
 .payment-box{
 
-    padding:20px;
+    text-align:center;
 
-    border-radius:18px;
+}
 
-    background:#f8fbff;
+.payment-icon{
 
-    border:1px solid #e1eaf7;
+    width:62px;
+
+    height:62px;
+
+    margin:0 auto 15px;
+
+    border-radius:20px;
+
+    background:#eef6ff;
+
+    color:#1677ff;
+
+    display:grid;
+
+    place-items:center;
+
+    font-size:28px;
+
+    font-weight:900;
+
 }
 
 .payment-box h2{
 
-    font-size:17px;
+    font-size:20px;
 
-    margin-bottom:7px;
+    margin-bottom:8px;
+
 }
 
 .payment-box p{
 
-    font-size:13px;
-
     color:#718198;
+
+    font-size:14px;
 
     line-height:1.5;
 
-    margin-bottom:17px;
+    margin-bottom:20px;
+
 }
 
-.primary-btn{
+.pay-button{
 
     width:100%;
 
-    border:none;
-
-    border-radius:13px;
+    border:0;
 
     background:#1677ff;
 
     color:white;
 
-    padding:14px;
+    padding:16px;
 
-    font-size:14px;
+    border-radius:15px;
 
-    font-weight:750;
+    font-size:16px;
+
+    font-weight:800;
 
     cursor:pointer;
+
+    box-shadow:
+        0 10px 25px rgba(22,119,255,.20);
+
 }
 
-.primary-btn:disabled{
+.pay-button:hover{
 
-    opacity:.5;
+    background:#086bea;
+
+}
+
+.pay-button:disabled{
+
+    opacity:.55;
 
     cursor:not-allowed;
+
+}
+
+.security{
+
+    margin-top:14px;
+
+    color:#8492a7;
+
+    font-size:12px;
+
+    line-height:1.5;
+
+}
+
+.status{
+
+    margin-top:18px;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    background:#f5f8fc;
+
+    color:#65758c;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    display:none;
+
 }
 
 
 /* =========================================================
-   BANK DETAILS
+   BANK TRANSFER DETAILS
 ========================================================= */
 
 .transfer-details{
 
     display:none;
 
-    margin-top:18px;
+    margin-top:20px;
+
+    text-align:left;
+
+    background:#eef6ff;
+
+    border:1px solid #dceaff;
+
+    border-radius:18px;
+
+    padding:18px;
+
 }
 
-.transfer-row{
+.transfer-title{
 
-    padding:13px 0;
-
-    border-bottom:1px solid #e3ebf7;
-}
-
-.transfer-row:last-child{
-
-    border-bottom:none;
-}
-
-.transfer-label{
-
-    color:#718198;
-
-    font-size:12px;
-
-    margin-bottom:5px;
-}
-
-.transfer-value{
-
-    font-size:15px;
-
-    font-weight:700;
-
-    word-break:break-word;
-}
-
-.copy-btn{
-
-    margin-top:8px;
-
-    border:1px solid #d8e3f2;
-
-    background:white;
-
-    color:#10233f;
-
-    padding:8px 11px;
-
-    border-radius:9px;
-
-    font-size:12px;
-
-    font-weight:650;
-
-    cursor:pointer;
-}
-
-.paid-btn{
-
-    width:100%;
-
-    margin-top:17px;
-
-    border:none;
-
-    border-radius:13px;
-
-    background:#10233f;
-
-    color:white;
-
-    padding:14px;
-
-    font-size:14px;
-
-    font-weight:750;
-
-    cursor:pointer;
-}
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-.status-panel{
-
-    display:none;
-
-    margin-top:16px;
-
-    padding:16px;
-
-    border-radius:15px;
-
-    font-size:14px;
-
-    line-height:1.5;
-}
-
-.status-panel.pending{
-
-    background:#fffaf0;
-
-    border:1px solid #f3dfb1;
-
-    color:#806b3b;
-}
-
-.status-panel.confirmed{
-
-    background:#f0fdf4;
-
-    border:1px solid #bbf7d0;
-
-    color:#166534;
-}
-
-.status-panel.failed{
-
-    background:#fff1f2;
-
-    border:1px solid #fecdd3;
-
-    color:#9f1239;
-}
-
-.status-title{
+    font-size:16px;
 
     font-weight:800;
 
-    margin-bottom:5px;
+    color:#10233f;
+
+    margin-bottom:6px;
+
 }
 
+.transfer-note{
 
-/* =========================================================
-   ERROR
-========================================================= */
-
-.error{
-
-    display:none;
-
-    padding:14px 15px;
-
-    border-radius:13px;
-
-    background:#fff1f2;
-
-    border:1px solid #fecdd3;
-
-    color:#9f1239;
+    color:#6d7f98;
 
     font-size:13px;
 
     line-height:1.5;
 
     margin-bottom:16px;
+
 }
 
+.transfer-row{
 
-/* =========================================================
-   LOADING
-========================================================= */
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:13px 0;
+
+    border-bottom:1px solid #dce7f5;
+
+}
+
+.transfer-row:last-child{
+
+    border-bottom:0;
+
+}
+
+.transfer-row span{
+
+    color:#6b7c94;
+
+    font-size:13px;
+
+}
+
+.transfer-row strong{
+
+    color:#10233f;
+
+    font-size:14px;
+
+    text-align:right;
+
+    word-break:break-word;
+
+}
+
+.account-number{
+
+    font-size:22px !important;
+
+    color:#1677ff !important;
+
+    letter-spacing:.5px;
+
+}
+
+.copy-button{
+
+    margin-top:15px;
+
+    width:100%;
+
+    border:0;
+
+    background:#ffffff;
+
+    color:#1667d9;
+
+    border:1px solid #d5e5fa;
+
+    padding:13px;
+
+    border-radius:13px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+}
+
+.copy-button:active{
+
+    transform:scale(.99);
+
+}
+
+.expiry-warning{
+
+    margin-top:14px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#ffffff;
+
+    color:#65758c;
+
+    font-size:12px;
+
+    line-height:1.5;
+
+    text-align:center;
+
+}
 
 .loading{
 
     text-align:center;
 
-    padding:40px 10px;
+    padding:60px 20px;
+
+}
+
+.spinner{
+
+    width:38px;
+
+    height:38px;
+
+    border:4px solid #e3edfa;
+
+    border-top-color:#1677ff;
+
+    border-radius:50%;
+
+    margin:0 auto 16px;
+
+    animation:spin .8s linear infinite;
+
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+.error{
+
+    display:none;
+
+    text-align:center;
+
+    padding:45px 20px;
+
+}
+
+.error-icon{
+
+    font-size:42px;
+
+    margin-bottom:12px;
+
+}
+
+.error h2{
+
+    margin-bottom:8px;
+
+}
+
+.error p{
 
     color:#718198;
 
     font-size:14px;
+
+    line-height:1.5;
+
+    margin-bottom:20px;
+
 }
 
+.secondary{
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+    border:0;
+
+    background:#eef5ff;
+
+    color:#1667d9;
+
+    padding:13px 20px;
+
+    border-radius:13px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+}
 
 @media(max-width:600px){
 
     main{
 
-        padding:
-            28px
-            14px
-            50px;
+        padding:25px 15px 45px;
+
     }
 
-    h1{
+    .page-title h1{
 
-        font-size:26px;
+        font-size:29px;
+
+    }
+
+    .card{
+
+        padding:19px;
+
+        border-radius:20px;
+
+    }
+
+    .phone-number{
+
+        font-size:21px;
+
     }
 
     .detail-row{
 
+        font-size:14px;
+
+    }
+
+    .transfer-row{
+
         align-items:flex-start;
+
     }
 
 }
@@ -525,7 +706,9 @@ h1{
 
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -535,15 +718,18 @@ h1{
             N
         </div>
 
-        <span>Numora</span>
+        Numora
 
     </div>
 
+
     <button
-        class="back-btn"
+        class="back"
         onclick="goBack()"
     >
-        Back
+
+        Dashboard
+
     </button>
 
 </header>
@@ -551,40 +737,59 @@ h1{
 
 <main>
 
-    <h1>
-        Payment
-    </h1>
 
-    <p class="subtitle">
-        Complete your payment to activate your Numora number.
-    </p>
-
-
-    <div
-        id="error"
-        class="error"
-    ></div>
-
-
-    <!-- =====================================================
-         LOADING
-    ====================================================== -->
+    <!-- LOADING -->
 
     <div
         id="loading"
-        class="card"
+        class="loading"
     >
 
-        <div class="loading">
+        <div class="spinner"></div>
+
+        <p>
             Loading your order...
-        </div>
+        </p>
 
     </div>
 
 
-    <!-- =====================================================
-         PAYMENT CONTENT
-    ====================================================== -->
+    <!-- ERROR -->
+
+    <div
+        id="error"
+        class="error"
+    >
+
+        <div class="error-icon">
+            !
+        </div>
+
+        <h2>
+            Order not found
+        </h2>
+
+        <p id="errorMessage">
+
+            We couldn't load this order.
+            Please return to your dashboard
+            and try again.
+
+        </p>
+
+        <button
+            class="secondary"
+            onclick="goBack()"
+        >
+
+            Return to Dashboard
+
+        </button>
+
+    </div>
+
+
+    <!-- PAYMENT CONTENT -->
 
     <div
         id="paymentContent"
@@ -592,335 +797,293 @@ h1{
     >
 
 
-        <!-- ORDER -->
+        <div class="page-title">
 
-        <div class="card">
+            <h1>
+                Complete Your Order
+            </h1>
 
-            <div class="card-title">
-                Order details
-            </div>
-
-
-            <div class="detail-row">
-
-                <span class="detail-label">
-                    Number
-                </span>
-
-                <span
-                    id="orderNumber"
-                    class="detail-value"
-                >
-                    —
-                </span>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span class="detail-label">
-                    Country
-                </span>
-
-                <span
-                    id="orderCountry"
-                    class="detail-value"
-                >
-                    —
-                </span>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span class="detail-label">
-                    Usage
-                </span>
-
-                <span
-                    id="orderUsage"
-                    class="detail-value"
-                >
-                    —
-                </span>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span class="detail-label">
-                    Status
-                </span>
-
-                <span
-                    id="orderStatus"
-                    class="detail-value"
-                >
-                    —
-                </span>
-
-            </div>
-
-
-            <div class="total-row">
-
-                <span class="total-label">
-                    Total
-                </span>
-
-                <span
-                    id="orderTotal"
-                    class="total-value"
-                >
-                    —
-                </span>
-
-            </div>
+            <p>
+                Review your number before continuing to payment.
+            </p>
 
         </div>
+
+
+        <!-- NUMBER -->
+
+        <section class="card">
+
+            <div class="card-title">
+                Your selected number
+            </div>
+
+
+            <div class="order-number">
+
+                <div class="label">
+                    Numora number
+                </div>
+
+                <div
+                    class="phone-number"
+                    id="phoneNumber"
+                >
+                    —
+                </div>
+
+                <div
+                    class="area"
+                    id="phoneArea"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="details">
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Country
+                    </span>
+
+                    <strong id="country">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Usage
+                    </span>
+
+                    <strong id="usage">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Order status
+                    </span>
+
+                    <strong id="orderStatus">
+                        Awaiting payment
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="total">
+
+                <span>
+                    Order total
+                </span>
+
+                <strong id="price">
+                    ₦0
+                </strong>
+
+            </div>
+
+        </section>
 
 
         <!-- PAYMENT -->
 
-        <div class="card">
+        <section class="card payment-box">
 
-            <div class="card-title">
-                Payment
+            <div class="payment-icon">
+                ₦
+            </div>
+
+
+            <h2>
+                Pay by Bank Transfer
+            </h2>
+
+
+            <p>
+                Your order has been created successfully.
+                Continue to generate your secure Paystack
+                bank transfer payment details.
+            </p>
+
+
+            <button
+                class="pay-button"
+                id="payButton"
+                onclick="startPayment()"
+            >
+
+                Continue to Bank Transfer
+
+            </button>
+
+
+            <div class="security">
+
+                Secure payment processing will be handled
+                by Paystack.
+
             </div>
 
 
             <div
-                id="paymentBox"
-                class="payment-box"
+                class="status"
+                id="paymentStatus"
+            ></div>
+
+
+            <!-- BANK TRANSFER DETAILS -->
+
+            <div
+                class="transfer-details"
+                id="transferDetails"
             >
 
-                <h2>
-                    Pay by Bank Transfer
-                </h2>
+                <div class="transfer-title">
+                    Bank Transfer Details
+                </div>
 
-                <p>
-                    Generate your dedicated bank transfer
-                    details below. Your payment reference
-                    is linked to this order.
-                </p>
+                <div class="transfer-note">
+                    Transfer the exact order amount to the
+                    temporary account below.
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Bank
+                    </span>
+
+                    <strong id="transferBank">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Account name
+                    </span>
+
+                    <strong id="transferAccountName">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Account number
+                    </span>
+
+                    <strong
+                        id="transferAccountNumber"
+                        class="account-number"
+                    >
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Amount
+                    </span>
+
+                    <strong id="transferAmount">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="transfer-row">
+
+                    <span>
+                        Reference
+                    </span>
+
+                    <strong id="transferReference">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="expiry-warning">
+
+                    This temporary account expires at
+                    <strong id="transferExpiry">
+                        —
+                    </strong>
+
+                </div>
 
 
                 <button
-                    id="startPaymentButton"
-                    class="primary-btn"
-                    onclick="startPayment()"
+                    class="copy-button"
+                    id="copyAccountButton"
+                    onclick="copyAccountNumber()"
                 >
-                    Continue to Bank Transfer
+
+                    Copy Account Number
+
                 </button>
-
-
-                <!-- TRANSFER DETAILS -->
-
-                <div
-                    id="transferDetails"
-                    class="transfer-details"
-                >
-
-                    <div class="transfer-row">
-
-                        <div class="transfer-label">
-                            Bank
-                        </div>
-
-                        <div
-                            id="bankName"
-                            class="transfer-value"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="transfer-row">
-
-                        <div class="transfer-label">
-                            Account name
-                        </div>
-
-                        <div
-                            id="accountName"
-                            class="transfer-value"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="transfer-row">
-
-                        <div class="transfer-label">
-                            Account number
-                        </div>
-
-                        <div
-                            id="accountNumber"
-                            class="transfer-value"
-                        >
-                            —
-                        </div>
-
-                        <button
-                            class="copy-btn"
-                            onclick="copyAccountNumber()"
-                        >
-                            Copy Account Number
-                        </button>
-
-                    </div>
-
-
-                    <div class="transfer-row">
-
-                        <div class="transfer-label">
-                            Amount
-                        </div>
-
-                        <div
-                            id="transferAmount"
-                            class="transfer-value"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="transfer-row">
-
-                        <div class="transfer-label">
-                            Reference
-                        </div>
-
-                        <div
-                            id="paymentReference"
-                            class="transfer-value"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="transfer-row">
-
-                        <div class="transfer-label">
-                            Expiry
-                        </div>
-
-                        <div
-                            id="transferExpiry"
-                            class="transfer-value"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        id="paidButton"
-                        class="paid-btn"
-                        onclick="verifyPayment()"
-                    >
-                        I Have Paid
-                    </button>
-
-                </div>
-
-
-                <!-- PENDING -->
-
-                <div
-                    id="pendingPanel"
-                    class="status-panel pending"
-                >
-
-                    <div class="status-title">
-                        Payment pending
-                    </div>
-
-                    We haven't received confirmation yet.
-                    If you've already completed the transfer,
-                    wait a moment and check again.
-
-                    <button
-                        id="retryButton"
-                        class="primary-btn"
-                        style="margin-top:12px;"
-                        onclick="verifyPayment()"
-                    >
-                        Check Payment Again
-                    </button>
-
-                </div>
-
-
-                <!-- CONFIRMED -->
-
-                <div
-                    id="confirmedPanel"
-                    class="status-panel confirmed"
-                >
-
-                    <div class="status-title">
-                        Payment confirmed
-                    </div>
-
-                    Your payment has been confirmed.
-                    Numora is now activating your number.
-                    This page will update automatically.
-
-                </div>
-
-
-                <!-- FAILED -->
-
-                <div
-                    id="failedPanel"
-                    class="status-panel failed"
-                >
-
-                    <div class="status-title">
-                        Activation issue
-                    </div>
-
-                    Your payment was received, but the
-                    number could not be activated automatically.
-                    Please contact Numora support.
-
-                </div>
 
             </div>
 
-        </div>
+
+        </section>
+
 
     </div>
+
 
 </main>
 
 
 <script type="module">
 
+
 import {
     initializeApp
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
 
 import {
     getAuth,
     onAuthStateChanged,
     setPersistence,
     browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
 
 import {
     getFirestore,
@@ -928,206 +1091,156 @@ import {
     getDoc,
     updateDoc,
     onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
-/* =========================================================
-   FIREBASE
-========================================================= */
+/* FIREBASE */
 
 const firebaseConfig = {
 
     apiKey:
-        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+    "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
 
     authDomain:
-        "numora-c9a3b.firebaseapp.com",
+    "numora-c9a3b.firebaseapp.com",
 
     projectId:
-        "numora-c9a3b",
+    "numora-c9a3b",
 
     storageBucket:
-        "numora-c9a3b.firebasestorage.app",
+    "numora-c9a3b.firebasestorage.app",
 
     messagingSenderId:
-        "778502274031",
+    "778502274031",
 
     appId:
-        "1:778502274031:web:4cf57beed3703cbe5dd41a",
+    "1:778502274031:web:4cf57beed3703cbe5dd41a",
 
     measurementId:
-        "G-6ELM21FDPH"
+    "G-6ELM21FDPH"
+
 };
+
 
 const app =
     initializeApp(firebaseConfig);
 
+
 const auth =
     getAuth(app);
+
 
 const db =
     getFirestore(app);
 
 
-/* =========================================================
-   BACKEND
-========================================================= */
+/* RENDER BACKEND */
 
 const BACKEND_URL =
     "https://numora-backend-cle6.onrender.com";
 
 
-/* =========================================================
-   ORDER
-========================================================= */
+/* ORDER ID */
 
 const params =
     new URLSearchParams(
         window.location.search
     );
 
+
 const orderId =
     params.get("orderId");
+
 
 let currentUser = null;
 
 let currentOrder = null;
 
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const loading =
-    document.getElementById("loading");
-
-const paymentContent =
-    document.getElementById("paymentContent");
-
-const errorEl =
-    document.getElementById("error");
-
-const orderNumber =
-    document.getElementById("orderNumber");
-
-const orderCountry =
-    document.getElementById("orderCountry");
-
-const orderUsage =
-    document.getElementById("orderUsage");
-
-const orderStatus =
-    document.getElementById("orderStatus");
-
-const orderTotal =
-    document.getElementById("orderTotal");
-
-const startPaymentButton =
-    document.getElementById(
-        "startPaymentButton"
-    );
-
-const transferDetails =
-    document.getElementById(
-        "transferDetails"
-    );
-
-const bankName =
-    document.getElementById("bankName");
-
-const accountName =
-    document.getElementById("accountName");
-
-const accountNumber =
-    document.getElementById(
-        "accountNumber"
-    );
-
-const transferAmount =
-    document.getElementById(
-        "transferAmount"
-    );
-
-const paymentReference =
-    document.getElementById(
-        "paymentReference"
-    );
-
-const transferExpiry =
-    document.getElementById(
-        "transferExpiry"
-    );
-
-const paidButton =
-    document.getElementById(
-        "paidButton"
-    );
-
-const pendingPanel =
-    document.getElementById(
-        "pendingPanel"
-    );
-
-const confirmedPanel =
-    document.getElementById(
-        "confirmedPanel"
-    );
-
-const failedPanel =
-    document.getElementById(
-        "failedPanel"
-    );
+let unsubscribeOrder = null;
 
 
-/* =========================================================
-   ERROR
-========================================================= */
+/* NAVIGATION */
+
+window.goBack = function(){
+
+    window.location.href =
+        "/numorahq/dashboard.html";
+
+};
+
+
+/* SHOW ERROR */
 
 function showError(message){
 
-    errorEl.textContent =
+    document
+        .getElementById("loading")
+        .style.display = "none";
+
+
+    document
+        .getElementById("paymentContent")
+        .style.display = "none";
+
+
+    document
+        .getElementById("error")
+        .style.display = "block";
+
+
+    document
+        .getElementById("errorMessage")
+        .textContent =
         message;
 
-    errorEl.style.display =
-        "block";
-
-}
-
-function hideError(){
-
-    errorEl.textContent =
-        "";
-
-    errorEl.style.display =
-        "none";
-
 }
 
 
-/* =========================================================
-   FORMAT
-========================================================= */
+/* PAYMENT STATUS */
 
-function formatMoney(
-    amount,
-    currency = "NGN"
+function showPaymentStatus(
+    message,
+    isError = false
 ){
 
-    if(currency === "NGN"){
+    const status =
+        document.getElementById(
+            "paymentStatus"
+        );
 
-        return "₦" +
-            Number(amount || 0)
-                .toLocaleString();
+
+    status.style.display =
+        "block";
+
+
+    status.textContent =
+        message;
+
+
+    if(isError){
+
+        status.style.background =
+            "#fff1f1";
+
+        status.style.color =
+            "#a63d3d";
+
+    }else{
+
+        status.style.background =
+            "#f5f8fc";
+
+        status.style.color =
+            "#65758c";
 
     }
 
-    return `${currency} ${
-        Number(amount || 0)
-            .toLocaleString()
-    }`;
-
 }
 
+
+/* FORMAT DATE */
 
 function formatTransferExpiry(
     value
@@ -1135,37 +1248,393 @@ function formatTransferExpiry(
 
     if(!value){
 
-        return "—";
+        return "the stated expiry time";
 
     }
+
 
     const date =
         new Date(value);
 
-    if(Number.isNaN(date.getTime())){
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
 
         return value;
 
     }
 
-    return date.toLocaleString();
+
+    return date.toLocaleString(
+        "en-NG",
+        {
+            dateStyle:"medium",
+            timeStyle:"short"
+        }
+    );
 
 }
 
 
 /* =========================================================
-   LOAD ORDER
+   REAL-TIME ORDER LISTENER
+
+   This keeps the payment page connected to the backend.
+
+   Paystack webhook
+        ↓
+   Render backend
+        ↓
+   Firestore order updated
+        ↓
+   This page updates automatically
 ========================================================= */
+
+function listenToOrder(){
+
+    if(!orderId || !currentUser){
+
+        return;
+
+    }
+
+
+    if(unsubscribeOrder){
+
+        unsubscribeOrder();
+
+        unsubscribeOrder = null;
+
+    }
+
+
+    const orderRef =
+        doc(
+            db,
+            "orders",
+            orderId
+        );
+
+
+    unsubscribeOrder =
+        onSnapshot(
+            orderRef,
+            snapshot => {
+
+                if(!snapshot.exists()){
+
+                    return;
+
+                }
+
+
+                const order =
+                    snapshot.data();
+
+
+                if(
+                    order.userId !==
+                    currentUser.uid
+                ){
+
+                    return;
+
+                }
+
+
+                currentOrder =
+                    order;
+
+
+                updateOrderDisplay(
+                    order
+                );
+
+
+                handleOrderStatus(
+                    order
+                );
+
+            },
+
+            error => {
+
+                console.error(
+                    "ORDER LISTENER ERROR:",
+                    error
+                );
+
+            }
+
+        );
+
+}
+
+
+/* =========================================================
+   UPDATE ORDER DISPLAY
+========================================================= */
+
+function updateOrderDisplay(
+    order
+){
+
+    document
+        .getElementById("phoneNumber")
+        .textContent =
+        order.phoneNumber ||
+        order.twilioPhoneNumber ||
+        "—";
+
+
+    document
+        .getElementById("phoneArea")
+        .textContent =
+        order.area ||
+        "United States";
+
+
+    document
+        .getElementById("country")
+        .textContent =
+        order.country ||
+        "United States";
+
+
+    document
+        .getElementById("usage")
+        .textContent =
+        order.usage ||
+        "SMS";
+
+
+    document
+        .getElementById("orderStatus")
+        .textContent =
+        order.status ||
+        "Awaiting payment";
+
+
+    const price =
+        Number(
+            order.price || 0
+        );
+
+
+    document
+        .getElementById("price")
+        .textContent =
+        "₦" +
+        price.toLocaleString(
+            "en-NG"
+        );
+
+
+    /*
+     * Restore bank transfer details if
+     * they already exist.
+     */
+
+    if(
+        order.transferAccountNumber &&
+        order.paymentReference
+    ){
+
+        document
+            .getElementById(
+                "transferBank"
+            )
+            .textContent =
+            order.transferBank ||
+            "Paystack Bank";
+
+
+        document
+            .getElementById(
+                "transferAccountName"
+            )
+            .textContent =
+            order.transferAccountName ||
+            "Numora";
+
+
+        document
+            .getElementById(
+                "transferAccountNumber"
+            )
+            .textContent =
+            order.transferAccountNumber;
+
+
+        document
+            .getElementById(
+                "transferAmount"
+            )
+            .textContent =
+            "₦" +
+            price.toLocaleString(
+                "en-NG"
+            );
+
+
+        document
+            .getElementById(
+                "transferReference"
+            )
+            .textContent =
+            order.paymentReference;
+
+
+        document
+            .getElementById(
+                "transferExpiry"
+            )
+            .textContent =
+            formatTransferExpiry(
+                order.transferExpiresAt
+            );
+
+
+        document
+            .getElementById(
+                "transferDetails"
+            )
+            .style.display =
+            "block";
+
+
+        document
+            .getElementById(
+                "payButton"
+            )
+            .style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================================================
+   HANDLE BACKEND ORDER STATUS
+========================================================= */
+
+function handleOrderStatus(
+    order
+){
+
+    const status =
+        String(
+            order.status || ""
+        ).toLowerCase();
+
+
+    const paymentStatus =
+        String(
+            order.paymentStatus || ""
+        ).toLowerCase();
+
+
+    /*
+     * NUMBER SUCCESSFULLY ACTIVATED
+     */
+
+    if(
+        status === "active" ||
+        order.provisioningStatus === "Active"
+    ){
+
+        showPaymentStatus(
+            "Payment received successfully. Your Numora number is now active."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * PAYMENT RECEIVED BUT NUMBER IS
+     * STILL BEING PROVISIONED
+     */
+
+    if(
+        status === "activating" ||
+        status === "payment confirmed" ||
+        order.provisioningStatus === "Processing" ||
+        paymentStatus === "paid" ||
+        paymentStatus === "activating"
+    ){
+
+        showPaymentStatus(
+            "Payment received. Your Numora number is being activated. Please wait..."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * NUMBER WAS NO LONGER AVAILABLE
+     */
+
+    if(
+        status === "number unavailable" ||
+        order.provisioningStatus === "Unavailable"
+    ){
+
+        showPaymentStatus(
+            "Payment was received, but the selected number is no longer available. Please contact Numora support before making another payment.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * PAYMENT FAILED
+     */
+
+    if(
+        paymentStatus === "failed" ||
+        status === "payment failed"
+    ){
+
+        showPaymentStatus(
+            "The payment could not be confirmed. Please try again.",
+            true
+        );
+
+    }
+
+}
+
+
+/* LOAD ORDER */
 
 async function loadOrder(){
 
     if(!orderId){
 
-        loading.style.display =
-            "none";
+        showError(
+            "No order was provided. Please return to your dashboard and start again."
+        );
+
+        return;
+
+    }
+
+
+    if(!currentUser){
 
         showError(
-            "No order was provided."
+            "You must be signed in to view this order."
         );
 
         return;
@@ -1182,32 +1651,40 @@ async function loadOrder(){
                 orderId
             );
 
-        const snapshot =
+
+        const orderSnapshot =
             await getDoc(orderRef);
 
 
-        if(!snapshot.exists()){
+        if(!orderSnapshot.exists()){
 
-            throw new Error(
-                "This order could not be found."
+            showError(
+                "This order does not exist or may have expired."
             );
+
+            return;
 
         }
 
 
         const order =
-            snapshot.data();
+            orderSnapshot.data();
 
+
+        /*
+         * SECURITY CHECK
+         */
 
         if(
-            !currentUser ||
             order.userId !==
-                currentUser.uid
+            currentUser.uid
         ){
 
-            throw new Error(
-                "You do not have access to this order."
+            showError(
+                "You do not have permission to view this order."
             );
+
+            return;
 
         }
 
@@ -1215,381 +1692,243 @@ async function loadOrder(){
         currentOrder =
             order;
 
-        renderOrder(
+
+        updateOrderDisplay(
             order
         );
 
 
-        loading.style.display =
+        handleOrderStatus(
+            order
+        );
+
+
+        document
+            .getElementById("loading")
+            .style.display =
             "none";
 
-        paymentContent.style.display =
+
+        document
+            .getElementById("paymentContent")
+            .style.display =
             "block";
 
 
         /*
-         * Restore transfer details if the
-         * user previously generated them.
+         * Start real-time updates.
          */
 
+        listenToOrder();
+
+    }
+
+    catch(error){
+
+        console.error(
+            "LOAD ORDER ERROR:",
+            error
+        );
+
+
+        showError(
+            "We couldn't load your order. Please try again."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   START PAYSTACK BANK TRANSFER
+========================================================= */
+
+window.startPayment = async function(){
+
+    const button =
+        document.getElementById(
+            "payButton"
+        );
+
+
+    if(!currentUser){
+
+        showPaymentStatus(
+            "Your session has expired. Please sign in again.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if(!currentOrder){
+
+        showPaymentStatus(
+            "Your order could not be loaded. Please return to the dashboard and try again.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    const amount =
+        Number(
+            currentOrder.price || 0
+        );
+
+
+    if(
+        !amount ||
+        amount <= 0
+    ){
+
+        showPaymentStatus(
+            "The order amount is invalid.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if(!currentUser.email){
+
+        showPaymentStatus(
+            "Your Google account does not have an email address available for payment.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Generating Bank Details...";
+
+
+    showPaymentStatus(
+        "Connecting securely to Paystack..."
+    );
+
+
+    try{
+
+        /*
+         * Generate a unique reference.
+         */
+
+        const reference =
+            "NUMORA-" +
+            orderId +
+            "-" +
+            Date.now();
+
+
+        const response =
+            await fetch(
+                BACKEND_URL +
+                "/api/paystack/bank-transfer",
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        email:
+                            currentUser.email,
+
+                        amount:
+                            amount,
+
+                        reference:
+                            reference
+
+                    })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Paystack response:",
+            result
+        );
+
+
         if(
-            order.transferAccountNumber &&
-            order.paymentReference
+            !response.ok ||
+            !result.success
         ){
 
-            displayExistingTransferDetails(
-                order
+            throw new Error(
+                result.message ||
+                "Unable to create bank transfer."
             );
 
         }
 
 
-        updateStateFromOrder(
-            order
-        );
+        const transfer =
+            result.data;
+
+
+        const accountNumber =
+            transfer.account_number;
+
+
+        const accountName =
+            transfer.account_name;
+
+
+        const bankName =
+            transfer.bank &&
+            transfer.bank.name
+                ? transfer.bank.name
+                : "Paystack Bank";
+
+
+        const paymentReference =
+            transfer.reference ||
+            reference;
+
+
+        const expiry =
+            transfer.account_expires_at;
+
+
+        if(!accountNumber){
+
+            throw new Error(
+                "Paystack did not return a temporary bank account. Please try again."
+            );
+
+        }
 
 
         /*
-         * Continue watching the order.
-         * This allows the payment page to notice
-         * webhook payment confirmation and activation.
+         * Save payment details to Firestore.
          */
 
-        monitorOrder(
-            orderRef
-        );
-
-
-    }catch(error){
-
-        console.error(error);
-
-        loading.style.display =
-            "none";
-
-        showError(
-            error.message ||
-            "Unable to load this order."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   RENDER ORDER
-========================================================= */
-
-function renderOrder(
-    order
-){
-
-    orderNumber.textContent =
-        order.twilioPhoneNumber ||
-        order.phoneNumber ||
-        "—";
-
-    orderCountry.textContent =
-        `${
-            order.country ||
-            "United States"
-        } ${
-            order.countryCode
-                ? "+" + order.countryCode
-                : ""
-        }`;
-
-    orderUsage.textContent =
-        order.productName ||
-        order.usage ||
-        "—";
-
-    orderStatus.textContent =
-        order.status ||
-        "Awaiting payment";
-
-    orderTotal.textContent =
-        formatMoney(
-            order.price,
-            order.currency
-        );
-
-}
-
-
-/* =========================================================
-   ORDER STATE
-========================================================= */
-
-function updateStateFromOrder(
-    order
-){
-
-    orderStatus.textContent =
-        order.status ||
-        "Awaiting payment";
-
-
-    /*
-     * Number active.
-     */
-
-    if(
-        order.provisioningStatus ===
-            "Active"
-    ){
-
-        showConfirmedPanel(
-            "Your payment has been confirmed and your Numora number is active."
-        );
-
-        return;
-    }
-
-
-    /*
-     * Number unavailable.
-     */
-
-    if(
-        order.provisioningStatus ===
-            "Unavailable" ||
-        order.status ===
-            "Number unavailable"
-    ){
-
-        showFailedPanel(
-            "Payment was received, but the selected number was no longer available for activation."
-        );
-
-        return;
-    }
-
-
-    /*
-     * Provisioning failed.
-     */
-
-    if(
-        order.provisioningStatus ===
-            "Failed"
-    ){
-
-        showFailedPanel(
-            "Payment was received, but number activation could not be completed automatically."
-        );
-
-        return;
-    }
-
-
-    /*
-     * Payment received but activation is ongoing.
-     */
-
-    if(
-        order.paymentStatus === "Paid" ||
-        order.status === "Activating"
-    ){
-
-        showConfirmedPanel(
-            "Payment confirmed. Numora is activating your number now."
-        );
-
-        return;
-    }
-
-
-    /*
-     * Still unpaid.
-     */
-
-    if(
-        order.paymentStatus ===
-            "Unpaid"
-    ){
-
-        confirmedPanel.style.display =
-            "none";
-
-    }
-
-}
-
-
-/* =========================================================
-   EXISTING TRANSFER
-========================================================= */
-
-function displayExistingTransferDetails(
-    order
-){
-
-    bankName.textContent =
-        order.transferBankName ||
-        order.transferBank ||
-        "—";
-
-    accountName.textContent =
-        order.transferAccountName ||
-        "—";
-
-    accountNumber.textContent =
-        order.transferAccountNumber ||
-        "—";
-
-    transferAmount.textContent =
-        formatMoney(
-            order.price,
-            order.currency
-        );
-
-    paymentReference.textContent =
-        order.paymentReference ||
-        "—";
-
-    transferExpiry.textContent =
-        formatTransferExpiry(
-            order.transferExpiresAt ||
-            order.accountExpiresAt
-        );
-
-
-    transferDetails.style.display =
-        "block";
-
-    startPaymentButton.style.display =
-        "none";
-
-}
-
-
-/* =========================================================
-   START PAYMENT
-========================================================= */
-
-window.startPayment =
-    async function(){
-
-        hideError();
-
-        if(!currentUser){
-
-            showError(
-                "Please sign in again."
-            );
-
-            return;
-
-        }
-
-
-        if(!currentOrder){
-
-            showError(
-                "Order information is unavailable."
-            );
-
-            return;
-
-        }
-
-
-        const amount =
-            Number(
-                currentOrder.price
-            );
-
-
-        if(
-            !Number.isFinite(amount) ||
-            amount <= 0
-        ){
-
-            showError(
-                "Invalid payment amount."
-            );
-
-            return;
-
-        }
-
-
-        startPaymentButton.disabled =
-            true;
-
-        startPaymentButton.textContent =
-            "Generating transfer details...";
-
-
         try{
-
-            const reference =
-                "NUMORA-" +
-                orderId +
-                "-" +
-                Date.now();
-
-
-            const response =
-                await fetch(
-                    `${BACKEND_URL}/api/paystack/bank-transfer`,
-                    {
-                        method:"POST",
-
-                        headers:{
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:JSON.stringify({
-
-                            email:
-                                currentUser.email,
-
-                            amount:
-                                amount,
-
-                            reference:
-                                reference
-
-                        })
-
-                    }
-                );
-
-
-            const result =
-                await response.json();
-
-
-            if(
-                !response.ok ||
-                !result.success
-            ){
-
-                throw new Error(
-                    result.message ||
-                    "Unable to generate bank transfer details."
-                );
-
-            }
-
-
-            const data =
-                result.data ||
-                {};
-
-
-            const bank =
-                data.bank ||
-                {};
-
-
-            /*
-             * Save payment details to Firestore.
-             */
 
             const orderRef =
                 doc(
@@ -1603,412 +1942,229 @@ window.startPayment =
                 orderRef,
                 {
 
+                    paymentStatus:
+                        "Awaiting bank transfer",
+
                     paymentReference:
-                        data.reference ||
-                        reference,
+                        paymentReference,
+
+                    paymentProvider:
+                        "Paystack",
+
+                    paymentChannel:
+                        "bank_transfer",
 
                     transferAccountNumber:
-                        data.account_number ||
-                        null,
+                        accountNumber,
 
                     transferAccountName:
-                        data.account_name ||
-                        null,
+                        accountName || "",
 
-                    transferBankName:
-                        bank.name ||
-                        null,
+                    transferBank:
+                        bankName,
 
                     transferExpiresAt:
-                        data.account_expires_at ||
-                        null,
-
-                    paymentStatus:
-                        "Pending",
-
-                    status:
-                        "Awaiting payment"
+                        expiry || null
 
                 }
             );
 
-
-            /*
-             * Update local order.
-             */
-
-            currentOrder = {
-
-                ...currentOrder,
-
-                paymentReference:
-                    data.reference ||
-                    reference,
-
-                transferAccountNumber:
-                    data.account_number ||
-                    null,
-
-                transferAccountName:
-                    data.account_name ||
-                    null,
-
-                transferBankName:
-                    bank.name ||
-                    null,
-
-                transferExpiresAt:
-                    data.account_expires_at ||
-                    null,
-
-                paymentStatus:
-                    "Pending",
-
-                status:
-                    "Awaiting payment"
-
-            };
-
-
-            displayExistingTransferDetails(
-                currentOrder
-            );
-
-
-        }catch(error){
-
-            console.error(error);
-
-            showError(
-                error.message ||
-                "Unable to generate payment details."
-            );
-
-            startPaymentButton.disabled =
-                false;
-
-            startPaymentButton.textContent =
-                "Continue to Bank Transfer";
-
         }
 
-    };
+        catch(updateError){
 
-
-/* =========================================================
-   VERIFY PAYMENT
-========================================================= */
-
-window.verifyPayment =
-    async function(){
-
-        hideError();
-
-        if(
-            !currentOrder ||
-            !currentOrder.paymentReference
-        ){
-
-            showError(
-                "Payment reference is missing."
-            );
-
-            return;
-
-        }
-
-
-        paidButton.disabled =
-            true;
-
-        paidButton.textContent =
-            "Checking payment...";
-
-
-        try{
-
-            const response =
-                await fetch(
-                    `${BACKEND_URL}/api/paystack/verify`,
-                    {
-                        method:"POST",
-
-                        headers:{
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:JSON.stringify({
-
-                            reference:
-                                currentOrder.paymentReference,
-
-                            expectedAmount:
-                                currentOrder.price
-
-                        })
-
-                    }
-                );
-
-
-            const result =
-                await response.json();
-
-
-            if(
-                result.paid === true
-            ){
-
-                showConfirmedPanel(
-                    "Payment confirmed. Numora is activating your number now."
-                );
-
-            }else{
-
-                showPendingPanel();
-
-            }
-
-
-        }catch(error){
-
-            console.error(error);
-
-            showError(
-                error.message ||
-                "Unable to check payment right now."
+            console.warn(
+                "Order payment details could not be saved:",
+                updateError
             );
 
         }
 
 
-        paidButton.disabled =
-            false;
+        /*
+         * DISPLAY BANK DETAILS
+         */
 
-        paidButton.textContent =
-            "I Have Paid";
-
-    };
-
-
-/* =========================================================
-   CONFIRMED
-========================================================= */
-
-function showConfirmedPanel(
-    message
-){
-
-    pendingPanel.style.display =
-        "none";
-
-    failedPanel.style.display =
-        "none";
-
-    confirmedPanel.style.display =
-        "block";
+        document
+            .getElementById(
+                "transferBank"
+            )
+            .textContent =
+            bankName;
 
 
-    const title =
-        confirmedPanel.querySelector(
-            ".status-title"
+        document
+            .getElementById(
+                "transferAccountName"
+            )
+            .textContent =
+            accountName ||
+            "Numora";
+
+
+        document
+            .getElementById(
+                "transferAccountNumber"
+            )
+            .textContent =
+            accountNumber;
+
+
+        document
+            .getElementById(
+                "transferAmount"
+            )
+            .textContent =
+            "₦" +
+            amount.toLocaleString(
+                "en-NG"
+            );
+
+
+        document
+            .getElementById(
+                "transferReference"
+            )
+            .textContent =
+            paymentReference;
+
+
+        document
+            .getElementById(
+                "transferExpiry"
+            )
+            .textContent =
+            formatTransferExpiry(
+                expiry
+            );
+
+
+        document
+            .getElementById(
+                "transferDetails"
+            )
+            .style.display =
+            "block";
+
+
+        button.style.display =
+            "none";
+
+
+        showPaymentStatus(
+            "Your temporary bank transfer account is ready. Transfer the exact amount shown below."
         );
 
-    if(title){
+    }
 
-        title.textContent =
-            "Payment confirmed";
+    catch(error){
+
+        console.error(
+            "BANK TRANSFER ERROR:",
+            error
+        );
+
+
+        showPaymentStatus(
+            error.message ||
+            "Unable to create your bank transfer. Please try again.",
+            true
+        );
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Continue to Bank Transfer";
+
+    }
+
+};
+
+
+/* COPY ACCOUNT NUMBER */
+
+window.copyAccountNumber =
+function(){
+
+    const accountNumber =
+        document
+            .getElementById(
+                "transferAccountNumber"
+            )
+            .textContent;
+
+
+    if(
+        !accountNumber ||
+        accountNumber === "—"
+    ){
+
+        return;
 
     }
 
 
-    const text =
-        confirmedPanel.lastChild;
+    navigator
+        .clipboard
+        .writeText(
+            accountNumber
+        )
+        .then(() => {
 
-    /*
-     * Keep the existing card design and replace
-     * only the status message text.
-     */
-
-    confirmedPanel.innerHTML = `
-
-        <div class="status-title">
-            Payment confirmed
-        </div>
-
-        ${message}
-
-    `;
-
-}
+            const button =
+                document.getElementById(
+                    "copyAccountButton"
+                );
 
 
-/* =========================================================
-   PENDING
-========================================================= */
-
-function showPendingPanel(){
-
-    confirmedPanel.style.display =
-        "none";
-
-    failedPanel.style.display =
-        "none";
-
-    pendingPanel.style.display =
-        "block";
-
-}
+            const originalText =
+                button.textContent;
 
 
-/* =========================================================
-   FAILED
-========================================================= */
-
-function showFailedPanel(
-    message
-){
-
-    pendingPanel.style.display =
-        "none";
-
-    confirmedPanel.style.display =
-        "none";
-
-    failedPanel.style.display =
-        "block";
+            button.textContent =
+                "Account Number Copied";
 
 
-    failedPanel.innerHTML = `
+            setTimeout(
+                () => {
 
-        <div class="status-title">
-            Activation issue
-        </div>
+                    button.textContent =
+                        originalText;
 
-        ${message}
-
-    `;
-
-}
-
-
-/* =========================================================
-   COPY
-========================================================= */
-
-window.copyAccountNumber =
-    async function(){
-
-        const number =
-            accountNumber.textContent.trim();
-
-        if(
-            !number ||
-            number === "—"
-        ){
-
-            return;
-
-        }
-
-
-        try{
-
-            await navigator.clipboard.writeText(
-                number
+                },
+                1800
             );
 
-        }catch(error){
-
-            console.error(error);
-
-        }
-
-    };
-
-
-/* =========================================================
-   LIVE ORDER LISTENER
-========================================================= */
-
-function monitorOrder(
-    orderRef
-){
-
-    onSnapshot(
-        orderRef,
-        snapshot => {
-
-            if(!snapshot.exists()){
-
-                return;
-
-            }
-
-
-            const order =
-                snapshot.data();
-
-
-            if(
-                order.userId !==
-                currentUser?.uid
-            ){
-
-                return;
-
-            }
-
-
-            currentOrder =
-                order;
-
-
-            renderOrder(
-                order
-            );
-
-
-            updateStateFromOrder(
-                order
-            );
-
-        },
-        error => {
+        })
+        .catch(error => {
 
             console.error(
-                "Order listener error:",
+                "COPY ERROR:",
                 error
             );
 
-        }
-    );
+        });
 
-}
-
-
-/* =========================================================
-   BACK
-========================================================= */
-
-window.goBack =
-    function(){
-
-        window.location.href =
-            "/numorahq/dashboard.html";
-
-    };
+};
 
 
-/* =========================================================
-   AUTH
-========================================================= */
+/* AUTH */
 
-await setPersistence(
+setPersistence(
     auth,
     browserLocalPersistence
-);
+).catch(error => {
+
+    console.error(
+        "Persistence error:",
+        error
+    );
+
+});
+
 
 onAuthStateChanged(
     auth,
@@ -2016,8 +2172,9 @@ onAuthStateChanged(
 
         if(!user){
 
-            window.location.href =
-                "/numorahq/";
+            window.location.replace(
+                "/numorahq/"
+            );
 
             return;
 
@@ -2027,10 +2184,12 @@ onAuthStateChanged(
         currentUser =
             user;
 
+
         loadOrder();
 
     }
 );
+
 
 </script>
 
