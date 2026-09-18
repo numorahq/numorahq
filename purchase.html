@@ -1964,8 +1964,11 @@ a {
                                 specified verification window.
                             </div>
 
-                            <div class="product-price">
-                                ₦3,000
+                            <div
+                                class="product-price"
+                                id="whatsappDisplayPrice"
+                            >
+                                Loading...
                                 <span>
                                     / 24 hours
                                 </span>
@@ -2003,8 +2006,11 @@ a {
                                 receiving SMS messages.
                             </div>
 
-                            <div class="product-price">
-                                ₦5,000
+                            <div
+                                class="product-price"
+                                id="smsDisplayPrice"
+                            >
+                                Loading...
                                 <span>
                                     / rental
                                 </span>
@@ -2042,8 +2048,11 @@ a {
                                 WhatsApp verification use.
                             </div>
 
-                            <div class="product-price">
-                                ₦6,000
+                            <div
+                                class="product-price"
+                                id="whatsappSmsDisplayPrice"
+                            >
+                                Loading...
                                 <span>
                                     / rental
                                 </span>
@@ -2101,7 +2110,7 @@ a {
                                 class="number-count"
                                 id="numberCount"
                             >
-                                Select a product first
+                                Loading prices...
                             </div>
 
                         </div>
@@ -2120,15 +2129,15 @@ a {
                                     class="number-picker-title"
                                     id="numberPickerTitle"
                                 >
-                                    Select a product first
+                                    Loading pricing...
                                 </div>
 
                                 <div
                                     class="number-picker-subtitle"
                                     id="numberPickerSubtitle"
                                 >
-                                    Your available numbers will
-                                    appear here.
+                                    Please wait while Numora loads
+                                    the current service prices.
                                 </div>
 
                             </div>
@@ -2706,6 +2715,7 @@ import {
     addDoc,
     serverTimestamp,
     doc,
+    getDoc,
     onSnapshot,
     query,
     orderBy,
@@ -2767,6 +2777,21 @@ const AVAILABLE_NUMBERS_ENDPOINT =
 
 
 /* =========================================================
+   PRICING
+========================================================= */
+
+const pricingRef =
+    doc(
+        db,
+        "adminConfig",
+        "pricing"
+    );
+
+
+let pricingLoaded = false;
+
+
+/* =========================================================
    STATE
 ========================================================= */
 
@@ -2811,7 +2836,7 @@ const products = {
             "WhatsApp Verification",
 
         price:
-            3000,
+            null,
 
         currency:
             "NGN",
@@ -2843,7 +2868,7 @@ const products = {
             "SMS Only",
 
         price:
-            5000,
+            null,
 
         currency:
             "NGN",
@@ -2875,7 +2900,7 @@ const products = {
             "WhatsApp + SMS",
 
         price:
-            6000,
+            null,
 
         currency:
             "NGN",
@@ -2982,6 +3007,24 @@ const whatsappWarning =
 const confirmWhatsappWarning =
     document.getElementById(
         "confirmWhatsappWarning"
+    );
+
+
+/* PRICING DISPLAY */
+
+const whatsappDisplayPrice =
+    document.getElementById(
+        "whatsappDisplayPrice"
+    );
+
+const smsDisplayPrice =
+    document.getElementById(
+        "smsDisplayPrice"
+    );
+
+const whatsappSmsDisplayPrice =
+    document.getElementById(
+        "whatsappSmsDisplayPrice"
     );
 
 
@@ -3102,6 +3145,209 @@ const statusDashboard =
 
 
 /* =========================================================
+   LOAD ADMIN PRICING
+========================================================= */
+
+async function loadPricing(){
+
+    pricingLoaded =
+        false;
+
+
+    numberPicker.disabled =
+        true;
+
+
+    continueBtn.disabled =
+        true;
+
+
+    numberCount.textContent =
+        "Loading prices...";
+
+
+    numberPickerTitle.textContent =
+        "Loading pricing...";
+
+
+    numberPickerSubtitle.textContent =
+        "Please wait while Numora loads the current service prices.";
+
+
+    try {
+
+        const snapshot =
+            await getDoc(
+                pricingRef
+            );
+
+
+        if(
+            !snapshot.exists()
+        ){
+
+            throw new Error(
+                "Pricing document does not exist."
+            );
+
+        }
+
+
+        const data =
+            snapshot.data();
+
+
+        const whatsappPrice =
+            Number(
+                data.whatsappPrice
+            );
+
+        const smsPrice =
+            Number(
+                data.smsPrice
+            );
+
+        const whatsappSmsPrice =
+            Number(
+                data.whatsappSmsPrice
+            );
+
+
+        if(
+            !Number.isFinite(
+                whatsappPrice
+            ) ||
+            whatsappPrice < 0
+        ){
+
+            throw new Error(
+                "Invalid WhatsApp price."
+            );
+
+        }
+
+
+        if(
+            !Number.isFinite(
+                smsPrice
+            ) ||
+            smsPrice < 0
+        ){
+
+            throw new Error(
+                "Invalid SMS price."
+            );
+
+        }
+
+
+        if(
+            !Number.isFinite(
+                whatsappSmsPrice
+            ) ||
+            whatsappSmsPrice < 0
+        ){
+
+            throw new Error(
+                "Invalid WhatsApp + SMS price."
+            );
+
+        }
+
+
+        products.whatsapp.price =
+            whatsappPrice;
+
+
+        products.sms.price =
+            smsPrice;
+
+
+        products.whatsapp_sms.price =
+            whatsappSmsPrice;
+
+
+        whatsappDisplayPrice.innerHTML =
+            `${formatNaira(whatsappPrice)}
+            <span>/ 24 hours</span>`;
+
+
+        smsDisplayPrice.innerHTML =
+            `${formatNaira(smsPrice)}
+            <span>/ rental</span>`;
+
+
+        whatsappSmsDisplayPrice.innerHTML =
+            `${formatNaira(whatsappSmsPrice)}
+            <span>/ rental</span>`;
+
+
+        pricingLoaded =
+            true;
+
+
+        numberCount.textContent =
+            "Select a product first";
+
+
+        numberPickerTitle.textContent =
+            "Select a product first";
+
+
+        numberPickerSubtitle.textContent =
+            "Your available numbers will appear here.";
+
+
+        updateProductUI();
+
+        updateSummary();
+
+        updateContinueButton();
+
+    }
+    catch(error){
+
+        console.error(
+            "Unable to load Numora pricing:",
+            error
+        );
+
+
+        whatsappDisplayPrice.innerHTML =
+            `Unavailable`;
+
+
+        smsDisplayPrice.innerHTML =
+            `Unavailable`;
+
+
+        whatsappSmsDisplayPrice.innerHTML =
+            `Unavailable`;
+
+
+        numberCount.textContent =
+            "Pricing unavailable";
+
+
+        numberPickerTitle.textContent =
+            "Pricing unavailable";
+
+
+        numberPickerSubtitle.textContent =
+            "Numora could not load the current service prices. Please refresh and try again.";
+
+
+        showMessage(
+            "We couldn't load the current Numora prices. Please refresh the page and try again.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
    AUTH
 ========================================================= */
 
@@ -3179,6 +3425,20 @@ productElements.forEach(
             "click",
             () => {
 
+                if(
+                    !pricingLoaded
+                ){
+
+                    showMessage(
+                        "Please wait for Numora's current prices to load.",
+                        "info"
+                    );
+
+                    return;
+
+                }
+
+
                 selectProduct(
                     productElement.dataset.product
                 );
@@ -3197,6 +3457,21 @@ productElements.forEach(
                 ){
 
                     event.preventDefault();
+
+
+                    if(
+                        !pricingLoaded
+                    ){
+
+                        showMessage(
+                            "Please wait for Numora's current prices to load.",
+                            "info"
+                        );
+
+                        return;
+
+                    }
+
 
                     selectProduct(
                         productElement.dataset.product
@@ -3219,11 +3494,33 @@ function selectProduct(
     productId
 ){
 
+    if(
+        !pricingLoaded
+    ){
+
+        return;
+
+    }
+
+
     const product =
         products[productId];
 
-    if(!product){
+
+    if(
+        !product ||
+        !Number.isFinite(
+            Number(product.price)
+        )
+    ){
+
+        showMessage(
+            "This product price is currently unavailable.",
+            "error"
+        );
+
         return;
+
     }
 
 
@@ -3267,6 +3564,18 @@ function selectProduct(
 ========================================================= */
 
 function updateProductUI(){
+
+    if(
+        !pricingLoaded
+    ){
+
+        numberPicker.disabled =
+            true;
+
+        return;
+
+    }
+
 
     if(!selectedProduct){
 
@@ -3337,8 +3646,13 @@ numberPicker.addEventListener(
     "click",
     async () => {
 
-        if(!selectedProduct){
+        if(
+            !selectedProduct ||
+            !pricingLoaded
+        ){
+
             return;
+
         }
 
 
@@ -3966,6 +4280,7 @@ function updateSummary(){
 function updateContinueButton(){
 
     continueBtn.disabled =
+        !pricingLoaded ||
         !selectedProduct ||
         !selectedNumber;
 
@@ -3981,6 +4296,7 @@ continueBtn.addEventListener(
     () => {
 
         if(
+            !pricingLoaded ||
             !selectedProduct ||
             !selectedNumber
         ){
@@ -4118,6 +4434,7 @@ async function createOrder(){
 
 
     if(
+        !pricingLoaded ||
         !selectedProduct ||
         !selectedNumber
     ){
@@ -4184,6 +4501,15 @@ async function createOrder(){
             usage:
                 selectedProduct.usage,
 
+
+            /*
+            =================================================
+            CURRENT ADMIN-CONTROLLED PRICE
+
+            This is read from adminConfig/pricing when the
+            page loads.
+            =================================================
+            */
 
             price:
                 selectedProduct.price,
@@ -4515,7 +4841,7 @@ function showProvisioningStatus(
 
 
     statusSubtitle.textContent =
-        "Your payment has been confirmed. Numora is now activating the selected number."
+        "Your payment has been confirmed. Numora is now activating the selected number.";
 
 
     statusNumber.textContent =
@@ -5059,6 +5385,13 @@ updateProductUI();
 updateSummary();
 
 updateContinueButton();
+
+
+/* =========================================================
+   LOAD CURRENT ADMIN PRICES
+========================================================= */
+
+loadPricing();
 
 
 /* =========================================================
