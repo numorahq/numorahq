@@ -606,6 +606,108 @@ button,
 
 
 /* =========================================================
+   NCOINS
+========================================================= */
+
+.ncoins-section {
+
+    position: relative;
+
+    margin-top: 24px;
+
+    padding-top: 22px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.18);
+}
+
+.ncoins-label {
+
+    color:
+        rgba(255,255,255,.72);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .4px;
+
+    margin-bottom: 6px;
+}
+
+.ncoins-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 18px;
+}
+
+.ncoins-balance {
+
+    font-size: 29px;
+
+    font-weight: 800;
+
+    letter-spacing: -.8px;
+}
+
+.ncoins-unit {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    opacity: .72;
+
+    margin-left: 4px;
+}
+
+.deposit-ncoins-btn {
+
+    flex-shrink: 0;
+
+    border: 0;
+
+    padding: 11px 15px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.16);
+
+    color: white;
+
+    border:
+        1px solid
+        rgba(255,255,255,.18);
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.deposit-ncoins-btn:hover {
+
+    background:
+        rgba(255,255,255,.24);
+}
+
+.deposit-ncoins-btn:active {
+
+    transform: scale(.98);
+}
+
+
+/* =========================================================
    STATS
 ========================================================= */
 
@@ -1124,6 +1226,20 @@ button,
         width: 100%;
     }
 
+    .ncoins-row {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .deposit-ncoins-btn {
+
+        width: 100%;
+    }
+
 }
 
 </style>
@@ -1368,6 +1484,41 @@ button,
             >
                 Get Your Number
             </button>
+
+
+            <!-- =================================================
+                 NCOINS
+            ================================================== -->
+
+            <div class="ncoins-section">
+
+                <div class="ncoins-label">
+                    NCOINS BALANCE
+                </div>
+
+                <div class="ncoins-row">
+
+                    <div
+                        class="ncoins-balance"
+                        id="ncoinsBalance"
+                    >
+                        0
+                        <span class="ncoins-unit">
+                            NCoins
+                        </span>
+                    </div>
+
+
+                    <button
+                        class="deposit-ncoins-btn"
+                        id="depositNcoinsButton"
+                    >
+                        Deposit NCoins
+                    </button>
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -1810,6 +1961,13 @@ import {
 } from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
+import {
+    getFirestore,
+    doc,
+    onSnapshot
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
 
 /* =========================================================
    FIREBASE
@@ -1846,6 +2004,9 @@ const app =
 
 const auth =
     getAuth(app);
+
+const db =
+    getFirestore(app);
 
 
 /* =========================================================
@@ -1911,6 +2072,16 @@ const pageTitle =
 const pageSubtitle =
     document.getElementById(
         "pageSubtitle"
+    );
+
+const ncoinsBalance =
+    document.getElementById(
+        "ncoinsBalance"
+    );
+
+const depositNcoinsButton =
+    document.getElementById(
+        "depositNcoinsButton"
     );
 
 
@@ -2003,6 +2174,75 @@ function populateUser(
 
     pageTitle.textContent =
         `Welcome, ${name.split(" ")[0]}`;
+
+}
+
+
+/* =========================================================
+   NCOINS BALANCE
+========================================================= */
+
+function listenToNcoins(
+    user
+) {
+
+    if (!user) {
+        return;
+    }
+
+
+    const userRef =
+        doc(
+            db,
+            "users",
+            user.uid
+        );
+
+
+    onSnapshot(
+        userRef,
+        snapshot => {
+
+            if (!snapshot.exists()) {
+
+                ncoinsBalance.innerHTML =
+                    `0
+                    <span class="ncoins-unit">
+                        NCoins
+                    </span>`;
+
+                return;
+
+            }
+
+
+            const data =
+                snapshot.data();
+
+
+            const balance =
+                Number(
+                    data.ncoinsBalance || 0
+                );
+
+
+            ncoinsBalance.innerHTML =
+                `${balance.toLocaleString()}
+                <span class="ncoins-unit">
+                    NCoins
+                </span>`;
+
+        },
+
+        error => {
+
+            console.error(
+                "NCoins balance error:",
+                error
+            );
+
+        }
+    );
 
 }
 
@@ -2179,6 +2419,23 @@ document
 
 
 /* =========================================================
+   DEPOSIT NCOINS
+========================================================= */
+
+depositNcoinsButton
+    .addEventListener(
+        "click",
+        () => {
+
+            alert(
+                "NCoins deposit plans will open here."
+            );
+
+        }
+    );
+
+
+/* =========================================================
    OTHER ACTIONS
 ========================================================= */
 
@@ -2317,12 +2574,6 @@ async function startDashboard() {
 
                 if (!user) {
 
-                    /*
-                     * User is not signed in.
-                     * Send them to the correct
-                     * Numora landing page.
-                     */
-
                     window.location.replace(
                         HOME_URL
                     );
@@ -2332,11 +2583,9 @@ async function startDashboard() {
                 }
 
 
-                /*
-                 * User is authenticated.
-                 */
-
                 populateUser(user);
+
+                listenToNcoins(user);
 
 
                 loadingScreen.classList.add(
