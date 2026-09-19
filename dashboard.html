@@ -52,7 +52,6 @@ button {
 }
 
 button,
-.action-card,
 .nav-item {
     -webkit-tap-highlight-color: transparent;
 }
@@ -426,6 +425,52 @@ button,
     gap: 12px;
 }
 
+
+/* =========================================================
+   BALANCE
+========================================================= */
+
+.balance-display {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        9px 13px;
+
+    border:
+        1px solid #dbe7f5;
+
+    border-radius: 13px;
+
+    background: white;
+
+    box-shadow:
+        0 4px 14px
+        rgba(15,23,42,.04);
+}
+
+.balance-label {
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+.balance-value {
+
+    color: #2563eb;
+
+    font-size: 14px;
+
+    font-weight: 800;
+}
+
 .notification {
 
     width: 42px;
@@ -471,19 +516,6 @@ button,
     height: 100%;
 
     object-fit: cover;
-}
-
-
-/* =========================================================
-   PAGES
-========================================================= */
-
-.page {
-    display: none;
-}
-
-.page.active {
-    display: block;
 }
 
 
@@ -601,108 +633,6 @@ button,
     font-weight: 800;
 
     cursor: pointer;
-}
-
-
-/* =========================================================
-   NCOINS
-========================================================= */
-
-.ncoins-section {
-
-    position: relative;
-
-    margin-top: 24px;
-
-    padding-top: 22px;
-
-    border-top:
-        1px solid
-        rgba(255,255,255,.18);
-}
-
-.ncoins-label {
-
-    color:
-        rgba(255,255,255,.72);
-
-    font-size: 11px;
-
-    font-weight: 700;
-
-    letter-spacing: .4px;
-
-    margin-bottom: 6px;
-}
-
-.ncoins-row {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 18px;
-}
-
-.ncoins-balance {
-
-    font-size: 29px;
-
-    font-weight: 800;
-
-    letter-spacing: -.8px;
-}
-
-.ncoins-unit {
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    opacity: .72;
-
-    margin-left: 4px;
-}
-
-.deposit-ncoins-btn {
-
-    flex-shrink: 0;
-
-    border: 0;
-
-    padding: 11px 15px;
-
-    border-radius: 12px;
-
-    background:
-        rgba(255,255,255,.16);
-
-    color: white;
-
-    border:
-        1px solid
-        rgba(255,255,255,.18);
-
-    font-size: 12px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition: .2s ease;
-}
-
-.deposit-ncoins-btn:hover {
-
-    background:
-        rgba(255,255,255,.24);
-}
-
-.deposit-ncoins-btn:active {
-
-    transform: scale(.98);
 }
 
 
@@ -845,527 +775,6 @@ button,
 
 
 /* =========================================================
-   MESSAGES
-========================================================= */
-
-.messages-header {
-
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    gap: 15px;
-
-    margin-bottom: 20px;
-}
-
-.search {
-
-    width: min(350px,100%);
-
-    position: relative;
-}
-
-.search input {
-
-    width: 100%;
-
-    border:
-        1px solid #e2e8f0;
-
-    border-radius: 13px;
-
-    padding:
-        12px 15px;
-
-    outline: none;
-
-    background: white;
-
-    font-size: 13px;
-}
-
-.search input:focus {
-
-    border-color: #93c5fd;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(37,99,235,.08);
-}
-
-
-/* =========================================================
-   MORE
-========================================================= */
-
-.account-card {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-    padding: 20px;
-
-    margin-bottom: 18px;
-
-    background: white;
-
-    border:
-        1px solid #e7edf5;
-
-    border-radius: 20px;
-}
-
-.account-avatar {
-
-    width: 54px;
-    height: 54px;
-
-    flex: 0 0 54px;
-
-    border-radius: 50%;
-
-    overflow: hidden;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #dbeafe;
-    color: #2563eb;
-
-    font-size: 18px;
-    font-weight: 800;
-}
-
-.account-avatar img {
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-}
-
-.account-details h3 {
-
-    font-size: 16px;
-
-    margin-bottom: 4px;
-}
-
-.account-details p {
-
-    color: #94a3b8;
-
-    font-size: 13px;
-}
-
-.more-list {
-
-    display: grid;
-
-    gap: 10px;
-}
-
-.action-card {
-
-    width: 100%;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    padding: 17px;
-
-    border:
-        1px solid #e7edf5;
-
-    border-radius: 17px;
-
-    background: white;
-
-    cursor: pointer;
-
-    text-align: left;
-}
-
-.action-left {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 13px;
-}
-
-.action-icon {
-
-    width: 40px;
-    height: 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-
-    background: #eff6ff;
-    color: #2563eb;
-
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.action-title {
-
-    font-size: 14px;
-    font-weight: 700;
-
-    margin-bottom: 3px;
-}
-
-.action-sub {
-
-    color: #94a3b8;
-
-    font-size: 11px;
-}
-
-.chevron {
-
-    color: #94a3b8;
-}
-
-
-/* =========================================================
-   NCOINS MODAL
-========================================================= */
-
-.ncoins-modal {
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 5000;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-
-    background:
-        rgba(15,23,42,.48);
-
-    backdrop-filter:
-        blur(8px);
-
-    -webkit-backdrop-filter:
-        blur(8px);
-
-    opacity: 0;
-
-    visibility: hidden;
-
-    pointer-events: none;
-
-    transition:
-        opacity .2s ease,
-        visibility .2s ease;
-}
-
-.ncoins-modal.open {
-
-    opacity: 1;
-
-    visibility: visible;
-
-    pointer-events: auto;
-}
-
-.ncoins-modal-box {
-
-    width: min(470px,100%);
-
-    max-height:
-        min(700px,90vh);
-
-    overflow-y: auto;
-
-    background: white;
-
-    border-radius: 25px;
-
-    padding: 24px;
-
-    box-shadow:
-        0 25px 70px
-        rgba(15,23,42,.25);
-
-    transform:
-        translateY(12px)
-        scale(.98);
-
-    transition:
-        transform .2s ease;
-}
-
-.ncoins-modal.open
-.ncoins-modal-box {
-
-    transform:
-        translateY(0)
-        scale(1);
-}
-
-.ncoins-modal-header {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    justify-content: space-between;
-
-    gap: 15px;
-
-    margin-bottom: 6px;
-}
-
-.ncoins-modal-title {
-
-    font-size: 21px;
-
-    font-weight: 800;
-
-    letter-spacing: -.5px;
-}
-
-.ncoins-modal-close {
-
-    width: 34px;
-    height: 34px;
-
-    flex: 0 0 34px;
-
-    border: 0;
-
-    border-radius: 10px;
-
-    background: #f1f5f9;
-
-    color: #64748b;
-
-    cursor: pointer;
-
-    font-size: 18px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-}
-
-.ncoins-modal-subtitle {
-
-    color: #64748b;
-
-    font-size: 13px;
-
-    line-height: 1.5;
-
-    margin-bottom: 20px;
-}
-
-.ncoins-plans {
-
-    display: grid;
-
-    gap: 10px;
-
-    margin-bottom: 18px;
-}
-
-.ncoin-plan {
-
-    width: 100%;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 15px;
-
-    padding: 16px;
-
-    border:
-        1px solid #e2e8f0;
-
-    border-radius: 17px;
-
-    background: white;
-
-    cursor: pointer;
-
-    text-align: left;
-
-    transition:
-        border-color .18s ease,
-        background .18s ease,
-        box-shadow .18s ease,
-        transform .18s ease;
-}
-
-.ncoin-plan:hover {
-
-    border-color: #bfdbfe;
-
-    background: #f8fbff;
-}
-
-.ncoin-plan.selected {
-
-    border-color: #2563eb;
-
-    background: #eff6ff;
-
-    box-shadow:
-        0 0 0 2px
-        rgba(37,99,235,.08);
-}
-
-.ncoin-plan:active {
-
-    transform: scale(.99);
-}
-
-.ncoin-plan-left {
-
-    min-width: 0;
-}
-
-.ncoin-plan-amount {
-
-    font-size: 16px;
-
-    font-weight: 800;
-
-    margin-bottom: 4px;
-}
-
-.ncoin-plan-label {
-
-    color: #94a3b8;
-
-    font-size: 11px;
-}
-
-.ncoin-plan-price {
-
-    flex-shrink: 0;
-
-    font-size: 15px;
-
-    font-weight: 800;
-
-    color: #2563eb;
-}
-
-.ncoin-plan-check {
-
-    width: 22px;
-    height: 22px;
-
-    flex: 0 0 22px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    border:
-        1px solid #cbd5e1;
-
-    color: transparent;
-
-    font-size: 12px;
-
-    font-weight: 900;
-}
-
-.ncoin-plan.selected
-.ncoin-plan-check {
-
-    border-color: #2563eb;
-
-    background: #2563eb;
-
-    color: white;
-}
-
-.ncoins-payment-btn {
-
-    width: 100%;
-
-    border: 0;
-
-    border-radius: 14px;
-
-    padding: 14px 18px;
-
-    background: #2563eb;
-
-    color: white;
-
-    font-size: 13px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition: .2s ease;
-}
-
-.ncoins-payment-btn:hover {
-
-    background: #1d4ed8;
-}
-
-.ncoins-payment-btn:disabled {
-
-    background: #cbd5e1;
-
-    color: #f8fafc;
-
-    cursor: not-allowed;
-}
-
-.ncoins-modal-status {
-
-    min-height: 18px;
-
-    margin-top: 10px;
-
-    color: #64748b;
-
-    font-size: 11px;
-
-    text-align: center;
-}
-
-
-/* =========================================================
    MOBILE NAV
 ========================================================= */
 
@@ -1500,6 +909,22 @@ button,
         height: 38px;
     }
 
+    .balance-display {
+
+        padding:
+            8px 10px;
+    }
+
+    .balance-label {
+
+        display: none;
+    }
+
+    .balance-value {
+
+        font-size: 13px;
+    }
+
     .number-card-large {
 
         padding: 24px;
@@ -1535,50 +960,6 @@ button,
         padding: 18px;
     }
 
-    .messages-header {
-
-        align-items: stretch;
-
-        flex-direction: column;
-    }
-
-    .search {
-
-        width: 100%;
-    }
-
-    .ncoins-row {
-
-        align-items: flex-start;
-
-        flex-direction: column;
-
-        gap: 12px;
-    }
-
-    .deposit-ncoins-btn {
-
-        width: 100%;
-    }
-
-    .ncoins-modal {
-
-        align-items: flex-end;
-
-        padding: 12px;
-    }
-
-    .ncoins-modal-box {
-
-        width: 100%;
-
-        max-height: 88vh;
-
-        border-radius: 23px;
-
-        padding: 20px;
-    }
-
 }
 
 
@@ -1586,10 +967,7 @@ button,
    ACCESSIBILITY
 ========================================================= */
 
-.ncoin-plan:focus-visible,
-.ncoins-payment-btn:focus-visible,
-.ncoins-modal-close:focus-visible,
-.deposit-ncoins-btn:focus-visible {
+.balance-display:focus-visible {
 
     outline: 3px solid
         rgba(37,99,235,.25);
@@ -1654,42 +1032,42 @@ button,
 
         <button
             class="nav-item active"
-            data-page="home"
+            id="dashboardNav"
         >
 
             <span class="nav-icon">
                 ⌂
             </span>
 
-            Home
+            Dashboard
 
         </button>
 
 
         <button
             class="nav-item"
-            data-page="messages"
+            id="smsNav"
         >
 
             <span class="nav-icon">
                 ▣
             </span>
 
-            Messages
+            SMS
 
         </button>
 
 
         <button
             class="nav-item"
-            data-page="more"
+            id="settingsNav"
         >
 
             <span class="nav-icon">
-                •••
+                ⚙
             </span>
 
-            More
+            Settings
 
         </button>
 
@@ -1763,7 +1141,7 @@ button,
                 Welcome
             </h1>
 
-            <p id="pageSubtitle">
+            <p>
                 Here's your account overview.
             </p>
 
@@ -1771,6 +1149,26 @@ button,
 
 
         <div class="topbar-right">
+
+
+            <div
+                class="balance-display"
+                aria-label="Account balance"
+            >
+
+                <span class="balance-label">
+                    Balance
+                </span>
+
+                <span
+                    class="balance-value"
+                    id="balanceValue"
+                >
+                    ₦0
+                </span>
+
+            </div>
+
 
             <button
                 class="notification"
@@ -1794,13 +1192,15 @@ button,
 
 
     <!-- =================================================
-         HOME
+         DASHBOARD
     ================================================== -->
 
-    <section
-        class="page active"
-        id="page-home"
-    >
+    <section class="dashboard-page">
+
+
+        <!-- =================================================
+             NUMBER HERO
+        ================================================== -->
 
         <div class="number-card-large">
 
@@ -1840,43 +1240,12 @@ button,
                 Get Your Number
             </button>
 
-
-            <!-- =================================================
-                 NCOINS
-            ================================================== -->
-
-            <div class="ncoins-section">
-
-                <div class="ncoins-label">
-                    NCOINS BALANCE
-                </div>
-
-                <div class="ncoins-row">
-
-                    <div
-                        class="ncoins-balance"
-                        id="ncoinsBalance"
-                    >
-                        0
-                        <span class="ncoins-unit">
-                            NCoins
-                        </span>
-                    </div>
-
-
-                    <button
-                        class="deposit-ncoins-btn"
-                        id="depositNcoinsButton"
-                    >
-                        Deposit NCoins
-                    </button>
-
-                </div>
-
-            </div>
-
         </div>
 
+
+        <!-- =================================================
+             STATS
+        ================================================== -->
 
         <div class="stats">
 
@@ -1886,7 +1255,10 @@ button,
                     Messages Sent
                 </div>
 
-                <div class="stat-value">
+                <div
+                    class="stat-value"
+                    id="messagesSent"
+                >
                     0
                 </div>
 
@@ -1899,7 +1271,10 @@ button,
                     Messages Received
                 </div>
 
-                <div class="stat-value">
+                <div
+                    class="stat-value"
+                    id="messagesReceived"
+                >
                     0
                 </div>
 
@@ -1914,6 +1289,7 @@ button,
 
                 <div
                     class="stat-value"
+                    id="accountStatus"
                     style="color:#16a34a;"
                 >
                     Active
@@ -1923,6 +1299,10 @@ button,
 
         </div>
 
+
+        <!-- =================================================
+             RECENT MESSAGES
+        ================================================== -->
 
         <div class="content-card">
 
@@ -1934,7 +1314,7 @@ button,
 
                 <button
                     class="view-all"
-                    data-page-button="messages"
+                    id="viewSmsButton"
                 >
                     View all
                 </button>
@@ -1942,7 +1322,10 @@ button,
             </div>
 
 
-            <div class="empty-state">
+            <div
+                class="empty-state"
+                id="recentMessagesEmpty"
+            >
 
                 <div class="empty-icon">
                     SMS
@@ -1963,367 +1346,7 @@ button,
 
     </section>
 
-
-    <!-- =================================================
-         MESSAGES
-    ================================================== -->
-
-    <section
-        class="page"
-        id="page-messages"
-    >
-
-        <div class="messages-header">
-
-            <div>
-
-                <h2
-                    style="
-                        font-size:25px;
-                        margin-bottom:6px;
-                    "
-                >
-                    Messages
-                </h2>
-
-                <p
-                    style="
-                        color:#64748b;
-                        font-size:13px;
-                    "
-                >
-                    Your SMS conversations.
-                </p>
-
-            </div>
-
-
-            <div class="search">
-
-                <input
-                    type="search"
-                    placeholder="Search messages..."
-                    id="messageSearch"
-                >
-
-            </div>
-
-        </div>
-
-
-        <div class="content-card">
-
-            <div class="empty-state">
-
-                <div class="empty-icon">
-                    SMS
-                </div>
-
-                <h3>
-                    No conversations
-                </h3>
-
-                <p>
-                    Once your number receives or sends
-                    a message, your conversations will
-                    appear here.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =================================================
-         MORE
-    ================================================== -->
-
-    <section
-        class="page"
-        id="page-more"
-    >
-
-        <div class="account-card">
-
-            <div
-                class="account-avatar"
-                id="accountAvatar"
-            >
-                N
-            </div>
-
-            <div class="account-details">
-
-                <h3 id="accountName">
-                    Customer
-                </h3>
-
-                <p id="accountEmail">
-                    Loading...
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="more-list">
-
-
-            <button
-                class="action-card"
-                id="paymentHistory"
-            >
-
-                <div class="action-left">
-
-                    <div class="action-icon">
-                        $
-                    </div>
-
-                    <div>
-
-                        <div class="action-title">
-                            Payment History
-                        </div>
-
-                        <div class="action-sub">
-                            View your payments and transactions
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <span class="chevron">
-                    ›
-                </span>
-
-            </button>
-
-
-            <button
-                class="action-card"
-                id="notifications"
-            >
-
-                <div class="action-left">
-
-                    <div class="action-icon">
-                        !
-                    </div>
-
-                    <div>
-
-                        <div class="action-title">
-                            Notifications
-                        </div>
-
-                        <div class="action-sub">
-                            Manage important account alerts
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <span class="chevron">
-                    ›
-                </span>
-
-            </button>
-
-
-            <button
-                class="action-card"
-                id="support"
-            >
-
-                <div class="action-left">
-
-                    <div class="action-icon">
-                        ?
-                    </div>
-
-                    <div>
-
-                        <div class="action-title">
-                            Help & Support
-                        </div>
-
-                        <div class="action-sub">
-                            Get help with your Numora account
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <span class="chevron">
-                    ›
-                </span>
-
-            </button>
-
-
-            <button
-                class="action-card"
-                id="terms"
-            >
-
-                <div class="action-left">
-
-                    <div class="action-icon">
-                        T
-                    </div>
-
-                    <div>
-
-                        <div class="action-title">
-                            Terms & Privacy
-                        </div>
-
-                        <div class="action-sub">
-                            Read Numora's policies
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <span class="chevron">
-                    ›
-                </span>
-
-            </button>
-
-
-            <button
-                class="action-card"
-                id="moreSignOut"
-            >
-
-                <div class="action-left">
-
-                    <div
-                        class="action-icon"
-                        style="
-                            background:#fff1f2;
-                            color:#e11d48;
-                        "
-                    >
-                        ↪
-                    </div>
-
-                    <div>
-
-                        <div
-                            class="action-title"
-                            style="color:#e11d48;"
-                        >
-                            Sign Out
-                        </div>
-
-                        <div class="action-sub">
-                            Sign out of this account
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <span class="chevron">
-                    ›
-                </span>
-
-            </button>
-
-
-        </div>
-
-    </section>
-
 </main>
-
-</div>
-
-
-<!-- =====================================================
-     NCOINS DEPOSIT MODAL
-===================================================== -->
-
-<div
-    class="ncoins-modal"
-    id="ncoinsModal"
-    aria-hidden="true"
->
-
-    <div
-        class="ncoins-modal-box"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="ncoinsModalTitle"
-    >
-
-        <div class="ncoins-modal-header">
-
-            <div class="ncoins-modal-title">
-                Deposit NCoins
-            </div>
-
-            <button
-                class="ncoins-modal-close"
-                id="closeNcoinsModal"
-                aria-label="Close"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-        <p class="ncoins-modal-subtitle">
-            Choose how many NCoins you want to add
-            to your Numora account.
-        </p>
-
-
-        <div
-            class="ncoins-plans"
-            id="ncoinsPlans"
-        >
-
-            <div
-                style="
-                    padding:25px 10px;
-                    text-align:center;
-                    color:#94a3b8;
-                    font-size:13px;
-                "
-            >
-                Loading NCoins plans...
-            </div>
-
-        </div>
-
-
-        <button
-            class="ncoins-payment-btn"
-            id="ncoinsPaymentButton"
-            disabled
-        >
-            Continue to Payment
-        </button>
-
-
-        <div
-            class="ncoins-modal-status"
-            id="ncoinsModalStatus"
-        ></div>
-
-    </div>
 
 </div>
 
@@ -2336,42 +1359,42 @@ button,
 
     <button
         class="mobile-nav-item active"
-        data-page="home"
+        id="mobileDashboardNav"
     >
 
         <span class="mobile-nav-icon">
             ⌂
         </span>
 
-        Home
+        Dashboard
 
     </button>
 
 
     <button
         class="mobile-nav-item"
-        data-page="messages"
+        id="mobileSmsNav"
     >
 
         <span class="mobile-nav-icon">
             ▣
         </span>
 
-        Messages
+        SMS
 
     </button>
 
 
     <button
         class="mobile-nav-item"
-        data-page="more"
+        id="mobileSettingsNav"
     >
 
         <span class="mobile-nav-icon">
-            •••
+            ⚙
         </span>
 
-        More
+        Settings
 
     </button>
 
@@ -2397,8 +1420,7 @@ import {
 import {
     getFirestore,
     doc,
-    onSnapshot,
-    collection
+    onSnapshot
 } from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
@@ -2444,14 +1466,20 @@ const db =
 
 
 /* =========================================================
-   CORRECT GITHUB PAGES PATHS
+   GITHUB PAGES PATHS
 ========================================================= */
 
 const HOME_URL =
     "/numorahq/";
 
-const DASHBOARD_URL =
-    "/numorahq/dashboard.html";
+const SMS_URL =
+    "/numorahq/sms.html";
+
+const SETTINGS_URL =
+    "/numorahq/settings.html";
+
+const PURCHASE_URL =
+    "/numorahq/purchase.html";
 
 
 /* =========================================================
@@ -2483,72 +1511,45 @@ const topAvatar =
         "topAvatar"
     );
 
-const accountAvatar =
-    document.getElementById(
-        "accountAvatar"
-    );
-
-const accountName =
-    document.getElementById(
-        "accountName"
-    );
-
-const accountEmail =
-    document.getElementById(
-        "accountEmail"
-    );
-
 const pageTitle =
     document.getElementById(
         "pageTitle"
     );
 
-const pageSubtitle =
+const balanceValue =
     document.getElementById(
-        "pageSubtitle"
+        "balanceValue"
     );
 
-const ncoinsBalance =
+const customerNumber =
     document.getElementById(
-        "ncoinsBalance"
+        "customerNumber"
     );
 
-const depositNcoinsButton =
+const numberDescription =
     document.getElementById(
-        "depositNcoinsButton"
+        "numberDescription"
     );
 
-const ncoinsModal =
+const numberStatus =
     document.getElementById(
-        "ncoinsModal"
+        "numberStatus"
     );
 
-const closeNcoinsModal =
+const messagesSent =
     document.getElementById(
-        "closeNcoinsModal"
+        "messagesSent"
     );
 
-const ncoinsPlans =
+const messagesReceived =
     document.getElementById(
-        "ncoinsPlans"
+        "messagesReceived"
     );
 
-const ncoinsPaymentButton =
+const accountStatus =
     document.getElementById(
-        "ncoinsPaymentButton"
+        "accountStatus"
     );
-
-const ncoinsModalStatus =
-    document.getElementById(
-        "ncoinsModalStatus"
-    );
-
-
-/* =========================================================
-   SELECTED NCOINS PLAN
-========================================================= */
-
-let selectedNcoinPlan = null;
 
 
 /* =========================================================
@@ -2563,6 +1564,7 @@ function setAvatar(
     if (!element) {
         return;
     }
+
 
     if (user.photoURL) {
 
@@ -2587,8 +1589,10 @@ function setAvatar(
             .charAt(0)
             .toUpperCase();
 
+
     element.textContent =
         initial || "N";
+
 }
 
 
@@ -2615,12 +1619,6 @@ function populateUser(
     sidebarEmail.textContent =
         email;
 
-    accountName.textContent =
-        name;
-
-    accountEmail.textContent =
-        email;
-
 
     setAvatar(
         sidebarAvatar,
@@ -2632,23 +1630,21 @@ function populateUser(
         user
     );
 
-    setAvatar(
-        accountAvatar,
-        user
-    );
-
 
     pageTitle.textContent =
-        `Welcome, ${name.split(" ")[0]}`;
+        `Welcome, ${
+            name
+                .split(" ")[0]
+        }`;
 
 }
 
 
 /* =========================================================
-   NCOINS BALANCE
+   CUSTOMER PROFILE
 ========================================================= */
 
-function listenToNcoins(
+function listenToCustomerProfile(
     user
 ) {
 
@@ -2667,15 +1663,12 @@ function listenToNcoins(
 
     onSnapshot(
         userRef,
+
         snapshot => {
 
             if (!snapshot.exists()) {
 
-                ncoinsBalance.innerHTML =
-                    `0
-                    <span class="ncoins-unit">
-                        NCoins
-                    </span>`;
+                setDefaultDashboard();
 
                 return;
 
@@ -2686,521 +1679,200 @@ function listenToNcoins(
                 snapshot.data();
 
 
+            /* =================================================
+               BALANCE
+            ================================================= */
+
             const balance =
                 Number(
-                    data.ncoinsBalance || 0
+                    data.balance ??
+                    data.nairaBalance ??
+                    data.walletBalance ??
+                    0
                 );
 
 
-            ncoinsBalance.innerHTML =
-                `${balance.toLocaleString()}
-                <span class="ncoins-unit">
-                    NCoins
-                </span>`;
-
-        },
-
-        error => {
-
-            console.error(
-                "NCoins balance error:",
-                error
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   LOAD NCOINS PLANS
-========================================================= */
-
-function listenToNcoinPlans() {
-
-    const plansRef =
-        collection(
-            db,
-            "ncoinPlans"
-        );
-
-
-    onSnapshot(
-        plansRef,
-
-        snapshot => {
-
-            const plans = [];
-
-
-            snapshot.forEach(
-                planSnapshot => {
-
-                    const data =
-                        planSnapshot.data();
-
-
-                    if (
-                        data.active === false
-                    ) {
-                        return;
-                    }
-
-
-                    plans.push({
-
-                        id:
-                            planSnapshot.id,
-
-                        planId:
-                            data.planId ||
-                            planSnapshot.id,
-
-                        ncoins:
-                            Number(
-                                data.ncoins || 0
-                            ),
-
-                        price:
-                            Number(
-                                data.price || 0
-                            )
-
-                    });
-
-                }
-            );
-
-
-            plans.sort(
-                (a,b) =>
-                    a.ncoins - b.ncoins
-            );
-
-
-            renderNcoinPlans(
-                plans
-            );
-
-        },
-
-        error => {
-
-            console.error(
-                "NCoins plans error:",
-                error
-            );
-
-
-            ncoinsPlans.innerHTML = `
-                <div
-                    style="
-                        padding:25px 10px;
-                        text-align:center;
-                        color:#e11d48;
-                        font-size:13px;
-                    "
-                >
-                    Unable to load NCoins plans.
-                    Please try again.
-                </div>
-            `;
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   RENDER NCOINS PLANS
-========================================================= */
-
-function renderNcoinPlans(
-    plans
-) {
-
-    if (!plans.length) {
-
-        ncoinsPlans.innerHTML = `
-            <div
-                style="
-                    padding:25px 10px;
-                    text-align:center;
-                    color:#94a3b8;
-                    font-size:13px;
-                "
-            >
-                No NCoins plans are currently available.
-            </div>
-        `;
-
-        ncoinsPaymentButton.disabled = true;
-
-        return;
-    }
-
-
-    ncoinsPlans.innerHTML = "";
-
-
-    plans.forEach(
-        plan => {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.type =
-                "button";
-
-            button.className =
-                "ncoin-plan";
-
-
-            button.innerHTML = `
-
-                <div class="ncoin-plan-left">
-
-                    <div class="ncoin-plan-amount">
-                        ${plan.ncoins.toLocaleString()}
-                        NCoins
-                    </div>
-
-                    <div class="ncoin-plan-label">
-                        Add to your Numora balance
-                    </div>
-
-                </div>
-
-
-                <div
-                    style="
-                        display:flex;
-                        align-items:center;
-                        gap:10px;
-                    "
-                >
-
-                    <div class="ncoin-plan-price">
-                        ₦${plan.price.toLocaleString()}
-                    </div>
-
-                    <div class="ncoin-plan-check">
-                        ✓
-                    </div>
-
-                </div>
-
-            `;
-
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    selectNcoinPlan(
-                        plan,
-                        button
-                    );
-
-                }
-            );
-
-
-            ncoinsPlans.appendChild(
-                button
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   SELECT NCOINS PLAN
-========================================================= */
-
-function selectNcoinPlan(
-    plan,
-    selectedButton
-) {
-
-    selectedNcoinPlan =
-        plan;
-
-
-    document
-        .querySelectorAll(
-            ".ncoin-plan"
-        )
-        .forEach(
-            button => {
-
-                button.classList.remove(
-                    "selected"
-                );
+            balanceValue.textContent =
+                `₦${balance.toLocaleString()}`;
+
+
+            /* =================================================
+               NUMBER
+            ================================================= */
+
+            const number =
+                data.phoneNumber ||
+                data.rentedNumber ||
+                data.number ||
+                data.twilioPhoneNumber ||
+                "";
+
+
+            if (number) {
+
+                customerNumber.textContent =
+                    number;
+
+                numberDescription.textContent =
+                    "Your Numora number is active and ready to use.";
+
+                numberStatus.textContent =
+                    data.status === "Active" ||
+                    data.numberStatus === "Active" ||
+                    data.rentalStatus === "Active"
+                        ? "Active"
+                        : (
+                            data.status ||
+                            data.numberStatus ||
+                            "Active"
+                        );
 
             }
-        );
 
+            else {
 
-    selectedButton.classList.add(
-        "selected"
-    );
+                customerNumber.textContent =
+                    "No number yet";
 
+                numberDescription.textContent =
+                    "You don't have an active number yet. Choose a number to start receiving and sending messages through Numora.";
 
-    ncoinsPaymentButton.disabled =
-        false;
-
-
-    ncoinsPaymentButton.textContent =
-        `Continue with ₦${plan.price.toLocaleString()}`;
-
-
-    ncoinsModalStatus.textContent =
-        `${plan.ncoins.toLocaleString()} NCoins selected.`;
-
-}
-
-
-/* =========================================================
-   OPEN NCOINS MODAL
-========================================================= */
-
-function openNcoinsModal() {
-
-    selectedNcoinPlan =
-        null;
-
-
-    ncoinsPaymentButton.disabled =
-        true;
-
-
-    ncoinsPaymentButton.textContent =
-        "Continue to Payment";
-
-
-    ncoinsModalStatus.textContent =
-        "";
-
-
-    document
-        .querySelectorAll(
-            ".ncoin-plan"
-        )
-        .forEach(
-            button => {
-
-                button.classList.remove(
-                    "selected"
-                );
+                numberStatus.textContent =
+                    "Ready to activate";
 
             }
-        );
 
 
-    ncoinsModal.classList.add(
-        "open"
-    );
+            /* =================================================
+               MESSAGE COUNTERS
+            ================================================= */
+
+            const sent =
+                Number(
+                    data.messagesSent ||
+                    data.smsSent ||
+                    0
+                );
 
 
-    ncoinsModal.setAttribute(
-        "aria-hidden",
-        "false"
-    );
+            const received =
+                Number(
+                    data.messagesReceived ||
+                    data.smsReceived ||
+                    0
+                );
 
 
-    document.body.style.overflow =
-        "hidden";
-
-}
+            messagesSent.textContent =
+                sent.toLocaleString();
 
 
-/* =========================================================
-   CLOSE NCOINS MODAL
-========================================================= */
-
-function closeNcoinsPlansModal() {
-
-    ncoinsModal.classList.remove(
-        "open"
-    );
+            messagesReceived.textContent =
+                received.toLocaleString();
 
 
-    ncoinsModal.setAttribute(
-        "aria-hidden",
-        "true"
-    );
+            /* =================================================
+               ACCOUNT STATUS
+            ================================================= */
+
+            const status =
+                data.accountStatus ||
+                "Active";
 
 
-    document.body.style.overflow =
-        "";
-
-}
+            accountStatus.textContent =
+                status;
 
 
-/* =========================================================
-   NCOINS MODAL EVENTS
-========================================================= */
-
-depositNcoinsButton.addEventListener(
-    "click",
-    openNcoinsModal
-);
-
-
-closeNcoinsModal.addEventListener(
-    "click",
-    closeNcoinsPlansModal
-);
-
-
-ncoinsModal.addEventListener(
-    "click",
-    event => {
-
-        if (
-            event.target ===
-            ncoinsModal
-        ) {
-
-            closeNcoinsPlansModal();
-
-        }
-
-    }
-);
-
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Escape" &&
-            ncoinsModal.classList.contains("open")
-        ) {
-
-            closeNcoinsPlansModal();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   CONTINUE TO PAYMENT
-========================================================= */
-
-ncoinsPaymentButton.addEventListener(
-    "click",
-    () => {
-
-        if (!selectedNcoinPlan) {
-            return;
-        }
-
-
-        ncoinsModalStatus.textContent =
-            "Payment setup will be connected next.";
-
-    }
-);
-
-
-/* =========================================================
-   PAGE NAVIGATION
-========================================================= */
-
-function openPage(
-    pageName
-) {
-
-    document
-        .querySelectorAll(".page")
-        .forEach(page => {
-
-            page.classList.remove(
+            if (
+                String(status).toLowerCase() ===
                 "active"
+            ) {
+
+                accountStatus.style.color =
+                    "#16a34a";
+
+            }
+
+            else {
+
+                accountStatus.style.color =
+                    "#f59e0b";
+
+            }
+
+        },
+
+        error => {
+
+            console.error(
+                "Customer profile error:",
+                error
             );
 
-        });
+        }
+    );
+
+}
 
 
-    const target =
-        document.getElementById(
-            `page-${pageName}`
-        );
+/* =========================================================
+   DEFAULT DASHBOARD
+========================================================= */
 
-    if (target) {
+function setDefaultDashboard() {
 
-        target.classList.add(
-            "active"
-        );
+    balanceValue.textContent =
+        "₦0";
 
-    }
+    customerNumber.textContent =
+        "No number yet";
 
+    numberDescription.textContent =
+        "You don't have an active number yet. Choose a number to start receiving and sending messages through Numora.";
 
-    document
-        .querySelectorAll(
-            ".nav-item, .mobile-nav-item"
-        )
-        .forEach(item => {
+    numberStatus.textContent =
+        "Ready to activate";
 
-            item.classList.toggle(
-                "active",
-                item.dataset.page === pageName
-            );
+    messagesSent.textContent =
+        "0";
 
-        });
+    messagesReceived.textContent =
+        "0";
 
+    accountStatus.textContent =
+        "Active";
 
-    if (pageName === "home") {
+    accountStatus.style.color =
+        "#16a34a";
 
-        pageTitle.textContent =
-            `Welcome, ${
-                auth.currentUser?.displayName
-                    ?.split(" ")[0] ||
-                "Customer"
-            }`;
-
-        pageSubtitle.textContent =
-            "Here's your account overview.";
-
-    }
-
-    else if (pageName === "messages") {
-
-        pageTitle.textContent =
-            "Messages";
-
-        pageSubtitle.textContent =
-            "Your SMS conversations.";
-
-    }
-
-    else if (pageName === "more") {
-
-        pageTitle.textContent =
-            "More";
-
-        pageSubtitle.textContent =
-            "Manage your Numora account.";
-
-    }
+}
 
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goToDashboard() {
+
+    window.location.href =
+        "/numorahq/dashboard.html";
+
+}
+
+
+function goToSms() {
+
+    window.location.href =
+        SMS_URL;
+
+}
+
+
+function goToSettings() {
+
+    window.location.href =
+        SETTINGS_URL;
 
 }
 
@@ -3210,23 +1882,33 @@ function openPage(
 ========================================================= */
 
 document
-    .querySelectorAll(
-        ".nav-item"
+    .getElementById(
+        "dashboardNav"
     )
-    .forEach(button => {
+    .addEventListener(
+        "click",
+        goToDashboard
+    );
 
-        button.addEventListener(
-            "click",
-            () => {
 
-                openPage(
-                    button.dataset.page
-                );
+document
+    .getElementById(
+        "smsNav"
+    )
+    .addEventListener(
+        "click",
+        goToSms
+    );
 
-            }
-        );
 
-    });
+document
+    .getElementById(
+        "settingsNav"
+    )
+    .addEventListener(
+        "click",
+        goToSettings
+    );
 
 
 /* =========================================================
@@ -3234,36 +1916,46 @@ document
 ========================================================= */
 
 document
-    .querySelectorAll(
-        ".mobile-nav-item"
+    .getElementById(
+        "mobileDashboardNav"
     )
-    .forEach(button => {
+    .addEventListener(
+        "click",
+        goToDashboard
+    );
 
-        button.addEventListener(
-            "click",
-            () => {
 
-                openPage(
-                    button.dataset.page
-                );
+document
+    .getElementById(
+        "mobileSmsNav"
+    )
+    .addEventListener(
+        "click",
+        goToSms
+    );
 
-            }
-        );
 
-    });
+document
+    .getElementById(
+        "mobileSettingsNav"
+    )
+    .addEventListener(
+        "click",
+        goToSettings
+    );
 
 
 /* =========================================================
-   VIEW ALL
+   VIEW SMS
 ========================================================= */
 
 document
-    .querySelector(
-        "[data-page-button='messages']"
+    .getElementById(
+        "viewSmsButton"
     )
-    ?.addEventListener(
+    .addEventListener(
         "click",
-        () => openPage("messages")
+        goToSms
     );
 
 
@@ -3280,74 +1972,29 @@ document
         () => {
 
             window.location.href =
-                "/numorahq/purchase.html";
+                PURCHASE_URL;
 
         }
     );
 
 
 /* =========================================================
-   OTHER ACTIONS
+   NOTIFICATIONS
 ========================================================= */
 
 document
     .getElementById(
-        "paymentHistory"
+        "notificationButton"
     )
     .addEventListener(
         "click",
         () => {
 
-            alert(
-                "Payment History will be available here."
-            );
-
-        }
-    );
-
-
-document
-    .getElementById(
-        "notifications"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            alert(
-                "Notifications will be available here."
-            );
-
-        }
-    );
-
-
-document
-    .getElementById(
-        "support"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            window.location.href =
-                "mailto:numora.support@gmail.com";
-
-        }
-    );
-
-
-document
-    .getElementById(
-        "terms"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            alert(
-                "Numora Terms & Privacy will be available here."
-            );
+            /*
+             * Notifications will be connected
+             * when the customer notifications
+             * page/system is implemented.
+             */
 
         }
     );
@@ -3363,6 +2010,7 @@ async function logout() {
 
         await signOut(auth);
 
+
         window.location.replace(
             HOME_URL
         );
@@ -3376,6 +2024,7 @@ async function logout() {
             error
         );
 
+
         alert(
             "Unable to sign out. Please try again."
         );
@@ -3388,16 +2037,6 @@ async function logout() {
 document
     .getElementById(
         "sidebarSignOut"
-    )
-    .addEventListener(
-        "click",
-        logout
-    );
-
-
-document
-    .getElementById(
-        "moreSignOut"
     )
     .addEventListener(
         "click",
@@ -3421,6 +2060,7 @@ async function startDashboard() {
 
         onAuthStateChanged(
             auth,
+
             user => {
 
                 if (!user) {
@@ -3434,11 +2074,14 @@ async function startDashboard() {
                 }
 
 
-                populateUser(user);
+                populateUser(
+                    user
+                );
 
-                listenToNcoins(user);
 
-                listenToNcoinPlans();
+                listenToCustomerProfile(
+                    user
+                );
 
 
                 loadingScreen.classList.add(
@@ -3456,6 +2099,7 @@ async function startDashboard() {
             "Dashboard authentication error:",
             error
         );
+
 
         window.location.replace(
             HOME_URL
