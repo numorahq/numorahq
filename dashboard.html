@@ -30,7 +30,6 @@ body {
 }
 
 body {
-
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -47,18 +46,20 @@ body {
     overflow-x: hidden;
 }
 
-button {
+button,
+select {
     font: inherit;
 }
 
 button,
-.nav-item {
+.nav-item,
+.mobile-nav-item {
     -webkit-tap-highlight-color: transparent;
 }
 
 
 /* =========================================================
-   LOADING SCREEN
+   LOADING
 ========================================================= */
 
 .loading-screen {
@@ -85,7 +86,6 @@ button,
 }
 
 .loading-screen.hidden {
-
     opacity: 0;
     visibility: hidden;
 }
@@ -124,7 +124,6 @@ button,
 }
 
 .loading-box p {
-
     color: #64748b;
     font-size: 13px;
 }
@@ -135,15 +134,13 @@ button,
 ========================================================= */
 
 .app {
-
     min-height: 100vh;
-
     display: flex;
 }
 
 
 /* =========================================================
-   DESKTOP SIDEBAR
+   SIDEBAR
 ========================================================= */
 
 .sidebar {
@@ -244,7 +241,9 @@ button,
     font-size: 14px;
     font-weight: 650;
 
-    transition: .2s ease;
+    transition:
+        background .2s ease,
+        color .2s ease;
 }
 
 .nav-item:hover {
@@ -261,11 +260,29 @@ button,
 
 .nav-icon {
 
-    width: 22px;
+    width: 21px;
+    height: 21px;
 
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    font-size: 15px;
+    flex: 0 0 21px;
+}
+
+.nav-icon svg {
+
+    width: 18px;
+    height: 18px;
+
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    fill: none;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .sidebar-bottom {
@@ -324,7 +341,6 @@ button,
 }
 
 .profile-info {
-
     min-width: 0;
 }
 
@@ -355,6 +371,7 @@ button,
 
     display: flex;
     align-items: center;
+
     gap: 10px;
 
     padding: 11px 12px;
@@ -425,72 +442,6 @@ button,
     gap: 12px;
 }
 
-
-/* =========================================================
-   BALANCE
-========================================================= */
-
-.balance-display {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    padding:
-        9px 13px;
-
-    border:
-        1px solid #dbe7f5;
-
-    border-radius: 13px;
-
-    background: white;
-
-    box-shadow:
-        0 4px 14px
-        rgba(15,23,42,.04);
-}
-
-.balance-label {
-
-    color: #64748b;
-
-    font-size: 11px;
-
-    font-weight: 700;
-}
-
-.balance-value {
-
-    color: #2563eb;
-
-    font-size: 14px;
-
-    font-weight: 800;
-}
-
-.notification {
-
-    width: 42px;
-    height: 42px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 1px solid #e4eaf2;
-
-    border-radius: 13px;
-
-    background: white;
-
-    color: #64748b;
-
-    cursor: pointer;
-}
-
 .top-avatar {
 
     width: 42px;
@@ -520,10 +471,10 @@ button,
 
 
 /* =========================================================
-   NUMBER HERO
+   BALANCE HERO
 ========================================================= */
 
-.number-card-large {
+.balance-hero {
 
     position: relative;
 
@@ -545,20 +496,20 @@ button,
     box-shadow:
         0 22px 50px rgba(37,99,235,.18);
 
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
-.number-card-large::after {
+.balance-hero::after {
 
     content: "";
 
     position: absolute;
 
-    width: 240px;
-    height: 240px;
+    width: 260px;
+    height: 260px;
 
-    right: -80px;
-    top: -100px;
+    right: -90px;
+    top: -120px;
 
     border-radius: 50%;
 
@@ -566,73 +517,413 @@ button,
         rgba(255,255,255,.10);
 }
 
-.number-label-large {
+.balance-content {
+    position: relative;
+    z-index: 2;
+}
+
+.balance-label {
 
     font-size: 12px;
 
-    opacity: .75;
+    opacity: .78;
 
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
-.number-large {
+.balance-amount {
 
     font-size: clamp(
-        28px,
+        32px,
         5vw,
-        43px
+        46px
     );
-
-    letter-spacing: -1.5px;
 
     font-weight: 800;
 
-    margin-bottom: 9px;
-}
-
-.number-status {
-
-    display: inline-flex;
-
-    padding: 6px 10px;
-
-    border-radius: 999px;
-
-    background:
-        rgba(255,255,255,.17);
-
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.number-empty-text {
-
-    max-width: 480px;
-
-    color:
-        rgba(255,255,255,.78);
-
-    line-height: 1.6;
-
-    font-size: 14px;
+    letter-spacing: -1.5px;
 
     margin-bottom: 22px;
 }
 
-.get-number-btn {
+.deposit-button {
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 12px 17px;
 
     border: 0;
-
-    padding: 13px 18px;
 
     border-radius: 13px;
 
     background: white;
+
     color: #2563eb;
 
     font-weight: 800;
 
+    text-decoration: none;
+
     cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.deposit-button:hover {
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.12);
+}
+
+.deposit-button svg {
+
+    width: 17px;
+    height: 17px;
+
+    fill: currentColor;
+}
+
+
+/* =========================================================
+   PURCHASE SECTION
+========================================================= */
+
+.purchase-section {
+
+    background: white;
+
+    border:
+        1px solid #e7edf5;
+
+    border-radius: 24px;
+
+    padding: 25px;
+
+    margin-bottom: 20px;
+}
+
+.purchase-heading {
+
+    margin-bottom: 22px;
+}
+
+.purchase-heading h2 {
+
+    font-size: 21px;
+
+    letter-spacing: -.5px;
+
+    margin-bottom: 6px;
+}
+
+.purchase-heading p {
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+.purchase-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.field {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.field-label {
+
+    font-size: 12px;
+
+    color: #64748b;
+
+    font-weight: 750;
+}
+
+.select-wrap {
+    position: relative;
+}
+
+.select-wrap::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: 15px;
+    top: 50%;
+
+    width: 7px;
+    height: 7px;
+
+    border-right:
+        1.7px solid #64748b;
+
+    border-bottom:
+        1.7px solid #64748b;
+
+    transform:
+        translateY(-70%)
+        rotate(45deg);
+
+    pointer-events: none;
+}
+
+.select-input {
+
+    width: 100%;
+
+    height: 49px;
+
+    padding:
+        0 42px
+        0 14px;
+
+    appearance: none;
+
+    border:
+        1px solid #dce5ef;
+
+    border-radius: 13px;
+
+    background: #f8fafc;
+
+    color: #0f172a;
+
+    outline: none;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition:
+        border .2s ease,
+        box-shadow .2s ease;
+}
+
+.select-input:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,.10);
+}
+
+.select-input:disabled {
+
+    color: #94a3b8;
+
+    cursor: not-allowed;
+
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.price-box {
+
+    margin-top: 18px;
+
+    padding: 18px;
+
+    border-radius: 17px;
+
+    background: #f8fbff;
+
+    border:
+        1px solid #e1ebf8;
+}
+
+.price-row {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.price-title {
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.price-value {
+
+    color: #2563eb;
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    letter-spacing: -.5px;
+}
+
+.balance-warning {
+
+    display: none;
+
+    margin-top: 12px;
+
+    padding: 12px 14px;
+
+    border-radius: 12px;
+
+    background: #fff7ed;
+
+    color: #c2410c;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+.balance-warning.show {
+    display: block;
+}
+
+
+/* =========================================================
+   PURCHASE BUTTON
+========================================================= */
+
+.purchase-button {
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin-top: 17px;
+
+    height: 52px;
+
+    border: 0;
+
+    border-radius: 14px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 22px
+        rgba(37,99,235,.17);
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        opacity .2s ease;
+}
+
+.purchase-button:hover:not(:disabled) {
+
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+}
+
+.purchase-button:disabled {
+
+    opacity: .55;
+
+    cursor: not-allowed;
+
+    box-shadow: none;
+}
+
+.purchase-button svg {
+
+    width: 18px;
+    height: 18px;
+
+    stroke: currentColor;
+
+    fill: none;
+
+    stroke-width: 2;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.purchase-status {
+
+    display: none;
+
+    margin-top: 13px;
+
+    padding: 13px 14px;
+
+    border-radius: 12px;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+.purchase-status.show {
+    display: block;
+}
+
+.purchase-status.info {
+
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.purchase-status.success {
+
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.purchase-status.error {
+
+    background: #fff1f2;
+    color: #be123c;
 }
 
 
@@ -684,7 +975,7 @@ button,
 
 
 /* =========================================================
-   RECENT
+   RECENT MESSAGES
 ========================================================= */
 
 .content-card {
@@ -709,7 +1000,6 @@ button,
 }
 
 .card-header h2 {
-
     font-size: 18px;
 }
 
@@ -749,8 +1039,21 @@ button,
 
     background: #eff6ff;
     color: #2563eb;
+}
 
-    font-weight: 800;
+.empty-icon svg {
+
+    width: 23px;
+    height: 23px;
+
+    stroke: currentColor;
+
+    fill: none;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .empty-state h3 {
@@ -793,7 +1096,7 @@ button,
     padding: 8px;
 
     background:
-        rgba(255,255,255,.92);
+        rgba(255,255,255,.94);
 
     backdrop-filter:
         blur(20px);
@@ -807,7 +1110,8 @@ button,
     border-radius: 20px;
 
     box-shadow:
-        0 15px 35px rgba(15,23,42,.12);
+        0 15px 35px
+        rgba(15,23,42,.12);
 }
 
 .mobile-nav-item {
@@ -819,7 +1123,7 @@ button,
 
     align-items: center;
 
-    gap: 4px;
+    gap: 5px;
 
     padding: 8px 4px;
 
@@ -836,13 +1140,32 @@ button,
 }
 
 .mobile-nav-item.active {
-
     color: #2563eb;
 }
 
 .mobile-nav-icon {
 
-    font-size: 15px;
+    width: 19px;
+    height: 19px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-nav-icon svg {
+
+    width: 17px;
+    height: 17px;
+
+    stroke: currentColor;
+
+    fill: none;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 
@@ -869,17 +1192,18 @@ button,
     }
 
     .mobile-nav {
-
         display: flex;
     }
 
     .topbar {
-
         margin-bottom: 22px;
     }
 
-    .stats {
+    .purchase-grid {
+        grid-template-columns: 1fr;
+    }
 
+    .stats {
         grid-template-columns:
             repeat(3,1fr);
     }
@@ -889,18 +1213,11 @@ button,
 @media (max-width: 600px) {
 
     .topbar-left h1 {
-
         font-size: 24px;
     }
 
     .topbar-left p {
-
         font-size: 12px;
-    }
-
-    .notification {
-
-        display: none;
     }
 
     .top-avatar {
@@ -909,54 +1226,39 @@ button,
         height: 38px;
     }
 
-    .balance-display {
-
-        padding:
-            8px 10px;
-    }
-
-    .balance-label {
-
-        display: none;
-    }
-
-    .balance-value {
-
-        font-size: 13px;
-    }
-
-    .number-card-large {
-
+    .balance-hero {
         padding: 24px;
     }
 
-    .number-large {
+    .balance-amount {
+        font-size: 34px;
+    }
 
-        font-size: 29px;
+    .purchase-section {
+        padding: 19px;
+    }
+
+    .purchase-heading h2 {
+        font-size: 19px;
     }
 
     .stats {
-
         gap: 9px;
     }
 
     .stat-card {
-
         padding: 15px 12px;
     }
 
     .stat-value {
-
         font-size: 19px;
     }
 
     .stat-label {
-
         font-size: 10px;
     }
 
     .content-card {
-
         padding: 18px;
     }
 
@@ -967,9 +1269,12 @@ button,
    ACCESSIBILITY
 ========================================================= */
 
-.balance-display:focus-visible {
+button:focus-visible,
+select:focus-visible,
+a:focus-visible {
 
-    outline: 3px solid
+    outline:
+        3px solid
         rgba(37,99,235,.25);
 
     outline-offset: 2px;
@@ -1036,7 +1341,11 @@ button,
         >
 
             <span class="nav-icon">
-                ⌂
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 10.5 12 3l9 7.5"></path>
+                    <path d="M5 9.5V21h14V9.5"></path>
+                    <path d="M9 21v-6h6v6"></path>
+                </svg>
             </span>
 
             Dashboard
@@ -1050,7 +1359,11 @@ button,
         >
 
             <span class="nav-icon">
-                ▣
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
+                    <path d="M7 8h10"></path>
+                    <path d="M7 11h7"></path>
+                </svg>
             </span>
 
             SMS
@@ -1064,7 +1377,10 @@ button,
         >
 
             <span class="nav-icon">
-                ⚙
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
+                </svg>
             </span>
 
             Settings
@@ -1112,7 +1428,20 @@ button,
         >
 
             <span>
-                ↪
+                <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M10 17l5-5-5-5"></path>
+                    <path d="M15 12H3"></path>
+                    <path d="M21 3v18"></path>
+                </svg>
             </span>
 
             Sign Out
@@ -1131,8 +1460,6 @@ button,
 <main class="main">
 
 
-    <!-- TOPBAR -->
-
     <header class="topbar">
 
         <div class="topbar-left">
@@ -1150,35 +1477,6 @@ button,
 
         <div class="topbar-right">
 
-
-            <div
-                class="balance-display"
-                aria-label="Account balance"
-            >
-
-                <span class="balance-label">
-                    Balance
-                </span>
-
-                <span
-                    class="balance-value"
-                    id="balanceValue"
-                >
-                    ₦0
-                </span>
-
-            </div>
-
-
-            <button
-                class="notification"
-                id="notificationButton"
-                aria-label="Notifications"
-            >
-                •
-            </button>
-
-
             <div
                 class="top-avatar"
                 id="topAvatar"
@@ -1192,159 +1490,298 @@ button,
 
 
     <!-- =================================================
-         DASHBOARD
-    ================================================== -->
+         BALANCE
+    ================================================= -->
 
-    <section class="dashboard-page">
+    <section class="balance-hero">
 
+        <div class="balance-content">
 
-        <!-- =================================================
-             NUMBER HERO
-        ================================================== -->
-
-        <div class="number-card-large">
-
-            <div class="number-label-large">
-                YOUR NUMORA NUMBER
+            <div class="balance-label">
+                NAIRA BALANCE
             </div>
 
             <div
-                class="number-large"
-                id="customerNumber"
+                class="balance-amount"
+                id="balanceValue"
             >
-                No number yet
+                ₦0
+            </div>
+
+
+            <a
+                class="deposit-button"
+                id="depositButton"
+                href="#"
+                target="_blank"
+                rel="noopener"
+            >
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 11.5a8.1 8.1 0 0 1-8 8 8 8 0 0 1-5.1-1.8L4 19l1.3-3A8 8 0 1 1 20 11.5Z"></path>
+                </svg>
+
+                Deposit via WhatsApp
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         PURCHASE SERVICE
+    ================================================= -->
+
+    <section class="purchase-section">
+
+        <div class="purchase-heading">
+
+            <h2>
+                Purchase a number for your verification here!
+            </h2>
+
+            <p>
+                Select your country and service to see the
+                current price available on your Numora account.
+            </p>
+
+        </div>
+
+
+        <div class="purchase-grid">
+
+
+            <!-- COUNTRY -->
+
+            <div class="field">
+
+                <label
+                    class="field-label"
+                    for="countrySelect"
+                >
+                    Choose Country
+                </label>
+
+                <div class="select-wrap">
+
+                    <select
+                        class="select-input"
+                        id="countrySelect"
+                    >
+
+                        <option value="">
+                            Loading countries...
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVICE -->
+
+            <div class="field">
+
+                <label
+                    class="field-label"
+                    for="serviceSelect"
+                >
+                    Choose Service
+                </label>
+
+                <div class="select-wrap">
+
+                    <select
+                        class="select-input"
+                        id="serviceSelect"
+                        disabled
+                    >
+
+                        <option value="">
+                            Choose a country first
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PRICE -->
+
+        <div class="price-box">
+
+            <div class="price-row">
+
+                <div>
+
+                    <div class="price-title">
+                        SERVICE PRICE
+                    </div>
+
+                </div>
+
+                <div
+                    class="price-value"
+                    id="servicePrice"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div
+                class="balance-warning"
+                id="balanceWarning"
+            >
+                Your Naira balance is not enough for this
+                service. Please deposit through WhatsApp
+                before purchasing.
+            </div>
+
+        </div>
+
+
+        <button
+            class="purchase-button"
+            id="purchaseButton"
+            disabled
+        >
+
+            <svg viewBox="0 0 24 24">
+                <path d="M5 7h14l-1 12H6L5 7Z"></path>
+                <path d="M9 7a3 3 0 0 1 6 0"></path>
+                <path d="M9 11h.01"></path>
+                <path d="M15 11h.01"></path>
+            </svg>
+
+            Purchase Number
+
+        </button>
+
+
+        <div
+            class="purchase-status"
+            id="purchaseStatus"
+        ></div>
+
+    </section>
+
+
+    <!-- =================================================
+         STATS
+    ================================================= -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Messages Sent
             </div>
 
             <div
-                class="number-empty-text"
-                id="numberDescription"
+                class="stat-value"
+                id="messagesSent"
             >
-                You don't have an active number yet.
-                Choose a number to start receiving and
-                sending messages through Numora.
+                0
             </div>
 
-            <span
-                class="number-status"
-                id="numberStatus"
-            >
-                Ready to activate
-            </span>
+        </div>
 
-            <br><br>
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Messages Received
+            </div>
+
+            <div
+                class="stat-value"
+                id="messagesReceived"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Account Status
+            </div>
+
+            <div
+                class="stat-value"
+                id="accountStatus"
+                style="color:#16a34a;"
+            >
+                Active
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         RECENT MESSAGES
+    ================================================= -->
+
+    <div class="content-card">
+
+        <div class="card-header">
+
+            <h2>
+                Recent Messages
+            </h2>
 
             <button
-                class="get-number-btn"
-                id="getNumberButton"
+                class="view-all"
+                id="viewSmsButton"
             >
-                Get Your Number
+                View all
             </button>
 
         </div>
 
 
-        <!-- =================================================
-             STATS
-        ================================================== -->
+        <div
+            class="empty-state"
+            id="recentMessagesEmpty"
+        >
 
-        <div class="stats">
+            <div class="empty-icon">
 
-            <div class="stat-card">
-
-                <div class="stat-label">
-                    Messages Sent
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="messagesSent"
-                >
-                    0
-                </div>
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
+                    <path d="M7 8h10"></path>
+                    <path d="M7 11h7"></path>
+                </svg>
 
             </div>
 
+            <h3>
+                No messages yet
+            </h3>
 
-            <div class="stat-card">
-
-                <div class="stat-label">
-                    Messages Received
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="messagesReceived"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-label">
-                    Account Status
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="accountStatus"
-                    style="color:#16a34a;"
-                >
-                    Active
-                </div>
-
-            </div>
+            <p>
+                Verification messages received by your
+                purchased number will appear here.
+            </p>
 
         </div>
 
-
-        <!-- =================================================
-             RECENT MESSAGES
-        ================================================== -->
-
-        <div class="content-card">
-
-            <div class="card-header">
-
-                <h2>
-                    Recent Messages
-                </h2>
-
-                <button
-                    class="view-all"
-                    id="viewSmsButton"
-                >
-                    View all
-                </button>
-
-            </div>
-
-
-            <div
-                class="empty-state"
-                id="recentMessagesEmpty"
-            >
-
-                <div class="empty-icon">
-                    SMS
-                </div>
-
-                <h3>
-                    No messages yet
-                </h3>
-
-                <p>
-                    Messages received by your Numora
-                    number will appear here.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
+    </div>
 
 </main>
 
@@ -1363,7 +1800,13 @@ button,
     >
 
         <span class="mobile-nav-icon">
-            ⌂
+
+            <svg viewBox="0 0 24 24">
+                <path d="M3 10.5 12 3l9 7.5"></path>
+                <path d="M5 9.5V21h14V9.5"></path>
+                <path d="M9 21v-6h6v6"></path>
+            </svg>
+
         </span>
 
         Dashboard
@@ -1377,7 +1820,13 @@ button,
     >
 
         <span class="mobile-nav-icon">
-            ▣
+
+            <svg viewBox="0 0 24 24">
+                <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
+                <path d="M7 8h10"></path>
+                <path d="M7 11h7"></path>
+            </svg>
+
         </span>
 
         SMS
@@ -1391,7 +1840,12 @@ button,
     >
 
         <span class="mobile-nav-icon">
-            ⚙
+
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
+            </svg>
+
         </span>
 
         Settings
@@ -1420,7 +1874,9 @@ import {
 import {
     getFirestore,
     doc,
-    onSnapshot
+    onSnapshot,
+    collection,
+    getDocs
 } from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
@@ -1454,7 +1910,6 @@ const firebaseConfig = {
 
 };
 
-
 const app =
     initializeApp(firebaseConfig);
 
@@ -1466,11 +1921,14 @@ const db =
 
 
 /* =========================================================
-   GITHUB PAGES PATHS
+   PATHS
 ========================================================= */
 
 const HOME_URL =
     "/numorahq/";
+
+const DASHBOARD_URL =
+    "/numorahq/dashboard.html";
 
 const SMS_URL =
     "/numorahq/sms.html";
@@ -1478,8 +1936,46 @@ const SMS_URL =
 const SETTINGS_URL =
     "/numorahq/settings.html";
 
-const PURCHASE_URL =
-    "/numorahq/purchase.html";
+
+/* =========================================================
+   WHATSAPP
+========================================================= */
+
+const WHATSAPP_NUMBER =
+    "2349155093341";
+
+const WHATSAPP_URL =
+    `https://wa.me/${WHATSAPP_NUMBER}`;
+
+
+/* =========================================================
+   BACKEND
+========================================================= */
+
+const BACKEND_URL =
+    "https://numora-backend-cle6.onrender.com";
+
+
+/*
+ * IMPORTANT:
+ *
+ * The actual 5SIM API key must NEVER be placed here.
+ *
+ * The browser will call Numora's backend.
+ *
+ * The backend will later:
+ *
+ * 1. Verify the authenticated customer.
+ * 2. Read the current Admin price.
+ * 3. Check the customer's Naira balance.
+ * 4. Request the appropriate number from 5SIM.
+ * 5. Deduct the balance.
+ * 6. Save the purchase.
+ * 7. Make the number available to SMS.
+ *
+ * The exact endpoint will be connected after
+ * the dashboard UI has been vetted.
+ */
 
 
 /* =========================================================
@@ -1521,19 +2017,34 @@ const balanceValue =
         "balanceValue"
     );
 
-const customerNumber =
+const countrySelect =
     document.getElementById(
-        "customerNumber"
+        "countrySelect"
     );
 
-const numberDescription =
+const serviceSelect =
     document.getElementById(
-        "numberDescription"
+        "serviceSelect"
     );
 
-const numberStatus =
+const servicePrice =
     document.getElementById(
-        "numberStatus"
+        "servicePrice"
+    );
+
+const purchaseButton =
+    document.getElementById(
+        "purchaseButton"
+    );
+
+const balanceWarning =
+    document.getElementById(
+        "balanceWarning"
+    );
+
+const purchaseStatus =
+    document.getElementById(
+        "purchaseStatus"
     );
 
 const messagesSent =
@@ -1553,6 +2064,25 @@ const accountStatus =
 
 
 /* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let currentBalance = 0;
+
+let countries = [];
+
+let services = [];
+
+let selectedCountry = null;
+
+let selectedService = null;
+
+let selectedPrice = null;
+
+
+/* =========================================================
    AVATAR
 ========================================================= */
 
@@ -1565,7 +2095,6 @@ function setAvatar(
         return;
     }
 
-
     if (user.photoURL) {
 
         element.innerHTML =
@@ -1576,7 +2105,6 @@ function setAvatar(
 
         return;
     }
-
 
     const name =
         user.displayName ||
@@ -1589,20 +2117,16 @@ function setAvatar(
             .charAt(0)
             .toUpperCase();
 
-
     element.textContent =
         initial || "N";
-
 }
 
 
 /* =========================================================
-   USER INFORMATION
+   USER
 ========================================================= */
 
-function populateUser(
-    user
-) {
+function populateUser(user) {
 
     const name =
         user.displayName ||
@@ -1612,13 +2136,11 @@ function populateUser(
         user.email ||
         "";
 
-
     sidebarName.textContent =
         name;
 
     sidebarEmail.textContent =
         email;
-
 
     setAvatar(
         sidebarAvatar,
@@ -1630,13 +2152,11 @@ function populateUser(
         user
     );
 
-
     pageTitle.textContent =
         `Welcome, ${
             name
                 .split(" ")[0]
         }`;
-
 }
 
 
@@ -1644,14 +2164,11 @@ function populateUser(
    CUSTOMER PROFILE
 ========================================================= */
 
-function listenToCustomerProfile(
-    user
-) {
+function listenToCustomerProfile(user) {
 
     if (!user) {
         return;
     }
-
 
     const userRef =
         doc(
@@ -1659,7 +2176,6 @@ function listenToCustomerProfile(
             "users",
             user.uid
         );
-
 
     onSnapshot(
         userRef,
@@ -1671,19 +2187,17 @@ function listenToCustomerProfile(
                 setDefaultDashboard();
 
                 return;
-
             }
-
 
             const data =
                 snapshot.data();
 
 
-            /* =================================================
-               BALANCE
-            ================================================= */
+            /* ---------------------------------------------
+               NAIRA BALANCE
+            --------------------------------------------- */
 
-            const balance =
+            currentBalance =
                 Number(
                     data.balance ??
                     data.nairaBalance ??
@@ -1691,98 +2205,47 @@ function listenToCustomerProfile(
                     0
                 );
 
-
             balanceValue.textContent =
-                `₦${balance.toLocaleString()}`;
+                formatNaira(
+                    currentBalance
+                );
 
 
-            /* =================================================
-               NUMBER
-            ================================================= */
-
-            const number =
-                data.phoneNumber ||
-                data.rentedNumber ||
-                data.number ||
-                data.twilioPhoneNumber ||
-                "";
-
-
-            if (number) {
-
-                customerNumber.textContent =
-                    number;
-
-                numberDescription.textContent =
-                    "Your Numora number is active and ready to use.";
-
-                numberStatus.textContent =
-                    data.status === "Active" ||
-                    data.numberStatus === "Active" ||
-                    data.rentalStatus === "Active"
-                        ? "Active"
-                        : (
-                            data.status ||
-                            data.numberStatus ||
-                            "Active"
-                        );
-
-            }
-
-            else {
-
-                customerNumber.textContent =
-                    "No number yet";
-
-                numberDescription.textContent =
-                    "You don't have an active number yet. Choose a number to start receiving and sending messages through Numora.";
-
-                numberStatus.textContent =
-                    "Ready to activate";
-
-            }
-
-
-            /* =================================================
+            /* ---------------------------------------------
                MESSAGE COUNTERS
-            ================================================= */
+            --------------------------------------------- */
 
             const sent =
                 Number(
-                    data.messagesSent ||
-                    data.smsSent ||
+                    data.messagesSent ??
+                    data.smsSent ??
                     0
                 );
-
 
             const received =
                 Number(
-                    data.messagesReceived ||
-                    data.smsReceived ||
+                    data.messagesReceived ??
+                    data.smsReceived ??
                     0
                 );
 
-
             messagesSent.textContent =
                 sent.toLocaleString();
-
 
             messagesReceived.textContent =
                 received.toLocaleString();
 
 
-            /* =================================================
+            /* ---------------------------------------------
                ACCOUNT STATUS
-            ================================================= */
+            --------------------------------------------- */
 
             const status =
                 data.accountStatus ||
                 "Active";
 
-
             accountStatus.textContent =
                 status;
-
 
             if (
                 String(status).toLowerCase() ===
@@ -1792,14 +2255,14 @@ function listenToCustomerProfile(
                 accountStatus.style.color =
                     "#16a34a";
 
-            }
-
-            else {
+            } else {
 
                 accountStatus.style.color =
                     "#f59e0b";
 
             }
+
+            updatePurchaseAvailability();
 
         },
 
@@ -1812,27 +2275,19 @@ function listenToCustomerProfile(
 
         }
     );
-
 }
 
 
 /* =========================================================
-   DEFAULT DASHBOARD
+   DEFAULT
 ========================================================= */
 
 function setDefaultDashboard() {
 
+    currentBalance = 0;
+
     balanceValue.textContent =
         "₦0";
-
-    customerNumber.textContent =
-        "No number yet";
-
-    numberDescription.textContent =
-        "You don't have an active number yet. Choose a number to start receiving and sending messages through Numora.";
-
-    numberStatus.textContent =
-        "Ready to activate";
 
     messagesSent.textContent =
         "0";
@@ -1846,6 +2301,738 @@ function setDefaultDashboard() {
     accountStatus.style.color =
         "#16a34a";
 
+    updatePurchaseAvailability();
+}
+
+
+/* =========================================================
+   FORMAT NAIRA
+========================================================= */
+
+function formatNaira(amount) {
+
+    const value =
+        Number(amount) || 0;
+
+    return (
+        "₦" +
+        value.toLocaleString(
+            "en-NG",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        )
+    );
+}
+
+
+/* =========================================================
+   WHATSAPP
+========================================================= */
+
+document
+    .getElementById(
+        "depositButton"
+    )
+    .href =
+        WHATSAPP_URL;
+
+
+/* =========================================================
+   LOAD COUNTRIES
+========================================================= */
+
+/*
+ * This first version expects Admin-managed data
+ * to eventually live in Firestore.
+ *
+ * We deliberately do not hard-code the selling
+ * countries here.
+ */
+
+async function loadCountries() {
+
+    countrySelect.innerHTML =
+        `<option value="">
+            Loading countries...
+        </option>`;
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "countries"
+                )
+            );
+
+        countries = [];
+
+        snapshot.forEach(
+            item => {
+
+                const data =
+                    item.data();
+
+                if (
+                    data.enabled === false ||
+                    data.active === false
+                ) {
+                    return;
+                }
+
+                countries.push({
+                    id: item.id,
+                    ...data
+                });
+
+            }
+        );
+
+
+        countries.sort(
+            (a,b) =>
+                String(
+                    a.name ||
+                    a.country ||
+                    a.title ||
+                    a.id
+                ).localeCompare(
+                    String(
+                        b.name ||
+                        b.country ||
+                        b.title ||
+                        b.id
+                    )
+                )
+        );
+
+
+        countrySelect.innerHTML =
+            `<option value="">
+                Select a country
+            </option>`;
+
+
+        countries.forEach(
+            country => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    country.id;
+
+                option.textContent =
+                    country.name ||
+                    country.country ||
+                    country.title ||
+                    country.id;
+
+                countrySelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        if (!countries.length) {
+
+            countrySelect.innerHTML =
+                `<option value="">
+                    No countries available
+                </option>`;
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Country loading error:",
+            error
+        );
+
+        countrySelect.innerHTML =
+            `<option value="">
+                Unable to load countries
+            </option>`;
+
+    }
+
+}
+
+
+/* =========================================================
+   COUNTRY CHANGE
+========================================================= */
+
+countrySelect.addEventListener(
+    "change",
+    async () => {
+
+        const countryId =
+            countrySelect.value;
+
+        selectedCountry =
+            countries.find(
+                country =>
+                    country.id ===
+                    countryId
+            ) || null;
+
+        selectedService = null;
+        selectedPrice = null;
+
+        servicePrice.textContent =
+            "—";
+
+        balanceWarning.classList.remove(
+            "show"
+        );
+
+        purchaseButton.disabled =
+            true;
+
+
+        if (!selectedCountry) {
+
+            serviceSelect.disabled =
+                true;
+
+            serviceSelect.innerHTML =
+                `<option value="">
+                    Choose a country first
+                </option>`;
+
+            return;
+        }
+
+
+        await loadServices(
+            selectedCountry
+        );
+
+    }
+);
+
+
+/* =========================================================
+   LOAD SERVICES
+========================================================= */
+
+async function loadServices(country) {
+
+    serviceSelect.disabled =
+        true;
+
+    serviceSelect.innerHTML =
+        `<option value="">
+            Loading services...
+        </option>`;
+
+
+    try {
+
+        /*
+         * Admin-controlled services are read
+         * from Firestore.
+         *
+         * Country-specific prices can be stored
+         * either directly on the service document
+         * or in a country pricing structure.
+         *
+         * The final backend remains authoritative.
+         */
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "services"
+                )
+            );
+
+        services = [];
+
+        snapshot.forEach(
+            item => {
+
+                const data =
+                    item.data();
+
+                if (
+                    data.enabled === false ||
+                    data.active === false
+                ) {
+                    return;
+                }
+
+                services.push({
+                    id: item.id,
+                    ...data
+                });
+
+            }
+        );
+
+
+        services.sort(
+            (a,b) =>
+                String(
+                    a.name ||
+                    a.service ||
+                    a.title ||
+                    a.id
+                ).localeCompare(
+                    String(
+                        b.name ||
+                        b.service ||
+                        b.title ||
+                        b.id
+                    )
+                )
+        );
+
+
+        serviceSelect.innerHTML =
+            `<option value="">
+                Select a service
+            </option>`;
+
+
+        services.forEach(
+            service => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    service.id;
+
+                option.textContent =
+                    service.name ||
+                    service.service ||
+                    service.title ||
+                    service.id;
+
+                serviceSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        serviceSelect.disabled =
+            services.length === 0;
+
+
+        if (!services.length) {
+
+            serviceSelect.innerHTML =
+                `<option value="">
+                    No services available
+                </option>`;
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Service loading error:",
+            error
+        );
+
+        serviceSelect.innerHTML =
+            `<option value="">
+                Unable to load services
+            </option>`;
+
+    }
+
+}
+
+
+/* =========================================================
+   SERVICE CHANGE
+========================================================= */
+
+serviceSelect.addEventListener(
+    "change",
+    () => {
+
+        const serviceId =
+            serviceSelect.value;
+
+        selectedService =
+            services.find(
+                service =>
+                    service.id ===
+                    serviceId
+            ) || null;
+
+
+        if (!selectedService) {
+
+            selectedPrice = null;
+
+            servicePrice.textContent =
+                "—";
+
+            purchaseButton.disabled =
+                true;
+
+            balanceWarning.classList.remove(
+                "show"
+            );
+
+            return;
+        }
+
+
+        selectedPrice =
+            getCustomerPrice(
+                selectedService,
+                selectedCountry
+            );
+
+
+        if (
+            selectedPrice === null
+        ) {
+
+            servicePrice.textContent =
+                "Price unavailable";
+
+            purchaseButton.disabled =
+                true;
+
+            return;
+        }
+
+
+        servicePrice.textContent =
+            formatNaira(
+                selectedPrice
+            );
+
+
+        updatePurchaseAvailability();
+
+    }
+);
+
+
+/* =========================================================
+   GET CUSTOMER PRICE
+========================================================= */
+
+function getCustomerPrice(
+    service,
+    country
+) {
+
+    /*
+     * This is only the UI price display.
+     *
+     * The backend MUST perform the final price
+     * lookup before purchasing.
+     *
+     * Supported example structures:
+     *
+     * service.prices[country.id]
+     * service.countryPrices[country.id]
+     * service.price
+     */
+
+    if (
+        service.prices &&
+        typeof service.prices ===
+            "object" &&
+        country &&
+        service.prices[
+            country.id
+        ] !== undefined
+    ) {
+
+        return Number(
+            service.prices[
+                country.id
+            ]
+        );
+
+    }
+
+
+    if (
+        service.countryPrices &&
+        typeof service.countryPrices ===
+            "object" &&
+        country &&
+        service.countryPrices[
+            country.id
+        ] !== undefined
+    ) {
+
+        return Number(
+            service.countryPrices[
+                country.id
+            ]
+        );
+
+    }
+
+
+    if (
+        service.price !== undefined
+    ) {
+
+        return Number(
+            service.price
+        );
+
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   PURCHASE AVAILABILITY
+========================================================= */
+
+function updatePurchaseAvailability() {
+
+    if (
+        !selectedService ||
+        selectedPrice === null ||
+        Number.isNaN(selectedPrice)
+    ) {
+
+        purchaseButton.disabled =
+            true;
+
+        balanceWarning.classList.remove(
+            "show"
+        );
+
+        return;
+    }
+
+
+    if (
+        currentBalance <
+        selectedPrice
+    ) {
+
+        purchaseButton.disabled =
+            true;
+
+        balanceWarning.classList.add(
+            "show"
+        );
+
+        return;
+    }
+
+
+    balanceWarning.classList.remove(
+        "show"
+    );
+
+    purchaseButton.disabled =
+        false;
+}
+
+
+/* =========================================================
+   PURCHASE
+========================================================= */
+
+purchaseButton.addEventListener(
+    "click",
+    purchaseNumber
+);
+
+
+async function purchaseNumber() {
+
+    if (!currentUser) {
+        return;
+    }
+
+    if (!selectedCountry) {
+        return;
+    }
+
+    if (!selectedService) {
+        return;
+    }
+
+    if (
+        selectedPrice === null
+    ) {
+        return;
+    }
+
+
+    if (
+        currentBalance <
+        selectedPrice
+    ) {
+
+        showPurchaseStatus(
+            "error",
+            "Your balance is not enough. Please deposit through WhatsApp before purchasing."
+        );
+
+        return;
+    }
+
+
+    purchaseButton.disabled =
+        true;
+
+    showPurchaseStatus(
+        "info",
+        "Checking your balance and preparing your number..."
+    );
+
+
+    try {
+
+        /*
+         * IMPORTANT:
+         *
+         * This is intentionally the ONLY place
+         * the browser will eventually request a
+         * purchase from Numora's backend.
+         *
+         * The backend will connect to 5SIM.
+         *
+         * No 5SIM API key belongs in this file.
+         *
+         * The exact endpoint will be connected
+         * after we vet the dashboard and inspect
+         * the current Numora backend.
+         */
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/api/customer/purchase-number`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        countryId:
+                            selectedCountry.id,
+
+                        serviceId:
+                            selectedService.id
+
+                    })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.message ||
+                "Purchase could not be completed."
+            );
+
+        }
+
+
+        showPurchaseStatus(
+            "success",
+            result.message ||
+            "Number purchased successfully. Open SMS to view your verification number."
+        );
+
+
+        /*
+         * SMS page is the destination after
+         * successful purchase.
+         */
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    SMS_URL;
+
+            },
+            900
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Purchase error:",
+            error
+        );
+
+
+        showPurchaseStatus(
+            "error",
+            error.message ||
+            "Unable to complete the purchase. Please try again."
+        );
+
+
+        purchaseButton.disabled =
+            false;
+
+        updatePurchaseAvailability();
+
+    }
+
+}
+
+
+/* =========================================================
+   PURCHASE STATUS
+========================================================= */
+
+function showPurchaseStatus(
+    type,
+    message
+) {
+
+    purchaseStatus.className =
+        "purchase-status show " +
+        type;
+
+    purchaseStatus.textContent =
+        message;
+
 }
 
 
@@ -1856,10 +3043,9 @@ function setDefaultDashboard() {
 function goToDashboard() {
 
     window.location.href =
-        "/numorahq/dashboard.html";
+        DASHBOARD_URL;
 
 }
-
 
 function goToSms() {
 
@@ -1867,7 +3053,6 @@ function goToSms() {
         SMS_URL;
 
 }
-
 
 function goToSettings() {
 
@@ -1890,7 +3075,6 @@ document
         goToDashboard
     );
 
-
 document
     .getElementById(
         "smsNav"
@@ -1899,7 +3083,6 @@ document
         "click",
         goToSms
     );
-
 
 document
     .getElementById(
@@ -1924,7 +3107,6 @@ document
         goToDashboard
     );
 
-
 document
     .getElementById(
         "mobileSmsNav"
@@ -1933,7 +3115,6 @@ document
         "click",
         goToSms
     );
-
 
 document
     .getElementById(
@@ -1960,47 +3141,6 @@ document
 
 
 /* =========================================================
-   GET NUMBER
-========================================================= */
-
-document
-    .getElementById(
-        "getNumberButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            window.location.href =
-                PURCHASE_URL;
-
-        }
-    );
-
-
-/* =========================================================
-   NOTIFICATIONS
-========================================================= */
-
-document
-    .getElementById(
-        "notificationButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            /*
-             * Notifications will be connected
-             * when the customer notifications
-             * page/system is implemented.
-             */
-
-        }
-    );
-
-
-/* =========================================================
    SIGN OUT
 ========================================================= */
 
@@ -2008,8 +3148,9 @@ async function logout() {
 
     try {
 
-        await signOut(auth);
-
+        await signOut(
+            auth
+        );
 
         window.location.replace(
             HOME_URL
@@ -2023,7 +3164,6 @@ async function logout() {
             "Sign out error:",
             error
         );
-
 
         alert(
             "Unable to sign out. Please try again."
@@ -2061,7 +3201,7 @@ async function startDashboard() {
         onAuthStateChanged(
             auth,
 
-            user => {
+            async user => {
 
                 if (!user) {
 
@@ -2070,8 +3210,11 @@ async function startDashboard() {
                     );
 
                     return;
-
                 }
+
+
+                currentUser =
+                    user;
 
 
                 populateUser(
@@ -2082,6 +3225,9 @@ async function startDashboard() {
                 listenToCustomerProfile(
                     user
                 );
+
+
+                await loadCountries();
 
 
                 loadingScreen.classList.add(
@@ -2099,7 +3245,6 @@ async function startDashboard() {
             "Dashboard authentication error:",
             error
         );
-
 
         window.location.replace(
             HOME_URL
