@@ -2640,7 +2640,7 @@ a:focus-visible {
 
             <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0-1.88-.34l-.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
+                <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
             </svg>
 
         </span>
@@ -2675,9 +2675,7 @@ import {
 import {
     getFirestore,
     doc,
-    onSnapshot,
-    collection,
-    getDocs
+    onSnapshot
 } from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
@@ -2902,6 +2900,11 @@ const smsMessageText =
         "smsMessageText"
     );
 
+const recentMessagesEmpty =
+    document.getElementById(
+        "recentMessagesEmpty"
+    );
+
 
 /* =========================================================
    STATE
@@ -2910,6 +2913,8 @@ const smsMessageText =
 let currentUser = null;
 
 let currentBalance = 0;
+
+let catalog = [];
 
 let countries = [];
 
@@ -2926,6 +2931,8 @@ let activeView = "dashboard";
 let smsCountdownTimer = null;
 
 let activePurchase = null;
+
+let customerNumbers = [];
 
 
 /* =========================================================
@@ -2993,10 +3000,99 @@ function setAvatar(
 
 
 /* =========================================================
+   PROFILE ID
+   Required format:
+   3 LETTERS + 3 NUMBERS
+   Example: ABC123
+========================================================= */
+
+function isValidProfileId(value) {
+
+    return /^[A-Z]{3}[0-9]{3}$/.test(
+        String(value || "")
+            .trim()
+            .toUpperCase()
+    );
+}
+
+
+function generateProfileId() {
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    let result = "";
+
+    for (let i = 0; i < 3; i++) {
+
+        result +=
+            letters.charAt(
+                Math.floor(
+                    Math.random() *
+                    letters.length
+                )
+            );
+
+    }
+
+    result +=
+        String(
+            Math.floor(
+                100 +
+                Math.random() * 900
+            )
+        );
+
+    return result;
+}
+
+
+/*
+ * The real/stable Profile ID should already exist
+ * on users/{uid}.profileId.
+ *
+ * The Firebase UID is NEVER displayed as the
+ * customer's Profile ID.
+ *
+ * If the backend/profile has not supplied one yet,
+ * we only create a temporary correctly-formatted
+ * display value rather than exposing the UID.
+ */
+function getProfileIdFromData(data) {
+
+    const storedId =
+        data &&
+        (
+            data.profileId ||
+            data.customerProfileId ||
+            data.customerId
+        );
+
+    if (
+        isValidProfileId(
+            storedId
+        )
+    ) {
+
+        return String(
+            storedId
+        )
+            .trim()
+            .toUpperCase();
+
+    }
+
+    return generateProfileId();
+}
+
+
+/* =========================================================
    USER
 ========================================================= */
 
-function populateUser(user) {
+function populateUser(
+    user,
+    profileData = null
+) {
 
     const name =
         user.displayName ||
@@ -3021,8 +3117,16 @@ function populateUser(user) {
     settingsEmailRow.textContent =
         email || "—";
 
+
+    const customerProfileId =
+        getProfileIdFromData(
+            profileData
+        );
+
+
     profileId.textContent =
-        user.uid;
+        customerProfileId;
+
 
     setAvatar(
         sidebarAvatar,
@@ -3217,11 +3321,22 @@ function listenToCustomerProfile(user) {
 
                 setDefaultDashboard();
 
+                populateUser(
+                    user,
+                    null
+                );
+
                 return;
             }
 
             const data =
                 snapshot.data();
+
+
+            populateUser(
+                user,
+                data
+            );
 
 
             currentBalance =
@@ -3252,7 +3367,8 @@ function listenToCustomerProfile(user) {
                     0
                 );
 
-            const received =
+
+            const profileReceived =
                 Number(
                     data.messagesReceived ??
                     data.smsReceived ??
@@ -3263,8 +3379,9 @@ function listenToCustomerProfile(user) {
             messagesSent.textContent =
                 sent.toLocaleString();
 
+
             messagesReceived.textContent =
-                received.toLocaleString();
+                profileReceived.toLocaleString();
 
 
             const status =
@@ -3293,11 +3410,12 @@ function listenToCustomerProfile(user) {
 
 
             /*
-             * Restore any existing active
-             * verification purchase from Firestore.
+             * The new 5SIM system uses the backend
+             * numbers collection as the source of
+             * purchased numbers.
              *
-             * The exact field names can be aligned
-             * with the final backend structure.
+             * We still support the existing Firestore
+             * activePurchase fields as a fallback.
              */
 
             const purchase =
@@ -3405,66 +3523,219 @@ document
 
 
 /* =========================================================
-   LOAD COUNTRIES
+   CUSTOMER API AUTH
 ========================================================= */
 
-async function loadCountries() {
+async function getCustomerToken() {
+
+    if (!currentUser) {
+        throw new Error(
+            "Your Numora session has expired. Please sign in again."
+        );
+    }
+
+    return await currentUser.getIdToken();
+}
+
+
+async function customerApi(
+    endpoint,
+    options = {}
+) {
+
+    const token =
+        await getCustomerToken();
+
+
+    const headers = {
+        ...(options.headers || {}),
+        "Authorization":
+            `Bearer ${token}`
+    };
+
+
+    if (
+        options.body &&
+        !headers["Content-Type"]
+    ) {
+
+        headers["Content-Type"] =
+            "application/json";
+    }
+
+
+    const response =
+        await fetch(
+            `${BACKEND_URL}${endpoint}`,
+            {
+                ...options,
+                headers
+            }
+        );
+
+
+    let result = null;
+
+    try {
+
+        result =
+            await response.json();
+
+    } catch {
+
+        result = null;
+
+    }
+
+
+    if (!response.ok) {
+
+        const error =
+            new Error(
+                result?.message ||
+                result?.error ||
+                `Request failed with status ${response.status}.`
+            );
+
+        error.response =
+            response;
+
+        error.data =
+            result;
+
+        throw error;
+    }
+
+
+    return result;
+}
+
+
+/* =========================================================
+   LOAD CUSTOMER CATALOG
+========================================================= */
+
+async function loadCustomerCatalog() {
 
     countrySelect.innerHTML =
         `<option value="">
             Loading countries...
         </option>`;
 
+    serviceSelect.disabled =
+        true;
+
+    serviceSelect.innerHTML =
+        `<option value="">
+            Choose a country first
+        </option>`;
+
+
     try {
 
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "countries"
-                )
+        /*
+         * IMPORTANT:
+         *
+         * Countries and services are NOT loaded
+         * directly from Firestore anymore.
+         *
+         * The backend reads the admin-controlled
+         * servicePricing catalog and sends the
+         * customer only the services Numora sells.
+         */
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/api/customer/catalog`
             );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result?.message ||
+                result?.error ||
+                "Unable to load Numora catalog."
+            );
+
+        }
+
+
+        catalog =
+            Array.isArray(
+                result.catalog
+            )
+                ? result.catalog
+                : [];
+
+
+        /*
+         * Build the country list from the backend
+         * catalog. This does NOT read the countries
+         * collection from Firestore.
+         */
 
         countries = [];
 
 
-        snapshot.forEach(
+        const countryMap =
+            new Map();
+
+
+        catalog.forEach(
             item => {
 
-                const data =
-                    item.data();
+                const code =
+                    String(
+                        item.country ||
+                        item.countryCode ||
+                        ""
+                    )
+                        .trim();
 
-                if (
-                    data.enabled === false ||
-                    data.active === false
-                ) {
+
+                if (!code) {
                     return;
                 }
 
-                countries.push({
-                    id: item.id,
-                    ...data
-                });
+
+                if (
+                    !countryMap.has(code)
+                ) {
+
+                    countryMap.set(
+                        code,
+                        {
+                            id: code,
+                            name:
+                                item.countryName ||
+                                item.countryDisplayName ||
+                                code
+                        }
+                    );
+
+                }
 
             }
         );
 
 
+        countries =
+            Array.from(
+                countryMap.values()
+            );
+
+
         countries.sort(
             (a,b) =>
-                String(
-                    a.name ||
-                    a.country ||
-                    a.title ||
-                    a.id
-                ).localeCompare(
-                    String(
-                        b.name ||
-                        b.country ||
-                        b.title ||
-                        b.id
+                String(a.name)
+                    .localeCompare(
+                        String(b.name)
                     )
-                )
         );
 
 
@@ -3486,10 +3757,7 @@ async function loadCountries() {
                     country.id;
 
                 option.textContent =
-                    country.name ||
-                    country.country ||
-                    country.title ||
-                    country.id;
+                    country.name;
 
                 countrySelect.appendChild(
                     option
@@ -3513,9 +3781,13 @@ async function loadCountries() {
     catch (error) {
 
         console.error(
-            "Country loading error:",
+            "Customer catalog error:",
             error
         );
+
+        catalog = [];
+
+        countries = [];
 
         countrySelect.innerHTML =
             `<option value="">
@@ -3598,51 +3870,40 @@ async function loadServices(country) {
 
     try {
 
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "services"
-                )
+        /*
+         * Services are filtered from the backend
+         * customer catalog already loaded from
+         * Firestore servicePricing by the backend.
+         */
+
+        services =
+            catalog.filter(
+                item =>
+                    String(
+                        item.country ||
+                        item.countryCode ||
+                        ""
+                    ).toLowerCase() ===
+                    String(
+                        country.id
+                    ).toLowerCase()
             );
-
-        services = [];
-
-
-        snapshot.forEach(
-            item => {
-
-                const data =
-                    item.data();
-
-                if (
-                    data.enabled === false ||
-                    data.active === false
-                ) {
-                    return;
-                }
-
-                services.push({
-                    id: item.id,
-                    ...data
-                });
-
-            }
-        );
 
 
         services.sort(
             (a,b) =>
                 String(
+                    a.serviceName ||
                     a.name ||
                     a.service ||
-                    a.title ||
+                    a.serviceCode ||
                     a.id
                 ).localeCompare(
                     String(
+                        b.serviceName ||
                         b.name ||
                         b.service ||
-                        b.title ||
+                        b.serviceCode ||
                         b.id
                     )
                 )
@@ -3663,14 +3924,22 @@ async function loadServices(country) {
                         "option"
                     );
 
+                /*
+                 * The catalog document ID is the
+                 * authoritative pricingId.
+                 */
+
                 option.value =
                     service.id;
 
+
                 option.textContent =
+                    service.serviceName ||
                     service.name ||
                     service.service ||
-                    service.title ||
+                    service.serviceCode ||
                     service.id;
+
 
                 serviceSelect.appendChild(
                     option
@@ -3757,7 +4026,8 @@ serviceSelect.addEventListener(
 
 
         if (
-            selectedPrice === null
+            selectedPrice === null ||
+            Number.isNaN(selectedPrice)
         ) {
 
             servicePrice.textContent =
@@ -3791,52 +4061,29 @@ function getCustomerPrice(
     country
 ) {
 
-    if (
-        service.prices &&
-        typeof service.prices ===
-            "object" &&
-        country &&
-        service.prices[
-            country.id
-        ] !== undefined
-    ) {
-
-        return Number(
-            service.prices[
-                country.id
-            ]
-        );
-
-    }
-
+    /*
+     * Customer catalog already contains the
+     * authoritative Numora customer price.
+     *
+     * The browser only displays this price.
+     * The backend still performs the authoritative
+     * price lookup during purchase.
+     */
 
     if (
-        service.countryPrices &&
-        typeof service.countryPrices ===
-            "object" &&
-        country &&
-        service.countryPrices[
-            country.id
-        ] !== undefined
+        service &&
+        service.price !== undefined &&
+        service.price !== null
     ) {
 
-        return Number(
-            service.countryPrices[
-                country.id
-            ]
-        );
+        const price =
+            Number(
+                service.price
+            );
 
-    }
-
-
-    if (
-        service.price !== undefined
-    ) {
-
-        return Number(
-            service.price
-        );
-
+        return Number.isFinite(price)
+            ? price
+            : null;
     }
 
 
@@ -3893,6 +4140,34 @@ function updatePurchaseAvailability() {
 
 
 /* =========================================================
+   REQUEST ID
+========================================================= */
+
+function createRequestId() {
+
+    if (
+        window.crypto &&
+        typeof window.crypto.randomUUID ===
+            "function"
+    ) {
+
+        return window.crypto.randomUUID();
+
+    }
+
+
+    return (
+        "numora_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .slice(2, 10)
+    );
+}
+
+
+/* =========================================================
    PURCHASE
 ========================================================= */
 
@@ -3916,7 +4191,10 @@ async function purchaseNumber() {
         return;
     }
 
-    if (selectedPrice === null) {
+    if (
+        selectedPrice === null ||
+        Number.isNaN(selectedPrice)
+    ) {
         return;
     }
 
@@ -3947,70 +4225,111 @@ async function purchaseNumber() {
 
     try {
 
-        const response =
-            await fetch(
-                `${BACKEND_URL}/api/customer/purchase-number`,
+        /*
+         * IMPORTANT:
+         *
+         * No price is sent to the backend as
+         * authoritative data.
+         *
+         * The backend receives the pricingId,
+         * country/service identifiers and a unique
+         * requestId, then looks up the real price
+         * from Firestore servicePricing.
+         */
+
+        const result =
+            await customerApi(
+                "/api/customer/purchase-number",
                 {
                     method: "POST",
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
+                    body:
+                        JSON.stringify({
 
-                    /*
-                     * The final backend will authenticate
-                     * the Firebase customer and perform
-                     * the authoritative price/balance check.
-                     */
+                            pricingId:
+                                selectedService.id,
 
-                    body: JSON.stringify({
+                            countryId:
+                                selectedService.country ||
+                                selectedCountry.id,
 
-                        countryId:
-                            selectedCountry.id,
+                            serviceId:
+                                selectedService.service ||
+                                selectedService.serviceCode ||
+                                selectedService.id,
 
-                        serviceId:
-                            selectedService.id
+                            requestId:
+                                createRequestId()
 
-                    })
-
+                        })
                 }
             );
 
 
-        const result =
-            await response.json();
+        /*
+         * Backend response contains the purchased
+         * 5SIM number directly.
+         */
 
+        activePurchase = {
 
-        if (!response.ok) {
+            ...(
+                result.purchase ||
+                result.numberData ||
+                {}
+            ),
 
-            throw new Error(
-                result.message ||
-                "Purchase could not be completed."
-            );
+            ...result,
 
-        }
+            number:
+                result.number ||
+                result.phoneNumber ||
+                result.phone,
+
+            phoneNumber:
+                result.phoneNumber ||
+                result.number ||
+                result.phone,
+
+            service:
+                result.service ||
+                selectedService.serviceName ||
+                selectedService.service,
+
+            serviceName:
+                result.serviceName ||
+                selectedService.serviceName ||
+                selectedService.service,
+
+            country:
+                result.country ||
+                selectedCountry.id,
+
+            countryName:
+                result.countryName ||
+                selectedCountry.name,
+
+            purchaseId:
+                result.purchaseId,
+
+            fiveSimOrderId:
+                result.fiveSimOrderId,
+
+            expiresAt:
+                result.expiresAt,
+
+            status:
+                result.status ||
+                "COMPLETED"
+
+        };
 
 
         /*
-         * Store the returned purchase locally
-         * so the SMS view can immediately display it.
-         *
-         * The backend should eventually return:
-         * number
-         * service
-         * country
-         * expiresAt
-         * purchaseId
-         * status
-         * etc.
+         * Refresh the balance/profile immediately.
+         * Firestore onSnapshot should also update it
+         * automatically after the backend transaction.
          */
-
-        activePurchase =
-            result.purchase ||
-            result.numberData ||
-            result;
-
 
         updateSmsView(
             activePurchase
@@ -4022,6 +4341,15 @@ async function purchaseNumber() {
             result.message ||
             "Number purchased successfully."
         );
+
+
+        /*
+         * Refresh the customer's backend number
+         * list so the newly purchased number becomes
+         * the active number used by the SMS page.
+         */
+
+        await loadCustomerNumbers();
 
 
         setTimeout(
@@ -4043,11 +4371,31 @@ async function purchaseNumber() {
         );
 
 
-        showPurchaseStatus(
-            "error",
-            error.message ||
-            "Unable to complete the purchase. Please try again."
-        );
+        /*
+         * If the backend says the number was
+         * unavailable and refunded, show that clearly.
+         */
+
+        if (
+            error.data &&
+            error.data.refunded
+        ) {
+
+            showPurchaseStatus(
+                "error",
+                error.data.message ||
+                "That number is currently unavailable. Your balance has been refunded."
+            );
+
+        } else {
+
+            showPurchaseStatus(
+                "error",
+                error.message ||
+                "Unable to complete the purchase. Please try again."
+            );
+
+        }
 
 
         purchaseButton.disabled =
@@ -4080,6 +4428,332 @@ function showPurchaseStatus(
 
 
 /* =========================================================
+   CUSTOMER NUMBERS
+========================================================= */
+
+async function loadCustomerNumbers() {
+
+    if (!currentUser) {
+        return [];
+    }
+
+
+    try {
+
+        const result =
+            await customerApi(
+                "/api/customer/numbers"
+            );
+
+
+        customerNumbers =
+            Array.isArray(
+                result.numbers
+            )
+                ? result.numbers
+                : [];
+
+
+        /*
+         * The backend returns newest numbers first.
+         * Prefer the first active/purchasing/completed
+         * number as the customer's current number.
+         */
+
+        const active =
+            customerNumbers.find(
+                number => {
+
+                    const status =
+                        String(
+                            number.status ||
+                            ""
+                        ).toUpperCase();
+
+                    return (
+                        status !== "EXPIRED" &&
+                        status !== "CANCELLED" &&
+                        status !== "REFUNDED"
+                    );
+
+                }
+            );
+
+
+        if (active) {
+
+            activePurchase =
+                normalizeBackendNumber(
+                    active
+                );
+
+            updateSmsView(
+                activePurchase
+            );
+
+
+            /*
+             * Refresh the provider state/SMS when
+             * a 5SIM order ID is available.
+             */
+
+            if (
+                active.fiveSimOrderId
+            ) {
+
+                await refreshCustomerNumber(
+                    active.fiveSimOrderId
+                );
+
+            }
+
+        } else {
+
+            /*
+             * Only clear the SMS page if there is
+             * no backend number and there isn't a
+             * Firestore fallback purchase.
+             */
+
+            if (!activePurchase) {
+
+                updateSmsView(
+                    null
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Keep the dashboard received-message
+         * statistic useful for the new 5SIM system
+         * when the profile doesn't maintain its own
+         * received counter.
+         */
+
+        let totalReceived = 0;
+
+        customerNumbers.forEach(
+            number => {
+
+                if (
+                    Array.isArray(
+                        number.sms
+                    )
+                ) {
+
+                    totalReceived +=
+                        number.sms.length;
+
+                }
+
+            }
+        );
+
+
+        if (
+            totalReceived > 0
+        ) {
+
+            messagesReceived.textContent =
+                totalReceived.toLocaleString();
+
+        }
+
+
+        return customerNumbers;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Customer numbers error:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+/* =========================================================
+   NORMALIZE BACKEND NUMBER
+========================================================= */
+
+function normalizeBackendNumber(
+    number
+) {
+
+    if (!number) {
+        return null;
+    }
+
+
+    const smsList =
+        Array.isArray(
+            number.sms
+        )
+            ? number.sms
+            : [];
+
+
+    let latestMessage = null;
+
+
+    if (smsList.length) {
+
+        const latest =
+            smsList[
+                smsList.length - 1
+            ];
+
+
+        if (
+            typeof latest === "string"
+        ) {
+
+            latestMessage =
+                latest;
+
+        } else if (
+            latest &&
+            typeof latest === "object"
+        ) {
+
+            latestMessage =
+                latest.sms ||
+                latest.message ||
+                latest.code ||
+                latest.text ||
+                null;
+
+        }
+
+    }
+
+
+    return {
+
+        ...number,
+
+        number:
+            number.number ||
+            number.phoneNumber ||
+            number.phone,
+
+        phoneNumber:
+            number.phoneNumber ||
+            number.number ||
+            number.phone,
+
+        serviceName:
+            number.serviceName ||
+            number.service ||
+            "Verification",
+
+        service:
+            number.service ||
+            number.serviceName ||
+            "Verification",
+
+        countryName:
+            number.countryName ||
+            number.country,
+
+        sms:
+            latestMessage ||
+            (
+                smsList.length
+                    ? smsList
+                    : null
+            )
+
+    };
+
+}
+
+
+/* =========================================================
+   REFRESH CUSTOMER NUMBER
+========================================================= */
+
+async function refreshCustomerNumber(
+    orderId
+) {
+
+    if (!orderId) {
+        return;
+    }
+
+
+    try {
+
+        const result =
+            await customerApi(
+                `/api/customer/number/${encodeURIComponent(orderId)}`
+            );
+
+
+        const numberData =
+            result.number ||
+            result;
+
+
+        activePurchase =
+            normalizeBackendNumber(
+                numberData
+            );
+
+
+        updateSmsView(
+            activePurchase
+        );
+
+
+        /*
+         * Update the received count from the
+         * provider response when available.
+         */
+
+        const sms =
+            numberData &&
+            Array.isArray(
+                numberData.sms
+            )
+                ? numberData.sms
+                : [];
+
+
+        if (sms.length) {
+
+            messagesReceived.textContent =
+                sms.length.toLocaleString();
+
+        }
+
+
+        return activePurchase;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Number refresh error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
    SMS VIEW
 ========================================================= */
 
@@ -4088,6 +4762,18 @@ function updateSmsView(
 ) {
 
     if (!purchase) {
+
+        if (smsCountdownTimer) {
+
+            clearInterval(
+                smsCountdownTimer
+            );
+
+            smsCountdownTimer =
+                null;
+
+        }
+
 
         smsNumber.textContent =
             "No active number";
@@ -4111,18 +4797,24 @@ function updateSmsView(
     }
 
 
+    const normalized =
+        normalizeBackendNumber(
+            purchase
+        );
+
+
     const number =
-        purchase.number ||
-        purchase.phone ||
-        purchase.phoneNumber ||
-        purchase.tel ||
+        normalized.number ||
+        normalized.phone ||
+        normalized.phoneNumber ||
+        normalized.tel ||
         "Number unavailable";
 
 
     const service =
-        purchase.serviceName ||
-        purchase.service ||
-        purchase.serviceId ||
+        normalized.serviceName ||
+        normalized.service ||
+        normalized.serviceId ||
         "Verification";
 
 
@@ -4134,9 +4826,9 @@ function updateSmsView(
 
 
     const expiresAt =
-        purchase.expiresAt ||
-        purchase.expiry ||
-        purchase.expires ||
+        normalized.expiresAt ||
+        normalized.expiry ||
+        normalized.expires ||
         null;
 
 
@@ -4154,17 +4846,79 @@ function updateSmsView(
     }
 
 
+    const status =
+        String(
+            normalized.status ||
+            ""
+        ).toLowerCase();
+
+
     smsWaitingStatus.textContent =
-        purchase.status === "received"
+        status === "received"
             ? "Verification SMS received."
-            : "Waiting for verification SMS...";
+            : status === "expired"
+                ? "This verification number has expired."
+                : "Waiting for verification SMS...";
 
 
-    const message =
-        purchase.sms ||
-        purchase.message ||
-        purchase.code ||
-        null;
+    /*
+     * 5SIM returns SMS as an array. The backend
+     * may also return a simple sms/message/code.
+     */
+
+    let message = null;
+
+
+    if (
+        Array.isArray(
+            normalized.sms
+        )
+    ) {
+
+        const smsList =
+            normalized.sms;
+
+
+        if (smsList.length) {
+
+            const latest =
+                smsList[
+                    smsList.length - 1
+                ];
+
+
+            if (
+                typeof latest === "string"
+            ) {
+
+                message =
+                    latest;
+
+            } else if (
+                latest &&
+                typeof latest === "object"
+            ) {
+
+                message =
+                    latest.sms ||
+                    latest.message ||
+                    latest.code ||
+                    latest.text ||
+                    null;
+
+            }
+
+        }
+
+    } else {
+
+        message =
+            normalized.sms ||
+            normalized.message ||
+            normalized.code ||
+            null;
+
+    }
 
 
     if (message) {
@@ -4185,6 +4939,34 @@ function updateSmsView(
 
         smsMessageContent.style.display =
             "none";
+
+    }
+
+
+    /*
+     * Update the Recent Messages empty state
+     * without changing its existing design.
+     */
+
+    if (message) {
+
+        recentMessagesEmpty.innerHTML = `
+            <div class="empty-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
+                    <path d="M7 8h10"></path>
+                    <path d="M7 11h7"></path>
+                </svg>
+            </div>
+
+            <h3>
+                Verification message received
+            </h3>
+
+            <p>
+                Your latest verification message is available in the SMS section.
+            </p>
+        `;
 
     }
 
@@ -4360,8 +5142,16 @@ async function startDashboard() {
                     user;
 
 
+                /*
+                 * Initially populate using the Google
+                 * account. Firestore profile data will
+                 * replace the temporary Profile ID with
+                 * the stored 3-letter + 3-number ID.
+                 */
+
                 populateUser(
-                    user
+                    user,
+                    null
                 );
 
 
@@ -4370,7 +5160,22 @@ async function startDashboard() {
                 );
 
 
-                await loadCountries();
+                /*
+                 * Customer catalog comes through the
+                 * Numora backend. It does NOT read
+                 * countries/services directly from
+                 * Firestore.
+                 */
+
+                await loadCustomerCatalog();
+
+
+                /*
+                 * Load the customer's actual 5SIM
+                 * numbers from the authenticated backend.
+                 */
+
+                await loadCustomerNumbers();
 
 
                 loadingScreen.classList.add(
