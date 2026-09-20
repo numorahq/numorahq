@@ -18,6 +18,10 @@
 
 <style>
 
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 * {
     margin: 0;
     padding: 0;
@@ -467,6 +471,19 @@ button,
     height: 100%;
 
     object-fit: cover;
+}
+
+
+/* =========================================================
+   VIEWS
+========================================================= */
+
+.page-view {
+    display: none;
+}
+
+.page-view.active {
+    display: block;
 }
 
 
@@ -1078,6 +1095,415 @@ button,
 
 
 /* =========================================================
+   SMS PAGE
+========================================================= */
+
+.sms-header-card {
+
+    background: white;
+
+    border:
+        1px solid #e7edf5;
+
+    border-radius: 24px;
+
+    padding: 25px;
+
+    margin-bottom: 20px;
+}
+
+.section-title {
+
+    font-size: 22px;
+
+    letter-spacing: -.6px;
+
+    margin-bottom: 6px;
+}
+
+.section-description {
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+.sms-number-card {
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 28px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #4f8cff
+        );
+
+    color: white;
+
+    box-shadow:
+        0 20px 45px rgba(37,99,235,.16);
+
+    margin-bottom: 20px;
+}
+
+.sms-number-card::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 230px;
+    height: 230px;
+
+    right: -100px;
+    top: -120px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.10);
+}
+
+.sms-number-content {
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.sms-small-label {
+
+    font-size: 11px;
+
+    opacity: .78;
+
+    margin-bottom: 8px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .4px;
+}
+
+.sms-number {
+
+    font-size: 31px;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+
+    margin-bottom: 18px;
+}
+
+.sms-service {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 8px 12px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,.14);
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.sms-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.3fr)
+        minmax(260px, .7fr);
+
+    gap: 20px;
+}
+
+.sms-messages-card,
+.sms-status-card {
+
+    background: white;
+
+    border:
+        1px solid #e7edf5;
+
+    border-radius: 22px;
+
+    padding: 24px;
+}
+
+.sms-card-title {
+
+    font-size: 17px;
+
+    font-weight: 800;
+
+    margin-bottom: 18px;
+}
+
+.sms-empty {
+
+    min-height: 250px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 30px;
+}
+
+.sms-empty .empty-icon {
+    margin-bottom: 14px;
+}
+
+.sms-empty h3 {
+
+    font-size: 16px;
+
+    margin-bottom: 7px;
+}
+
+.sms-empty p {
+
+    color: #94a3b8;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    max-width: 340px;
+}
+
+.countdown-box {
+
+    padding: 18px;
+
+    border-radius: 16px;
+
+    background: #f8fbff;
+
+    border:
+        1px solid #e1ebf8;
+
+    margin-bottom: 14px;
+}
+
+.countdown-label {
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    margin-bottom: 6px;
+}
+
+.countdown-value {
+
+    color: #2563eb;
+
+    font-size: 25px;
+
+    font-weight: 800;
+}
+
+.waiting-status {
+
+    padding: 14px;
+
+    border-radius: 13px;
+
+    background: #eff6ff;
+
+    color: #1d4ed8;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SETTINGS PAGE
+========================================================= */
+
+.settings-card {
+
+    background: white;
+
+    border:
+        1px solid #e7edf5;
+
+    border-radius: 24px;
+
+    padding: 25px;
+
+    margin-bottom: 20px;
+}
+
+.settings-profile {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding-bottom: 24px;
+
+    border-bottom:
+        1px solid #edf1f6;
+
+    margin-bottom: 20px;
+}
+
+.settings-avatar {
+
+    width: 64px;
+    height: 64px;
+
+    flex: 0 0 64px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #dbeafe;
+
+    color: #2563eb;
+
+    font-size: 22px;
+
+    font-weight: 800;
+}
+
+.settings-avatar img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.settings-profile-name {
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    margin-bottom: 4px;
+}
+
+.settings-profile-email {
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+.settings-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0;
+}
+
+.setting-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 17px 0;
+
+    border-bottom:
+        1px solid #edf1f6;
+}
+
+.setting-row:last-child {
+    border-bottom: 0;
+}
+
+.setting-label {
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    margin-bottom: 4px;
+}
+
+.setting-value {
+
+    color: #0f172a;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    word-break: break-word;
+
+    text-align: right;
+}
+
+.settings-logout {
+
+    width: 100%;
+
+    height: 50px;
+
+    margin-top: 5px;
+
+    border: 0;
+
+    border-radius: 13px;
+
+    background: #fff1f2;
+
+    color: #e11d48;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
    MOBILE NAV
 ========================================================= */
 
@@ -1207,6 +1633,10 @@ button,
         grid-template-columns:
             repeat(3,1fr);
     }
+
+    .sms-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 
@@ -1258,8 +1688,30 @@ button,
         font-size: 10px;
     }
 
-    .content-card {
+    .content-card,
+    .sms-header-card,
+    .sms-messages-card,
+    .sms-status-card,
+    .settings-card {
         padding: 18px;
+    }
+
+    .sms-number-card {
+        padding: 23px;
+    }
+
+    .sms-number {
+        font-size: 27px;
+    }
+
+    .setting-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .setting-value {
+        text-align: left;
     }
 
 }
@@ -1338,6 +1790,7 @@ a:focus-visible {
         <button
             class="nav-item active"
             id="dashboardNav"
+            data-view="dashboard"
         >
 
             <span class="nav-icon">
@@ -1356,6 +1809,7 @@ a:focus-visible {
         <button
             class="nav-item"
             id="smsNav"
+            data-view="sms"
         >
 
             <span class="nav-icon">
@@ -1374,12 +1828,13 @@ a:focus-visible {
         <button
             class="nav-item"
             id="settingsNav"
+            data-view="settings"
         >
 
             <span class="nav-icon">
                 <svg viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
+                    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
                 </svg>
             </span>
 
@@ -1460,38 +1915,46 @@ a:focus-visible {
 <main class="main">
 
 
-    <header class="topbar">
+<header class="topbar">
 
-        <div class="topbar-left">
+    <div class="topbar-left">
 
-            <h1 id="pageTitle">
-                Welcome
-            </h1>
+        <h1 id="pageTitle">
+            Welcome
+        </h1>
 
-            <p>
-                Here's your account overview.
-            </p>
+        <p id="pageSubtitle">
+            Here's your account overview.
+        </p>
 
+    </div>
+
+
+    <div class="topbar-right">
+
+        <div
+            class="top-avatar"
+            id="topAvatar"
+        >
+            N
         </div>
 
+    </div>
 
-        <div class="topbar-right">
-
-            <div
-                class="top-avatar"
-                id="topAvatar"
-            >
-                N
-            </div>
-
-        </div>
-
-    </header>
+</header>
 
 
-    <!-- =================================================
-         BALANCE
-    ================================================= -->
+<!-- =====================================================
+     DASHBOARD VIEW
+===================================================== -->
+
+<section
+    class="page-view active"
+    id="dashboardView"
+>
+
+
+    <!-- BALANCE -->
 
     <section class="balance-hero">
 
@@ -1530,9 +1993,7 @@ a:focus-visible {
     </section>
 
 
-    <!-- =================================================
-         PURCHASE SERVICE
-    ================================================= -->
+    <!-- PURCHASE -->
 
     <section class="purchase-section">
 
@@ -1552,8 +2013,6 @@ a:focus-visible {
 
         <div class="purchase-grid">
 
-
-            <!-- COUNTRY -->
 
             <div class="field">
 
@@ -1581,8 +2040,6 @@ a:focus-visible {
 
             </div>
 
-
-            <!-- SERVICE -->
 
             <div class="field">
 
@@ -1613,8 +2070,6 @@ a:focus-visible {
 
         </div>
 
-
-        <!-- PRICE -->
 
         <div class="price-box">
 
@@ -1676,9 +2131,7 @@ a:focus-visible {
     </section>
 
 
-    <!-- =================================================
-         STATS
-    ================================================= -->
+    <!-- STATS -->
 
     <div class="stats">
 
@@ -1733,9 +2186,7 @@ a:focus-visible {
     </div>
 
 
-    <!-- =================================================
-         RECENT MESSAGES
-    ================================================= -->
+    <!-- RECENT MESSAGES -->
 
     <div class="content-card">
 
@@ -1783,6 +2234,349 @@ a:focus-visible {
 
     </div>
 
+</section>
+
+
+<!-- =====================================================
+     SMS VIEW
+===================================================== -->
+
+<section
+    class="page-view"
+    id="smsView"
+>
+
+
+    <div class="sms-header-card">
+
+        <h2 class="section-title">
+            SMS Verification
+        </h2>
+
+        <p class="section-description">
+            Your purchased verification number and incoming
+            verification messages will appear here.
+        </p>
+
+    </div>
+
+
+    <div
+        class="sms-number-card"
+        id="smsNumberCard"
+    >
+
+        <div class="sms-number-content">
+
+            <div class="sms-small-label">
+                YOUR VERIFICATION NUMBER
+            </div>
+
+            <div
+                class="sms-number"
+                id="smsNumber"
+            >
+                No active number
+            </div>
+
+            <div
+                class="sms-service"
+                id="smsService"
+            >
+                No active verification
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="sms-grid">
+
+
+        <div class="sms-messages-card">
+
+            <div class="sms-card-title">
+                Incoming SMS
+            </div>
+
+
+            <div
+                class="sms-empty"
+                id="smsEmptyState"
+            >
+
+                <div class="empty-icon">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
+                        <path d="M7 8h10"></path>
+                        <path d="M7 11h7"></path>
+                    </svg>
+
+                </div>
+
+                <h3>
+                    Waiting for verification SMS
+                </h3>
+
+                <p>
+                    When the verification message arrives,
+                    it will appear here automatically.
+                </p>
+
+            </div>
+
+
+            <div
+                id="smsMessageContent"
+                style="display:none;"
+            >
+
+                <div
+                    style="
+                        padding:18px;
+                        border-radius:16px;
+                        background:#f8fbff;
+                        border:1px solid #e1ebf8;
+                    "
+                >
+
+                    <div
+                        style="
+                            color:#64748b;
+                            font-size:11px;
+                            font-weight:700;
+                            margin-bottom:8px;
+                        "
+                    >
+                        VERIFICATION MESSAGE
+                    </div>
+
+                    <div
+                        id="smsMessageText"
+                        style="
+                            font-size:16px;
+                            font-weight:750;
+                            line-height:1.6;
+                        "
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="sms-status-card">
+
+            <div class="sms-card-title">
+                Verification Status
+            </div>
+
+
+            <div class="countdown-box">
+
+                <div class="countdown-label">
+                    TIME REMAINING
+                </div>
+
+                <div
+                    class="countdown-value"
+                    id="smsCountdown"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div
+                class="waiting-status"
+                id="smsWaitingStatus"
+            >
+                No active number. Purchase a verification
+                number from Dashboard to begin.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SETTINGS VIEW
+===================================================== -->
+
+<section
+    class="page-view"
+    id="settingsView"
+>
+
+
+    <div class="settings-card">
+
+        <h2 class="section-title">
+            Settings
+        </h2>
+
+        <p class="section-description">
+            Your Numora account information.
+        </p>
+
+    </div>
+
+
+    <div class="settings-card">
+
+
+        <div class="settings-profile">
+
+            <div
+                class="settings-avatar"
+                id="settingsAvatar"
+            >
+                N
+            </div>
+
+            <div>
+
+                <div
+                    class="settings-profile-name"
+                    id="settingsName"
+                >
+                    Customer
+                </div>
+
+                <div
+                    class="settings-profile-email"
+                    id="settingsEmail"
+                >
+                    Loading...
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-list">
+
+
+            <div class="setting-row">
+
+                <div>
+
+                    <div class="setting-label">
+                        Google Account
+                    </div>
+
+                    <div class="setting-label">
+                        Signed in with Google
+                    </div>
+
+                </div>
+
+                <div
+                    class="setting-value"
+                    style="color:#16a34a;"
+                >
+                    Connected
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div>
+
+                    <div class="setting-label">
+                        Email
+                    </div>
+
+                    <div class="setting-label">
+                        Your Google account email
+                    </div>
+
+                </div>
+
+                <div
+                    class="setting-value"
+                    id="settingsEmailRow"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div>
+
+                    <div class="setting-label">
+                        Profile ID
+                    </div>
+
+                    <div class="setting-label">
+                        Use this ID when contacting Numora support.
+                    </div>
+
+                </div>
+
+                <div
+                    class="setting-value"
+                    id="profileId"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div>
+
+                    <div class="setting-label">
+                        Naira Balance
+                    </div>
+
+                    <div class="setting-label">
+                        Current account balance
+                    </div>
+
+                </div>
+
+                <div
+                    class="setting-value"
+                    id="settingsBalance"
+                >
+                    ₦0
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <button
+            class="settings-logout"
+            id="settingsSignOut"
+        >
+            Log Out
+        </button>
+
+    </div>
+
+</section>
+
+
 </main>
 
 </div>
@@ -1797,6 +2591,7 @@ a:focus-visible {
     <button
         class="mobile-nav-item active"
         id="mobileDashboardNav"
+        data-view="dashboard"
     >
 
         <span class="mobile-nav-icon">
@@ -1817,6 +2612,7 @@ a:focus-visible {
     <button
         class="mobile-nav-item"
         id="mobileSmsNav"
+        data-view="sms"
     >
 
         <span class="mobile-nav-icon">
@@ -1837,13 +2633,14 @@ a:focus-visible {
     <button
         class="mobile-nav-item"
         id="mobileSettingsNav"
+        data-view="settings"
     >
 
         <span class="mobile-nav-icon">
 
             <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
+                <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0-1.88-.34l-.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
             </svg>
 
         </span>
@@ -1856,6 +2653,10 @@ a:focus-visible {
 
 
 <script type="module">
+
+/* =========================================================
+   FIREBASE IMPORTS
+========================================================= */
 
 import {
     initializeApp
@@ -1921,20 +2722,11 @@ const db =
 
 
 /* =========================================================
-   PATHS
+   PATH
 ========================================================= */
 
 const HOME_URL =
     "/numorahq/";
-
-const DASHBOARD_URL =
-    "/numorahq/dashboard.html";
-
-const SMS_URL =
-    "/numorahq/sms.html";
-
-const SETTINGS_URL =
-    "/numorahq/settings.html";
 
 
 /* =========================================================
@@ -1954,28 +2746,6 @@ const WHATSAPP_URL =
 
 const BACKEND_URL =
     "https://numora-backend-cle6.onrender.com";
-
-
-/*
- * IMPORTANT:
- *
- * The actual 5SIM API key must NEVER be placed here.
- *
- * The browser will call Numora's backend.
- *
- * The backend will later:
- *
- * 1. Verify the authenticated customer.
- * 2. Read the current Admin price.
- * 3. Check the customer's Naira balance.
- * 4. Request the appropriate number from 5SIM.
- * 5. Deduct the balance.
- * 6. Save the purchase.
- * 7. Make the number available to SMS.
- *
- * The exact endpoint will be connected after
- * the dashboard UI has been vetted.
- */
 
 
 /* =========================================================
@@ -2007,9 +2777,44 @@ const topAvatar =
         "topAvatar"
     );
 
+const settingsAvatar =
+    document.getElementById(
+        "settingsAvatar"
+    );
+
+const settingsName =
+    document.getElementById(
+        "settingsName"
+    );
+
+const settingsEmail =
+    document.getElementById(
+        "settingsEmail"
+    );
+
+const settingsEmailRow =
+    document.getElementById(
+        "settingsEmailRow"
+    );
+
+const profileId =
+    document.getElementById(
+        "profileId"
+    );
+
+const settingsBalance =
+    document.getElementById(
+        "settingsBalance"
+    );
+
 const pageTitle =
     document.getElementById(
         "pageTitle"
+    );
+
+const pageSubtitle =
+    document.getElementById(
+        "pageSubtitle"
     );
 
 const balanceValue =
@@ -2062,6 +2867,41 @@ const accountStatus =
         "accountStatus"
     );
 
+const smsNumber =
+    document.getElementById(
+        "smsNumber"
+    );
+
+const smsService =
+    document.getElementById(
+        "smsService"
+    );
+
+const smsCountdown =
+    document.getElementById(
+        "smsCountdown"
+    );
+
+const smsWaitingStatus =
+    document.getElementById(
+        "smsWaitingStatus"
+    );
+
+const smsEmptyState =
+    document.getElementById(
+        "smsEmptyState"
+    );
+
+const smsMessageContent =
+    document.getElementById(
+        "smsMessageContent"
+    );
+
+const smsMessageText =
+    document.getElementById(
+        "smsMessageText"
+    );
+
 
 /* =========================================================
    STATE
@@ -2080,6 +2920,36 @@ let selectedCountry = null;
 let selectedService = null;
 
 let selectedPrice = null;
+
+let activeView = "dashboard";
+
+let smsCountdownTimer = null;
+
+let activePurchase = null;
+
+
+/* =========================================================
+   PAGE VIEW TITLES
+========================================================= */
+
+const viewInfo = {
+
+    dashboard: {
+        title: "Welcome",
+        subtitle: "Here's your account overview."
+    },
+
+    sms: {
+        title: "SMS Verification",
+        subtitle: "View your active number and verification messages."
+    },
+
+    settings: {
+        title: "Settings",
+        subtitle: "Manage your Numora account information."
+    }
+
+};
 
 
 /* =========================================================
@@ -2142,6 +3012,18 @@ function populateUser(user) {
     sidebarEmail.textContent =
         email;
 
+    settingsName.textContent =
+        name;
+
+    settingsEmail.textContent =
+        email;
+
+    settingsEmailRow.textContent =
+        email || "—";
+
+    profileId.textContent =
+        user.uid;
+
     setAvatar(
         sidebarAvatar,
         user
@@ -2152,12 +3034,161 @@ function populateUser(user) {
         user
     );
 
-    pageTitle.textContent =
-        `Welcome, ${
-            name
-                .split(" ")[0]
-        }`;
+    setAvatar(
+        settingsAvatar,
+        user
+    );
+
+    updatePageHeader();
 }
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+function updatePageHeader() {
+
+    const info =
+        viewInfo[
+            activeView
+        ] ||
+        viewInfo.dashboard;
+
+    if (
+        activeView === "dashboard" &&
+        currentUser
+    ) {
+
+        const name =
+            currentUser.displayName ||
+            "Customer";
+
+        pageTitle.textContent =
+            `Welcome, ${
+                name
+                    .split(" ")[0]
+            }`;
+
+    } else {
+
+        pageTitle.textContent =
+            info.title;
+    }
+
+    pageSubtitle.textContent =
+        info.subtitle;
+}
+
+
+/* =========================================================
+   VIEW SWITCHING
+========================================================= */
+
+function showView(view) {
+
+    if (
+        view !== "dashboard" &&
+        view !== "sms" &&
+        view !== "settings"
+    ) {
+        view = "dashboard";
+    }
+
+    activeView = view;
+
+
+    document
+        .querySelectorAll(".page-view")
+        .forEach(
+            element => {
+
+                element.classList.toggle(
+                    "active",
+                    element.id ===
+                    `${view}View`
+                );
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(".nav-item")
+        .forEach(
+            element => {
+
+                element.classList.toggle(
+                    "active",
+                    element.dataset.view ===
+                    view
+                );
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(".mobile-nav-item")
+        .forEach(
+            element => {
+
+                element.classList.toggle(
+                    "active",
+                    element.dataset.view ===
+                    view
+                );
+
+            }
+        );
+
+
+    updatePageHeader();
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".nav-item, .mobile-nav-item"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showView(
+                        button.dataset.view
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "viewSmsButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+            showView("sms");
+        }
+    );
 
 
 /* =========================================================
@@ -2193,10 +3224,6 @@ function listenToCustomerProfile(user) {
                 snapshot.data();
 
 
-            /* ---------------------------------------------
-               NAIRA BALANCE
-            --------------------------------------------- */
-
             currentBalance =
                 Number(
                     data.balance ??
@@ -2205,15 +3232,18 @@ function listenToCustomerProfile(user) {
                     0
                 );
 
+
             balanceValue.textContent =
                 formatNaira(
                     currentBalance
                 );
 
 
-            /* ---------------------------------------------
-               MESSAGE COUNTERS
-            --------------------------------------------- */
+            settingsBalance.textContent =
+                formatNaira(
+                    currentBalance
+                );
+
 
             const sent =
                 Number(
@@ -2229,6 +3259,7 @@ function listenToCustomerProfile(user) {
                     0
                 );
 
+
             messagesSent.textContent =
                 sent.toLocaleString();
 
@@ -2236,16 +3267,14 @@ function listenToCustomerProfile(user) {
                 received.toLocaleString();
 
 
-            /* ---------------------------------------------
-               ACCOUNT STATUS
-            --------------------------------------------- */
-
             const status =
                 data.accountStatus ||
                 "Active";
 
+
             accountStatus.textContent =
                 status;
+
 
             if (
                 String(status).toLowerCase() ===
@@ -2261,6 +3290,38 @@ function listenToCustomerProfile(user) {
                     "#f59e0b";
 
             }
+
+
+            /*
+             * Restore any existing active
+             * verification purchase from Firestore.
+             *
+             * The exact field names can be aligned
+             * with the final backend structure.
+             */
+
+            const purchase =
+                data.activePurchase ||
+                data.currentPurchase ||
+                data.activeNumber ||
+                null;
+
+
+            if (
+                purchase &&
+                typeof purchase ===
+                "object"
+            ) {
+
+                activePurchase =
+                    purchase;
+
+                updateSmsView(
+                    purchase
+                );
+
+            }
+
 
             updatePurchaseAvailability();
 
@@ -2289,6 +3350,9 @@ function setDefaultDashboard() {
     balanceValue.textContent =
         "₦0";
 
+    settingsBalance.textContent =
+        "₦0";
+
     messagesSent.textContent =
         "0";
 
@@ -2302,6 +3366,7 @@ function setDefaultDashboard() {
         "#16a34a";
 
     updatePurchaseAvailability();
+
 }
 
 
@@ -2343,14 +3408,6 @@ document
    LOAD COUNTRIES
 ========================================================= */
 
-/*
- * This first version expects Admin-managed data
- * to eventually live in Firestore.
- *
- * We deliberately do not hard-code the selling
- * countries here.
- */
-
 async function loadCountries() {
 
     countrySelect.innerHTML =
@@ -2369,6 +3426,7 @@ async function loadCountries() {
             );
 
         countries = [];
+
 
         snapshot.forEach(
             item => {
@@ -2540,17 +3598,6 @@ async function loadServices(country) {
 
     try {
 
-        /*
-         * Admin-controlled services are read
-         * from Firestore.
-         *
-         * Country-specific prices can be stored
-         * either directly on the service document
-         * or in a country pricing structure.
-         *
-         * The final backend remains authoritative.
-         */
-
         const snapshot =
             await getDocs(
                 collection(
@@ -2560,6 +3607,7 @@ async function loadServices(country) {
             );
 
         services = [];
+
 
         snapshot.forEach(
             item => {
@@ -2743,19 +3791,6 @@ function getCustomerPrice(
     country
 ) {
 
-    /*
-     * This is only the UI price display.
-     *
-     * The backend MUST perform the final price
-     * lookup before purchasing.
-     *
-     * Supported example structures:
-     *
-     * service.prices[country.id]
-     * service.countryPrices[country.id]
-     * service.price
-     */
-
     if (
         service.prices &&
         typeof service.prices ===
@@ -2881,9 +3916,7 @@ async function purchaseNumber() {
         return;
     }
 
-    if (
-        selectedPrice === null
-    ) {
+    if (selectedPrice === null) {
         return;
     }
 
@@ -2905,6 +3938,7 @@ async function purchaseNumber() {
     purchaseButton.disabled =
         true;
 
+
     showPurchaseStatus(
         "info",
         "Checking your balance and preparing your number..."
@@ -2912,22 +3946,6 @@ async function purchaseNumber() {
 
 
     try {
-
-        /*
-         * IMPORTANT:
-         *
-         * This is intentionally the ONLY place
-         * the browser will eventually request a
-         * purchase from Numora's backend.
-         *
-         * The backend will connect to 5SIM.
-         *
-         * No 5SIM API key belongs in this file.
-         *
-         * The exact endpoint will be connected
-         * after we vet the dashboard and inspect
-         * the current Numora backend.
-         */
 
         const response =
             await fetch(
@@ -2939,6 +3957,12 @@ async function purchaseNumber() {
                         "Content-Type":
                             "application/json"
                     },
+
+                    /*
+                     * The final backend will authenticate
+                     * the Firebase customer and perform
+                     * the authoritative price/balance check.
+                     */
 
                     body: JSON.stringify({
 
@@ -2968,26 +3992,45 @@ async function purchaseNumber() {
         }
 
 
-        showPurchaseStatus(
-            "success",
-            result.message ||
-            "Number purchased successfully. Open SMS to view your verification number."
+        /*
+         * Store the returned purchase locally
+         * so the SMS view can immediately display it.
+         *
+         * The backend should eventually return:
+         * number
+         * service
+         * country
+         * expiresAt
+         * purchaseId
+         * status
+         * etc.
+         */
+
+        activePurchase =
+            result.purchase ||
+            result.numberData ||
+            result;
+
+
+        updateSmsView(
+            activePurchase
         );
 
 
-        /*
-         * SMS page is the destination after
-         * successful purchase.
-         */
+        showPurchaseStatus(
+            "success",
+            result.message ||
+            "Number purchased successfully."
+        );
+
 
         setTimeout(
             () => {
 
-                window.location.href =
-                    SMS_URL;
+                showView("sms");
 
             },
-            900
+            700
         );
 
     }
@@ -3037,107 +4080,197 @@ function showPurchaseStatus(
 
 
 /* =========================================================
-   NAVIGATION
+   SMS VIEW
 ========================================================= */
 
-function goToDashboard() {
+function updateSmsView(
+    purchase
+) {
 
-    window.location.href =
-        DASHBOARD_URL;
+    if (!purchase) {
 
-}
+        smsNumber.textContent =
+            "No active number";
 
-function goToSms() {
+        smsService.textContent =
+            "No active verification";
 
-    window.location.href =
-        SMS_URL;
+        smsCountdown.textContent =
+            "—";
 
-}
+        smsWaitingStatus.textContent =
+            "No active number. Purchase a verification number from Dashboard to begin.";
 
-function goToSettings() {
+        smsEmptyState.style.display =
+            "flex";
 
-    window.location.href =
-        SETTINGS_URL;
+        smsMessageContent.style.display =
+            "none";
+
+        return;
+    }
+
+
+    const number =
+        purchase.number ||
+        purchase.phone ||
+        purchase.phoneNumber ||
+        purchase.tel ||
+        "Number unavailable";
+
+
+    const service =
+        purchase.serviceName ||
+        purchase.service ||
+        purchase.serviceId ||
+        "Verification";
+
+
+    smsNumber.textContent =
+        number;
+
+    smsService.textContent =
+        service;
+
+
+    const expiresAt =
+        purchase.expiresAt ||
+        purchase.expiry ||
+        purchase.expires ||
+        null;
+
+
+    if (expiresAt) {
+
+        startSmsCountdown(
+            expiresAt
+        );
+
+    } else {
+
+        smsCountdown.textContent =
+            "Active";
+
+    }
+
+
+    smsWaitingStatus.textContent =
+        purchase.status === "received"
+            ? "Verification SMS received."
+            : "Waiting for verification SMS...";
+
+
+    const message =
+        purchase.sms ||
+        purchase.message ||
+        purchase.code ||
+        null;
+
+
+    if (message) {
+
+        smsEmptyState.style.display =
+            "none";
+
+        smsMessageContent.style.display =
+            "block";
+
+        smsMessageText.textContent =
+            message;
+
+    } else {
+
+        smsEmptyState.style.display =
+            "flex";
+
+        smsMessageContent.style.display =
+            "none";
+
+    }
 
 }
 
 
 /* =========================================================
-   DESKTOP NAV
+   SMS COUNTDOWN
 ========================================================= */
 
-document
-    .getElementById(
-        "dashboardNav"
-    )
-    .addEventListener(
-        "click",
-        goToDashboard
-    );
+function startSmsCountdown(
+    expiresAt
+) {
 
-document
-    .getElementById(
-        "smsNav"
-    )
-    .addEventListener(
-        "click",
-        goToSms
-    );
+    if (smsCountdownTimer) {
 
-document
-    .getElementById(
-        "settingsNav"
-    )
-    .addEventListener(
-        "click",
-        goToSettings
-    );
+        clearInterval(
+            smsCountdownTimer
+        );
+
+    }
 
 
-/* =========================================================
-   MOBILE NAV
-========================================================= */
+    function updateCountdown() {
 
-document
-    .getElementById(
-        "mobileDashboardNav"
-    )
-    .addEventListener(
-        "click",
-        goToDashboard
-    );
+        const expiry =
+            new Date(
+                expiresAt
+            ).getTime();
 
-document
-    .getElementById(
-        "mobileSmsNav"
-    )
-    .addEventListener(
-        "click",
-        goToSms
-    );
+        const now =
+            Date.now();
 
-document
-    .getElementById(
-        "mobileSettingsNav"
-    )
-    .addEventListener(
-        "click",
-        goToSettings
-    );
+        const remaining =
+            Math.max(
+                0,
+                expiry - now
+            );
 
 
-/* =========================================================
-   VIEW SMS
-========================================================= */
+        if (remaining <= 0) {
 
-document
-    .getElementById(
-        "viewSmsButton"
-    )
-    .addEventListener(
-        "click",
-        goToSms
-    );
+            smsCountdown.textContent =
+                "Expired";
+
+            smsWaitingStatus.textContent =
+                "This verification number has expired.";
+
+            clearInterval(
+                smsCountdownTimer
+            );
+
+            return;
+        }
+
+
+        const totalSeconds =
+            Math.floor(
+                remaining / 1000
+            );
+
+        const minutes =
+            Math.floor(
+                totalSeconds / 60
+            );
+
+        const seconds =
+            totalSeconds % 60;
+
+
+        smsCountdown.textContent =
+            `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+
+    }
+
+
+    updateCountdown();
+
+
+    smsCountdownTimer =
+        setInterval(
+            updateCountdown,
+            1000
+        );
+
+}
 
 
 /* =========================================================
@@ -3177,6 +4310,16 @@ async function logout() {
 document
     .getElementById(
         "sidebarSignOut"
+    )
+    .addEventListener(
+        "click",
+        logout
+    );
+
+
+document
+    .getElementById(
+        "settingsSignOut"
     )
     .addEventListener(
         "click",
