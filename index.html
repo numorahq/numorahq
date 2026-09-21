@@ -64,7 +64,6 @@ a {
     left: 0;
     width: 100%;
     z-index: 100;
-
     padding: 18px 24px;
 }
 
@@ -709,7 +708,7 @@ a {
     <div class="header-inner">
 
         <a
-            href="/numorahq/"
+            href="/numorahq/index.html"
             class="brand"
         >
 
@@ -1129,7 +1128,7 @@ import {
 const firebaseConfig = {
 
     apiKey:
-        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjfGdSccWrSg",
 
     authDomain:
         "numora-c9a3b.firebaseapp.com",
@@ -1169,24 +1168,32 @@ const provider =
 ========================================================= */
 
 const authButton =
-    document.getElementById("authButton");
-
+    document.getElementById(
+        "authButton"
+    );
 
 const heroGetNumber =
-    document.getElementById("heroGetNumber");
-
+    document.getElementById(
+        "heroGetNumber"
+    );
 
 const ctaButton =
-    document.getElementById("ctaButton");
-
+    document.getElementById(
+        "ctaButton"
+    );
 
 const toast =
-    document.getElementById("toast");
+    document.getElementById(
+        "toast"
+    );
 
 
 /* =========================================================
-   DASHBOARD
+   EXPLICIT PAGE URLS
 ========================================================= */
+
+const INDEX_URL =
+    "/numorahq/index.html";
 
 const DASHBOARD_URL =
     "/numorahq/dashboard.html";
@@ -1222,8 +1229,16 @@ function showToast(message) {
 
 function openDashboard() {
 
-    window.location.href =
-        DASHBOARD_URL;
+    /*
+     * IMPORTANT:
+     * Always use the actual dashboard file.
+     * Do not use /numorahq/ because that resolves
+     * to index.html on the current hosting setup.
+     */
+
+    window.location.assign(
+        DASHBOARD_URL
+    );
 
 }
 
@@ -1235,6 +1250,13 @@ function openDashboard() {
 async function login() {
 
     try {
+
+        authButton.disabled =
+            true;
+
+        authButton.textContent =
+            "Signing in...";
+
 
         await setPersistence(
             auth,
@@ -1248,16 +1270,12 @@ async function login() {
         );
 
 
-        showToast(
-            "Signed in successfully."
-        );
+        /*
+         * signInWithPopup has completed.
+         * Go directly to the dashboard.
+         */
 
-
-        setTimeout(() => {
-
-            openDashboard();
-
-        }, 500);
+        openDashboard();
 
     }
 
@@ -1269,10 +1287,20 @@ async function login() {
         );
 
 
-        if (
+        authButton.disabled =
+            false;
+
+
+        authButton.textContent =
+            auth.currentUser
+                ? "Open Dashboard"
+                : "Sign in with Google";
+
+
+        if(
             error.code ===
             "auth/popup-closed-by-user"
-        ) {
+        ){
 
             return;
 
@@ -1294,17 +1322,27 @@ async function login() {
 
 function handleMainButton() {
 
-    if (auth.currentUser) {
+    /*
+     * If Firebase already knows the customer,
+     * open the dashboard.
+     */
+
+    if(
+        auth.currentUser
+    ){
 
         openDashboard();
 
-    }
-
-    else {
-
-        login();
+        return;
 
     }
+
+
+    /*
+     * Otherwise start Google login.
+     */
+
+    login();
 
 }
 
@@ -1335,42 +1373,58 @@ ctaButton.addEventListener(
    AUTH STATE
 ========================================================= */
 
-setPersistence(
-    auth,
-    browserLocalPersistence
-)
-.then(() => {
+async function initializeAuth(){
 
-    onAuthStateChanged(
-        auth,
-        user => {
+    try {
 
-            if (user) {
+        /*
+         * Restore the same Google session used
+         * by dashboard.html, sms.html and settings.html.
+         */
 
-                authButton.textContent =
-                    "Open Dashboard";
+        await setPersistence(
+            auth,
+            browserLocalPersistence
+        );
+
+
+        onAuthStateChanged(
+            auth,
+            user => {
+
+                if(user){
+
+                    authButton.textContent =
+                        "Open Dashboard";
+
+                }else{
+
+                    authButton.textContent =
+                        "Sign in with Google";
+
+                }
 
             }
+        );
 
-            else {
+    }
 
-                authButton.textContent =
-                    "Sign in with Google";
+    catch(error){
 
-            }
+        console.error(
+            "Firebase authentication initialization error:",
+            error
+        );
 
-        }
-    );
+        authButton.textContent =
+            "Sign in with Google";
 
-})
-.catch(error => {
+    }
 
-    console.error(
-        "Persistence error:",
-        error
-    );
+}
 
-});
+
+initializeAuth();
 
 </script>
 
