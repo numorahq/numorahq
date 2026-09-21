@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numora — SMS</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --primary:#2563eb;
+    --bg:#f5f7fb;
+    --card:#fff;
+    --text:#111827;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --success:#16a34a;
+    --danger:#dc2626;
+}
+
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+}
+
+button{
+    font:inherit;
+    cursor:pointer;
+}
+
+.loading-screen{
+    position:fixed;
+    inset:0;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
+
+.loading-spinner{
+    width:34px;
+    height:34px;
+    border:3px solid #dbeafe;
+    border-top-color:var(--primary);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:250px;
+    background:#fff;
+    border-right:1px solid var(--border);
+    padding:24px 16px;
+    display:flex;
+    flex-direction:column;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:800;
+    color:var(--primary);
+    margin:4px 12px 32px;
+}
+
+.logo small{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    font-weight:500;
+    margin-top:3px;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.nav button{
+    border:0;
+    background:transparent;
+    padding:13px 14px;
+    border-radius:12px;
+    text-align:left;
+    color:#4b5563;
+    font-weight:600;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:#eff6ff;
+    color:var(--primary);
+}
+
+.profile-mini{
+    margin-top:auto;
+    padding:14px 10px;
+    border-top:1px solid var(--border);
+}
+
+.profile-mini-name{
+    font-weight:700;
+    font-size:14px;
+}
+
+.profile-mini-email{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+.logout-btn{
+    width:100%;
+    margin-top:12px;
+    border:0;
+    background:#fef2f2;
+    color:#dc2626;
+    padding:10px;
+    border-radius:10px;
+    font-weight:600;
+}
+
+.main{
+    margin-left:250px;
+    width:calc(100% - 250px);
+    padding:28px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.topbar h1{
+    font-size:26px;
+}
+
+.topbar p{
+    color:var(--muted);
+    font-size:14px;
+    margin-top:5px;
+}
+
+.user-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:20px;
+}
+
+.card h2{
+    font-size:18px;
+    margin-bottom:6px;
+}
+
+.card-description{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:20px;
+}
+
+.number-box{
+    background:#eff6ff;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:18px;
+}
+
+.number-label{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.number{
+    color:var(--primary);
+    font-size:27px;
+    font-weight:800;
+    margin-top:5px;
+    word-break:break-word;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.info{
+    background:#f8fafc;
+    border-radius:12px;
+    padding:14px;
+}
+
+.info-label{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.info-value{
+    font-weight:700;
+    margin-top:4px;
+}
+
+.countdown{
+    text-align:center;
+    font-size:30px;
+    font-weight:800;
+    color:var(--primary);
+    margin:20px 0;
+}
+
+.status{
+    display:inline-flex;
+    padding:7px 11px;
+    border-radius:999px;
+    background:#dcfce7;
+    color:#15803d;
+    font-size:12px;
+    font-weight:700;
+}
+
+.sms-message{
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:15px;
+    margin-top:12px;
+}
+
+.sms-service{
+    font-size:12px;
+    color:var(--muted);
+}
+
+.sms-code{
+    font-size:24px;
+    font-weight:800;
+    margin-top:5px;
+}
+
+.empty{
+    color:var(--muted);
+    padding:12px 0;
+}
+
+.mobile-nav{
+    display:none;
+}
+
+@media(max-width:800px){
+
+    .sidebar{
+        display:none;
+    }
+
+    .main{
+        margin-left:0;
+        width:100%;
+        padding:18px 15px 90px;
+    }
+
+    .topbar h1{
+        font-size:22px;
+    }
+
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .mobile-nav{
+        display:flex;
+        position:fixed;
+        bottom:0;
+        left:0;
+        right:0;
+        height:65px;
+        background:rgba(255,255,255,.96);
+        border-top:1px solid var(--border);
+        z-index:100;
+        justify-content:space-around;
+        padding:7px;
+    }
+
+    .mobile-nav button{
+        border:0;
+        background:transparent;
+        color:var(--muted);
+        font-size:12px;
+        font-weight:600;
+    }
+
+    .mobile-nav button.active{
+        color:var(--primary);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner"></div>
+</div>
+
+<div class="app">
+
+<aside class="sidebar">
+
+    <div class="logo">
+        Numora
+        <small>Your number. Your connection.</small>
+    </div>
+
+    <nav class="nav">
+        <button id="dashboardNav">Dashboard</button>
+        <button class="active">SMS</button>
+        <button id="settingsNav">Settings</button>
+    </nav>
+
+    <div class="profile-mini">
+        <div class="profile-mini-name" id="miniName">
+            Numora User
+        </div>
+
+        <div class="profile-mini-email" id="miniEmail">
+            Loading...
+        </div>
+
+        <button class="logout-btn" id="logoutBtn">
+            Sign Out
+        </button>
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div>
+            <h1>SMS Verification</h1>
+            <p>View your verification number and incoming SMS.</p>
+        </div>
+
+        <img
+            id="userAvatar"
+            class="user-avatar"
+            src=""
+            alt="Profile"
+        >
+
+    </div>
+
+    <section class="card">
+
+        <h2>Active Verification</h2>
+
+        <div class="card-description">
+            Your active verification number and incoming messages appear here.
+        </div>
+
+        <div class="number-box">
+
+            <div class="number-label">
+                Verification Number
+            </div>
+
+            <div class="number" id="phoneNumber">
+                —
+            </div>
+
+        </div>
+
+        <div class="info-grid">
+
+            <div class="info">
+                <div class="info-label">
+                    Service
+                </div>
+
+                <div class="info-value" id="serviceName">
+                    —
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="info-label">
+                    Status
+                </div>
+
+                <div class="info-value">
+                    <span class="status" id="numberStatus">
+                        Waiting
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="countdown" id="countdown">
+            —
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Incoming SMS</h2>
+
+        <div class="card-description">
+            Verification messages received for your active number.
+        </div>
+
+        <div id="messagesContainer">
+
+            <div class="empty">
+                Waiting for incoming SMS...
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</div>
+
+<nav class="mobile-nav">
+
+    <button id="mobileDashboard">
+        Dashboard
+    </button>
+
+    <button class="active">
+        SMS
+    </button>
+
+    <button id="mobileSettings">
+        Settings
+    </button>
+
+</nav>
+
+<script type="module">
+
+import {
+    initializeApp
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut,
+    setPersistence,
+    browserLocalPersistence
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    onSnapshot
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+
+    authDomain:
+        "numora-c9a3b.firebaseapp.com",
+
+    projectId:
+        "numora-c9a3b",
+
+    storageBucket:
+        "numora-c9a3b.firebasestorage.app",
+
+    messagingSenderId:
+        "778502274031",
+
+    appId:
+        "1:778502274031:web:4cf57beed3703cbe5dd41a",
+
+    measurementId:
+        "G-6ELM21FDPH"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+/* =========================================================
+   CONSTANTS
+========================================================= */
+
+const HOME_URL = "/numorahq/";
+
+const BACKEND_URL =
+    "https://numora-backend-cle6.onrender.com";
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+let activePurchase = null;
+let customerNumbers = [];
+
+let countdownTimer = null;
+let providerRefreshTimer = null;
+
+let profileUnsubscribe = null;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const loadingScreen =
+    document.getElementById("loadingScreen");
+
+const phoneNumber =
+    document.getElementById("phoneNumber");
+
+const serviceName =
+    document.getElementById("serviceName");
+
+const numberStatus =
+    document.getElementById("numberStatus");
+
+const countdown =
+    document.getElementById("countdown");
+
+const messagesContainer =
+    document.getElementById("messagesContainer");
+
+
+/* =========================================================
+   AUTH TOKEN
+========================================================= */
+
+async function getCustomerToken(){
+
+    if(!currentUser){
+        throw new Error("You are not signed in.");
+    }
+
+    return currentUser.getIdToken();
+
+}
+
+
+async function customerApi(
+    path,
+    options = {}
+){
+
+    const token =
+        await getCustomerToken();
+
+    const headers = {
+        "Content-Type":"application/json",
+        ...(options.headers || {}),
+        "Authorization":
+            `Bearer ${token}`
+    };
+
+    const response =
+        await fetch(
+            `${BACKEND_URL}${path}`,
+            {
+                ...options,
+                headers
+            }
+        );
+
+    let data = {};
+
+    try{
+        data = await response.json();
+    }catch{}
+
+    if(!response.ok){
+
+        throw new Error(
+            data.message ||
+            data.error ||
+            "Request failed."
+        );
+
+    }
+
+    return data;
+
+}
+
+
+/* =========================================================
+   USER
+========================================================= */
+
+function populateUser(user, data = {}){
+
+    document.getElementById("miniName")
+        .textContent =
+            data.displayName ||
+            user.displayName ||
+            "Numora User";
+
+    document.getElementById("miniEmail")
+        .textContent =
+            data.email ||
+            user.email ||
+            "";
+
+    const avatar =
+        document.getElementById("userAvatar");
+
+    if(user.photoURL){
+        avatar.src = user.photoURL;
+    }else{
+        avatar.style.display = "none";
+    }
+
+}
+
+
+/* =========================================================
+   FIRESTORE PROFILE
+========================================================= */
+
+function listenToProfile(user){
+
+    const ref =
+        doc(db, "users", user.uid);
+
+    profileUnsubscribe =
+        onSnapshot(
+            ref,
+            snapshot => {
+
+                if(snapshot.exists()){
+
+                    populateUser(
+                        user,
+                        snapshot.data()
+                    );
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   NORMALIZE
+========================================================= */
+
+function normalizeBackendNumber(number){
+
+    if(!number){
+        return null;
+    }
+
+    return {
+
+        ...number,
+
+        orderId:
+            number.orderId ||
+            number.fiveSimOrderId ||
+            number.id,
+
+        phoneNumber:
+            number.phoneNumber ||
+            number.number ||
+            "",
+
+        service:
+            number.serviceName ||
+            number.service ||
+            "",
+
+        expiresAt:
+            number.expiresAt ||
+            number.expiry ||
+            null,
+
+        sms:
+            number.sms ||
+            number.messages ||
+            []
+
+    };
+
+}
+
+
+/* =========================================================
+   LOAD NUMBERS
+========================================================= */
+
+async function loadCustomerNumbers(){
+
+    try{
+
+        const data =
+            await customerApi(
+                "/api/customer/numbers"
+            );
+
+        customerNumbers =
+            Array.isArray(data.numbers)
+                ? data.numbers
+                : [];
+
+        const active =
+            customerNumbers.find(number => {
+
+                const status =
+                    String(
+                        number.status ||
+                        ""
+                    ).toLowerCase();
+
+                return status !== "expired" &&
+                       status !== "cancelled" &&
+                       status !== "refunded";
+
+            });
+
+        if(active){
+
+            activePurchase =
+                normalizeBackendNumber(active);
+
+            updateSmsView(
+                activePurchase
+            );
+
+            startProviderRefresh(
+                activePurchase
+            );
+
+        }else{
+
+            activePurchase = null;
+
+            updateSmsView(null);
+
+            stopProviderRefresh();
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Numbers error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE SMS VIEW
+========================================================= */
+
+function updateSmsView(purchase){
+
+    if(!purchase){
+
+        phoneNumber.textContent =
+            "No active number";
+
+        serviceName.textContent =
+            "—";
+
+        numberStatus.textContent =
+            "No active number";
+
+        numberStatus.style.background =
+            "#f3f4f6";
+
+        numberStatus.style.color =
+            "#6b7280";
+
+        countdown.textContent =
+            "—";
+
+        messagesContainer.innerHTML =
+            `<div class="empty">
+                No active verification number.
+             </div>`;
+
+        return;
+
+    }
+
+    phoneNumber.textContent =
+        purchase.phoneNumber ||
+        "Waiting for number";
+
+    serviceName.textContent =
+        purchase.service ||
+        "Verification";
+
+    const status =
+        purchase.status ||
+        "active";
+
+    numberStatus.textContent =
+        String(status);
+
+    numberStatus.style.background =
+        "#dcfce7";
+
+    numberStatus.style.color =
+        "#15803d";
+
+    updateMessages(
+        purchase.sms ||
+        purchase.messages ||
+        []
+    );
+
+    startSmsCountdown(
+        purchase.expiresAt
+    );
+
+}
+
+
+/* =========================================================
+   SMS MESSAGES
+========================================================= */
+
+function updateMessages(messages){
+
+    if(!Array.isArray(messages) ||
+       messages.length === 0){
+
+        messagesContainer.innerHTML =
+            `<div class="empty">
+                Waiting for incoming SMS...
+             </div>`;
+
+        return;
+    }
+
+    messagesContainer.innerHTML =
+        messages.map(message => {
+
+            const body =
+                message.text ||
+                message.body ||
+                message.message ||
+                "";
+
+            const code =
+                message.code ||
+                "";
+
+            const service =
+                message.service ||
+                activePurchase?.service ||
+                "Verification";
+
+            return `
+                <div class="sms-message">
+
+                    <div class="sms-service">
+                        ${escapeHtml(service)}
+                    </div>
+
+                    ${
+                        code
+                        ? `<div class="sms-code">
+                            ${escapeHtml(code)}
+                           </div>`
+                        : ""
+                    }
+
+                    <div style="
+                        margin-top:7px;
+                        font-size:14px;
+                    ">
+                        ${escapeHtml(body)}
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+
+}
+
+
+function escapeHtml(value){
+
+    return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   COUNTDOWN
+========================================================= */
+
+function startSmsCountdown(expiresAt){
+
+    if(countdownTimer){
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+    }
+
+    if(!expiresAt){
+
+        countdown.textContent =
+            "Active";
+
+        return;
+
+    }
+
+    let expiry =
+        new Date(expiresAt).getTime();
+
+    if(Number.isNaN(expiry)){
+
+        countdown.textContent =
+            "Active";
+
+        return;
+
+    }
+
+    function update(){
+
+        const remaining =
+            expiry - Date.now();
+
+        if(remaining <= 0){
+
+            countdown.textContent =
+                "Expired";
+
+            clearInterval(
+                countdownTimer
+            );
+
+            return;
+
+        }
+
+        const totalSeconds =
+            Math.floor(
+                remaining / 1000
+            );
+
+        const hours =
+            Math.floor(
+                totalSeconds / 3600
+            );
+
+        const minutes =
+            Math.floor(
+                (totalSeconds % 3600) / 60
+            );
+
+        const seconds =
+            totalSeconds % 60;
+
+        countdown.textContent =
+            `${String(hours).padStart(2,"0")}:` +
+            `${String(minutes).padStart(2,"0")}:` +
+            `${String(seconds).padStart(2,"0")}`;
+
+    }
+
+    update();
+
+    countdownTimer =
+        setInterval(
+            update,
+            1000
+        );
+
+}
+
+
+/* =========================================================
+   REFRESH PROVIDER STATE
+========================================================= */
+
+async function refreshCustomerNumber(orderId){
+
+    if(!orderId){
+        return;
+    }
+
+    try{
+
+        const data =
+            await customerApi(
+                `/api/customer/number/${encodeURIComponent(orderId)}`
+            );
+
+        const updated =
+            normalizeBackendNumber(
+                data.number ||
+                data
+            );
+
+        if(updated){
+
+            activePurchase =
+                updated;
+
+            updateSmsView(
+                updated
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Provider refresh error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   BACKEND POLLING
+   No page reload.
+========================================================= */
+
+function startProviderRefresh(purchase){
+
+    stopProviderRefresh();
+
+    if(!purchase?.orderId){
+        return;
+    }
+
+    providerRefreshTimer =
+        setInterval(
+            () => {
+
+                refreshCustomerNumber(
+                    purchase.orderId
+                );
+
+            },
+            7000
+        );
+
+}
+
+
+function stopProviderRefresh(){
+
+    if(providerRefreshTimer){
+
+        clearInterval(
+            providerRefreshTimer
+        );
+
+        providerRefreshTimer = null;
+
+    }
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goTo(path){
+
+    window.location.href = path;
+
+}
+
+document.getElementById("dashboardNav")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/")
+    );
+
+document.getElementById("settingsNav")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/settings.html")
+    );
+
+document.getElementById("mobileDashboard")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/")
+    );
+
+document.getElementById("mobileSettings")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/settings.html")
+    );
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+document.getElementById("logoutBtn")
+    .addEventListener(
+        "click",
+        async () => {
+
+            try{
+
+                stopProviderRefresh();
+
+                if(countdownTimer){
+                    clearInterval(
+                        countdownTimer
+                    );
+                }
+
+                await signOut(auth);
+
+                window.location.href =
+                    HOME_URL;
+
+            }catch(error){
+
+                console.error(error);
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   START
+========================================================= */
+
+async function start(){
+
+    try{
+
+        await setPersistence(
+            auth,
+            browserLocalPersistence
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+    onAuthStateChanged(
+        auth,
+        async user => {
+
+            if(!user){
+
+                window.location.href =
+                    HOME_URL;
+
+                return;
+
+            }
+
+            currentUser = user;
+
+            listenToProfile(
+                user
+            );
+
+            await loadCustomerNumbers();
+
+            loadingScreen.style.display =
+                "none";
+
+        }
+    );
+
+}
+
+start();
+
+</script>
+
+</body>
+</html>
