@@ -13,7 +13,7 @@
 
 <meta
     name="description"
-    content="Numora gives you a real phone number for calls and SMS, managed simply from your account."
+    content="Numora provides temporary phone numbers for SMS verification, with verification messages managed simply from your account."
 >
 
 <style>
@@ -695,6 +695,7 @@ a {
     .cta-card {
         padding: 45px 25px;
     }
+
 }
 
 </style>
@@ -712,11 +713,16 @@ a {
             class="brand"
         >
 
-            <div class="logo">N</div>
+            <div class="logo">
+                N
+            </div>
 
-            <span>Numora</span>
+            <span>
+                Numora
+            </span>
 
         </a>
+
 
         <nav class="nav">
 
@@ -754,21 +760,30 @@ a {
 
                 <span class="badge-dot"></span>
 
-                Simple. Private. Connected.
+                Fast SMS verification
 
             </div>
 
+
             <h1>
+
                 Your number.
-                <span>Your connection.</span>
+                <span>
+                    Your connection.
+                </span>
+
             </h1>
 
+
             <p>
-                Get a real phone number and manage your
-                messages from one simple Numora account.
-                Built for people who want a cleaner way
-                to stay connected.
+
+                Get a temporary phone number for
+                SMS verification and receive your
+                verification code directly through
+                your Numora account.
+
             </p>
+
 
             <div class="hero-buttons">
 
@@ -778,6 +793,7 @@ a {
                 >
                     Get Your Number
                 </button>
+
 
                 <a
                     href="#features"
@@ -809,9 +825,10 @@ a {
 
                         </div>
 
+
                         <span
                             style="
-                                color:#94a3b8;
+                                color:#22c55e;
                                 font-size:12px;
                             "
                         >
@@ -820,42 +837,49 @@ a {
 
                     </div>
 
+
                     <div class="phone-title">
-                        Welcome
+                        Verification
                     </div>
 
+
                     <div class="phone-subtitle">
-                        Your connection starts here.
+                        Your SMS code is ready.
                     </div>
+
 
                     <div class="number-card">
 
                         <div class="number-label">
-                            YOUR NUMBER
+                            TEMPORARY NUMBER
                         </div>
+
 
                         <div class="number">
-                            No number yet
+                            +1 (555) 284-0196
                         </div>
 
+
                         <span class="active">
-                            Ready to activate
+                            Waiting for SMS
                         </span>
 
                     </div>
+
 
                     <div class="phone-message">
 
                         <strong>
-                            Your messages
+                            Verification code
                         </strong>
 
                         <span>
-                            Your SMS conversations will
-                            appear here.
+                            Your incoming SMS appears
+                            here automatically.
                         </span>
 
                     </div>
+
 
                     <div class="phone-message">
 
@@ -893,15 +917,18 @@ a {
                 NUMORA
             </span>
 
+
             <h2>
-                Everything you need,
-                without the clutter.
+                Verification without
+                the clutter.
             </h2>
 
+
             <p>
-                A simple virtual number experience
-                designed around your number and
-                your messages.
+                Choose a supported country and
+                service, get your temporary number,
+                and receive the verification SMS
+                from one simple dashboard.
             </p>
 
         </div>
@@ -915,13 +942,16 @@ a {
                     01
                 </div>
 
+
                 <h3>
-                    Your own number
+                    Choose your service
                 </h3>
 
+
                 <p>
-                    Choose an available number and
-                    manage it from your Numora account.
+                    Select a supported country and
+                    verification service from the
+                    available Numora catalog.
                 </p>
 
             </div>
@@ -933,14 +963,16 @@ a {
                     02
                 </div>
 
+
                 <h3>
-                    Two-way SMS
+                    Get a temporary number
                 </h3>
 
+
                 <p>
-                    Receive and send messages from
-                    your rented number through your
-                    Numora dashboard.
+                    Use a temporary number for your
+                    verification request without
+                    committing to a monthly rental.
                 </p>
 
             </div>
@@ -952,13 +984,16 @@ a {
                     03
                 </div>
 
+
                 <h3>
-                    Simple access
+                    Receive your SMS
                 </h3>
 
+
                 <p>
-                    Sign in with Google and keep your
-                    account experience simple and secure.
+                    Keep your verification number
+                    and incoming SMS accessible from
+                    your Numora account.
                 </p>
 
             </div>
@@ -983,16 +1018,19 @@ a {
                 BUILT FOR SIMPLICITY
             </span>
 
+
             <h2>
                 One account.
-                One number.
+                One verification.
                 One connection.
             </h2>
 
+
             <p>
-                Numora brings your virtual number,
-                messages and account information
-                together in one clean experience.
+                Numora brings temporary verification
+                numbers, incoming SMS messages and
+                your account balance together in one
+                clean experience.
             </p>
 
         </div>
@@ -1007,15 +1045,19 @@ a {
     <div class="cta-card">
 
         <h2>
-            Ready to get connected?
+            Ready to verify?
         </h2>
 
+
         <p>
-            Sign in with Google and start your
-            Numora journey.
+            Sign in with Google, choose your
+            service and get started with Numora.
         </p>
 
-        <button id="ctaButton">
+
+        <button
+            id="ctaButton"
+        >
             Get Your Number
         </button>
 
@@ -1031,6 +1073,7 @@ a {
     <div class="footer-inner">
 
         <div>
+
             <span class="footer-brand">
                 Numora
             </span>
@@ -1038,11 +1081,15 @@ a {
             <span>
                 &nbsp; — &nbsp;Your number. Your connection.
             </span>
+
         </div>
 
+
         <div>
+
             Support:
             numora.support@gmail.com
+
         </div>
 
     </div>
@@ -1062,6 +1109,7 @@ import {
     initializeApp
 } from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
 
 import {
     getAuth,
@@ -1107,8 +1155,10 @@ const firebaseConfig = {
 const app =
     initializeApp(firebaseConfig);
 
+
 const auth =
     getAuth(app);
+
 
 const provider =
     new GoogleAuthProvider();
@@ -1121,14 +1171,25 @@ const provider =
 const authButton =
     document.getElementById("authButton");
 
+
 const heroGetNumber =
     document.getElementById("heroGetNumber");
+
 
 const ctaButton =
     document.getElementById("ctaButton");
 
+
 const toast =
     document.getElementById("toast");
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+const DASHBOARD_URL =
+    "/numorahq/dashboard.html";
 
 
 /* =========================================================
@@ -1137,25 +1198,22 @@ const toast =
 
 function showToast(message) {
 
-    toast.textContent = message;
+    toast.textContent =
+        message;
 
-    toast.classList.add("show");
+    toast.classList.add(
+        "show"
+    );
 
     setTimeout(() => {
 
-        toast.classList.remove("show");
+        toast.classList.remove(
+            "show"
+        );
 
     }, 3000);
 
 }
-
-
-/* =========================================================
-   DASHBOARD PATH
-========================================================= */
-
-const DASHBOARD_URL =
-    "/numorahq/dashboard.html";
 
 
 /* =========================================================
@@ -1183,14 +1241,17 @@ async function login() {
             browserLocalPersistence
         );
 
+
         await signInWithPopup(
             auth,
             provider
         );
 
+
         showToast(
             "Signed in successfully."
         );
+
 
         setTimeout(() => {
 
@@ -1207,6 +1268,7 @@ async function login() {
             error
         );
 
+
         if (
             error.code ===
             "auth/popup-closed-by-user"
@@ -1215,6 +1277,7 @@ async function login() {
             return;
 
         }
+
 
         showToast(
             "Unable to sign in. Please try again."
@@ -1226,7 +1289,7 @@ async function login() {
 
 
 /* =========================================================
-   BUTTON ACTION
+   MAIN BUTTON
 ========================================================= */
 
 function handleMainButton() {
@@ -1235,7 +1298,9 @@ function handleMainButton() {
 
         openDashboard();
 
-    } else {
+    }
+
+    else {
 
         login();
 
@@ -1244,15 +1309,21 @@ function handleMainButton() {
 }
 
 
+/* =========================================================
+   BUTTON EVENTS
+========================================================= */
+
 authButton.addEventListener(
     "click",
     handleMainButton
 );
 
+
 heroGetNumber.addEventListener(
     "click",
     handleMainButton
 );
+
 
 ctaButton.addEventListener(
     "click",
@@ -1279,7 +1350,9 @@ setPersistence(
                 authButton.textContent =
                     "Open Dashboard";
 
-            } else {
+            }
+
+            else {
 
                 authButton.textContent =
                     "Sign in with Google";
