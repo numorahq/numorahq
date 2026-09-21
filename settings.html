@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numora — Settings</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --primary:#2563eb;
+    --bg:#f5f7fb;
+    --card:#fff;
+    --text:#111827;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+}
+
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+}
+
+button{
+    font:inherit;
+    cursor:pointer;
+}
+
+.loading-screen{
+    position:fixed;
+    inset:0;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
+
+.loading-spinner{
+    width:34px;
+    height:34px;
+    border:3px solid #dbeafe;
+    border-top-color:var(--primary);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:250px;
+    background:#fff;
+    border-right:1px solid var(--border);
+    padding:24px 16px;
+    display:flex;
+    flex-direction:column;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:800;
+    color:var(--primary);
+    margin:4px 12px 32px;
+}
+
+.logo small{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    font-weight:500;
+    margin-top:3px;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.nav button{
+    border:0;
+    background:transparent;
+    padding:13px 14px;
+    border-radius:12px;
+    text-align:left;
+    color:#4b5563;
+    font-weight:600;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:#eff6ff;
+    color:var(--primary);
+}
+
+.profile-mini{
+    margin-top:auto;
+    padding:14px 10px;
+    border-top:1px solid var(--border);
+}
+
+.profile-mini-name{
+    font-weight:700;
+    font-size:14px;
+}
+
+.profile-mini-email{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+.logout-btn{
+    width:100%;
+    margin-top:12px;
+    border:0;
+    background:#fef2f2;
+    color:#dc2626;
+    padding:10px;
+    border-radius:10px;
+    font-weight:600;
+}
+
+.main{
+    margin-left:250px;
+    width:calc(100% - 250px);
+    padding:28px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.topbar h1{
+    font-size:26px;
+}
+
+.topbar p{
+    color:var(--muted);
+    font-size:14px;
+    margin-top:5px;
+}
+
+.user-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:20px;
+}
+
+.card h2{
+    font-size:18px;
+    margin-bottom:18px;
+}
+
+.account{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:20px;
+}
+
+.account-avatar{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#dbeafe;
+}
+
+.account-name{
+    font-weight:800;
+    font-size:17px;
+}
+
+.account-email{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:4px;
+}
+
+.info-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px 0;
+    border-bottom:1px solid var(--border);
+    gap:15px;
+}
+
+.info-row:last-child{
+    border-bottom:0;
+}
+
+.info-label{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.info-value{
+    font-weight:700;
+    text-align:right;
+    word-break:break-word;
+}
+
+.logout-large{
+    width:100%;
+    border:0;
+    background:#fef2f2;
+    color:#dc2626;
+    padding:14px;
+    border-radius:12px;
+    font-weight:700;
+}
+
+.mobile-nav{
+    display:none;
+}
+
+@media(max-width:800px){
+
+    .sidebar{
+        display:none;
+    }
+
+    .main{
+        margin-left:0;
+        width:100%;
+        padding:18px 15px 90px;
+    }
+
+    .topbar h1{
+        font-size:22px;
+    }
+
+    .mobile-nav{
+        display:flex;
+        position:fixed;
+        bottom:0;
+        left:0;
+        right:0;
+        height:65px;
+        background:rgba(255,255,255,.96);
+        border-top:1px solid var(--border);
+        z-index:100;
+        justify-content:space-around;
+        padding:7px;
+    }
+
+    .mobile-nav button{
+        border:0;
+        background:transparent;
+        color:var(--muted);
+        font-size:12px;
+        font-weight:600;
+    }
+
+    .mobile-nav button.active{
+        color:var(--primary);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner"></div>
+</div>
+
+<div class="app">
+
+<aside class="sidebar">
+
+    <div class="logo">
+        Numora
+        <small>Your number. Your connection.</small>
+    </div>
+
+    <nav class="nav">
+
+        <button id="dashboardNav">
+            Dashboard
+        </button>
+
+        <button id="smsNav">
+            SMS
+        </button>
+
+        <button class="active">
+            Settings
+        </button>
+
+    </nav>
+
+    <div class="profile-mini">
+
+        <div
+            class="profile-mini-name"
+            id="miniName"
+        >
+            Numora User
+        </div>
+
+        <div
+            class="profile-mini-email"
+            id="miniEmail"
+        >
+            Loading...
+        </div>
+
+        <button
+            class="logout-btn"
+            id="logoutBtn"
+        >
+            Sign Out
+        </button>
+
+    </div>
+
+</aside>
+
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div>
+
+            <h1>Settings</h1>
+
+            <p>
+                Manage your Numora account information.
+            </p>
+
+        </div>
+
+        <img
+            id="userAvatar"
+            class="user-avatar"
+            src=""
+            alt="Profile"
+        >
+
+    </div>
+
+
+    <section class="card">
+
+        <h2>Account</h2>
+
+        <div class="account">
+
+            <img
+                id="accountAvatar"
+                class="account-avatar"
+                src=""
+                alt="Profile"
+            >
+
+            <div>
+
+                <div
+                    class="account-name"
+                    id="accountName"
+                >
+                    Numora User
+                </div>
+
+                <div
+                    class="account-email"
+                    id="accountEmail"
+                >
+                    —
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="info-row">
+
+            <div class="info-label">
+                Email
+            </div>
+
+            <div
+                class="info-value"
+                id="emailValue"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="info-row">
+
+            <div class="info-label">
+                Profile ID
+            </div>
+
+            <div
+                class="info-value"
+                id="profileIdValue"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="info-row">
+
+            <div class="info-label">
+                Naira Balance
+            </div>
+
+            <div
+                class="info-value"
+                id="balanceValue"
+            >
+                ₦0
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="card">
+
+        <h2>Account Access</h2>
+
+        <button
+            class="logout-large"
+            id="logoutLarge"
+        >
+            Sign Out
+        </button>
+
+    </section>
+
+</main>
+
+</div>
+
+
+<nav class="mobile-nav">
+
+    <button id="mobileDashboard">
+        Dashboard
+    </button>
+
+    <button id="mobileSms">
+        SMS
+    </button>
+
+    <button class="active">
+        Settings
+    </button>
+
+</nav>
+
+
+<script type="module">
+
+import {
+    initializeApp
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut,
+    setPersistence,
+    browserLocalPersistence
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    onSnapshot
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+
+    authDomain:
+        "numora-c9a3b.firebaseapp.com",
+
+    projectId:
+        "numora-c9a3b",
+
+    storageBucket:
+        "numora-c9a3b.firebasestorage.app",
+
+    messagingSenderId:
+        "778502274031",
+
+    appId:
+        "1:778502274031:web:4cf57beed3703cbe5dd41a",
+
+    measurementId:
+        "G-6ELM21FDPH"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+/* =========================================================
+   CONSTANTS
+========================================================= */
+
+const HOME_URL = "/numorahq/";
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+let profileUnsubscribe = null;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const loadingScreen =
+    document.getElementById("loadingScreen");
+
+
+/* =========================================================
+   PROFILE ID
+========================================================= */
+
+function isValidProfileId(value){
+
+    return /^[A-Z]{3}[0-9]{3}$/.test(
+        String(value || "")
+    );
+
+}
+
+
+function generateProfileId(){
+
+    const letters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    let result = "";
+
+    for(let i = 0; i < 3; i++){
+
+        result +=
+            letters[
+                Math.floor(
+                    Math.random() *
+                    letters.length
+                )
+            ];
+
+    }
+
+    result += String(
+        Math.floor(
+            100 + Math.random() * 900
+        )
+    );
+
+    return result;
+
+}
+
+
+function getProfileIdFromData(data){
+
+    const possible =
+        data?.profileId ||
+        data?.customerProfileId ||
+        data?.customerId;
+
+    if(isValidProfileId(possible)){
+        return possible;
+    }
+
+    return generateProfileId();
+
+}
+
+
+/* =========================================================
+   FORMAT
+========================================================= */
+
+function formatNaira(amount){
+
+    return new Intl.NumberFormat(
+        "en-NG",
+        {
+            style:"currency",
+            currency:"NGN",
+            maximumFractionDigits:0
+        }
+    ).format(
+        Number(amount || 0)
+    );
+
+}
+
+
+/* =========================================================
+   USER
+========================================================= */
+
+function populateUser(user, data = {}){
+
+    currentUser = user;
+
+    const name =
+        data.displayName ||
+        user.displayName ||
+        "Numora User";
+
+    const email =
+        data.email ||
+        user.email ||
+        "—";
+
+    document.getElementById("miniName")
+        .textContent = name;
+
+    document.getElementById("miniEmail")
+        .textContent = email;
+
+    document.getElementById("accountName")
+        .textContent = name;
+
+    document.getElementById("accountEmail")
+        .textContent = email;
+
+    document.getElementById("emailValue")
+        .textContent = email;
+
+    document.getElementById("profileIdValue")
+        .textContent =
+            getProfileIdFromData(data);
+
+    const balance =
+        data.balance ??
+        data.nairaBalance ??
+        data.walletBalance ??
+        0;
+
+    document.getElementById("balanceValue")
+        .textContent =
+            formatNaira(balance);
+
+    const avatar =
+        document.getElementById("userAvatar");
+
+    const accountAvatar =
+        document.getElementById("accountAvatar");
+
+    if(user.photoURL){
+
+        avatar.src =
+            user.photoURL;
+
+        accountAvatar.src =
+            user.photoURL;
+
+    }
+
+}
+
+
+/* =========================================================
+   FIRESTORE
+========================================================= */
+
+function listenToProfile(user){
+
+    if(profileUnsubscribe){
+        profileUnsubscribe();
+    }
+
+    const ref =
+        doc(
+            db,
+            "users",
+            user.uid
+        );
+
+    profileUnsubscribe =
+        onSnapshot(
+            ref,
+            snapshot => {
+
+                const data =
+                    snapshot.exists()
+                        ? snapshot.data()
+                        : {};
+
+                populateUser(
+                    user,
+                    data
+                );
+
+            },
+            error => {
+
+                console.error(
+                    "Profile error:",
+                    error
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goTo(path){
+
+    window.location.href = path;
+
+}
+
+
+document.getElementById("dashboardNav")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/")
+    );
+
+document.getElementById("smsNav")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/sms.html")
+    );
+
+document.getElementById("mobileDashboard")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/")
+    );
+
+document.getElementById("mobileSms")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/sms.html")
+    );
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+    try{
+
+        await signOut(auth);
+
+        window.location.href =
+            HOME_URL;
+
+    }catch(error){
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    }
+
+}
+
+
+document.getElementById("logoutBtn")
+    .addEventListener(
+        "click",
+        logout
+    );
+
+document.getElementById("logoutLarge")
+    .addEventListener(
+        "click",
+        logout
+    );
+
+
+/* =========================================================
+   START
+========================================================= */
+
+async function start(){
+
+    try{
+
+        await setPersistence(
+            auth,
+            browserLocalPersistence
+        );
+
+    }catch(error){
+
+        console.error(
+            "Persistence error:",
+            error
+        );
+
+    }
+
+    onAuthStateChanged(
+        auth,
+        user => {
+
+            if(!user){
+
+                window.location.href =
+                    HOME_URL;
+
+                return;
+
+            }
+
+            currentUser = user;
+
+            populateUser(
+                user
+            );
+
+            listenToProfile(
+                user
+            );
+
+            loadingScreen.style.display =
+                "none";
+
+        }
+    );
+
+}
+
+
+start();
+
+</script>
+
+</body>
+</html>
