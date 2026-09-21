@@ -734,60 +734,52 @@ async function buy5SimActivation(
     service
 ){
 
-    return await fetch5SimAuthenticated(
-        `/user/buy/activation/${encodeURIComponent(country)}/${encodeURIComponent(operator)}/${encodeURIComponent(service)}`,
-        {
+    const endpoint =
+        `/user/buy/activation/${encodeURIComponent(country)}/${encodeURIComponent(operator)}/${encodeURIComponent(service)}`;
 
-            method:
-                "GET"
+    console.log("========================================");
+    console.log("5SIM ACTUAL PURCHASE");
+    console.log("Country:", country);
+    console.log("Operator:", operator);
+    console.log("Service:", service);
+    console.log("Endpoint:", endpoint);
 
-        }
-    );
+    try {
 
+        const result =
+            await fetch5SimAuthenticated(
+                endpoint,
+                {
+                    method: "GET"
+                }
+            );
+
+        console.log(
+            "5SIM PURCHASE RESPONSE:",
+            JSON.stringify(result)
+        );
+
+        console.log("========================================");
+
+        return result;
+
+    } catch(error){
+
+        console.error(
+            "5SIM PURCHASE FAILED:",
+            error?.message || error
+        );
+
+        console.error(
+            "5SIM PURCHASE ERROR OBJECT:",
+            error
+        );
+
+        console.log("========================================");
+
+        throw error;
+    }
 }
-
-
-function normalize5SimPurchaseResponse(
-    data
-){
-
-    const orderId =
-        data?.id ??
-        data?.order_id ??
-        data?.orderId ??
-        null;
-
-    const phoneNumber =
-        data?.phone ??
-        data?.phoneNumber ??
-        data?.number ??
-        null;
-
-    const status =
-        data?.status ??
-        null;
-
-    return {
-
-        orderId:
-            orderId !== null
-                ? String(orderId)
-                : null,
-
-        phoneNumber:
-            phoneNumber
-                ? normalizePhoneNumber(phoneNumber)
-                : null,
-
-        status,
-
-        raw:
-            data
-
-    };
-
-}
-
 
 /*
 ---------------------------------------------------------
