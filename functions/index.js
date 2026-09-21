@@ -666,22 +666,59 @@ async function get5SimPurchaseOption(
         .filter(
             item =>
                 item.count > 0 &&
-                item.cost > 0 &&
-                item.rate !== null &&
-                item.rate >= 70
+                item.cost > 0
         )
         .sort(
             (a, b) => {
 
-                if(a.cost !== b.cost){
-                    return a.cost - b.cost;
+                /*
+                Cheapest available operator first.
+                */
+                if(
+                    a.cost !==
+                    b.cost
+                ){
+
+                    return (
+                        a.cost -
+                        b.cost
+                    );
+
                 }
 
-                if(a.rate !== b.rate){
-                    return b.rate - a.rate;
+                /*
+                If delivery rate exists, prefer
+                the higher rate.
+                */
+                const aRate =
+                    a.rate === null
+                        ? -1
+                        : a.rate;
+
+                const bRate =
+                    b.rate === null
+                        ? -1
+                        : b.rate;
+
+                if(
+                    aRate !==
+                    bRate
+                ){
+
+                    return (
+                        bRate -
+                        aRate
+                    );
+
                 }
 
-                return b.count - a.count;
+                /*
+                Finally prefer higher stock.
+                */
+                return (
+                    b.count -
+                    a.count
+                );
 
             }
         );
@@ -701,7 +738,6 @@ async function get5SimPurchaseOption(
     };
 
 }
-
 
 /*
 ---------------------------------------------------------
