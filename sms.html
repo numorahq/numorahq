@@ -55,7 +55,9 @@ button{
 }
 
 @keyframes spin{
-    to{transform:rotate(360deg)}
+    to{
+        transform:rotate(360deg)
+    }
 }
 
 .app{
@@ -342,23 +344,44 @@ button{
     </div>
 
     <nav class="nav">
-        <button id="dashboardNav">Dashboard</button>
-        <button class="active">SMS</button>
-        <button id="settingsNav">Settings</button>
+
+        <button id="dashboardNav">
+            Dashboard
+        </button>
+
+        <button class="active">
+            SMS
+        </button>
+
+        <button id="settingsNav">
+            Settings
+        </button>
+
     </nav>
 
     <div class="profile-mini">
-        <div class="profile-mini-name" id="miniName">
+
+        <div
+            class="profile-mini-name"
+            id="miniName"
+        >
             Numora User
         </div>
 
-        <div class="profile-mini-email" id="miniEmail">
+        <div
+            class="profile-mini-email"
+            id="miniEmail"
+        >
             Loading...
         </div>
 
-        <button class="logout-btn" id="logoutBtn">
+        <button
+            class="logout-btn"
+            id="logoutBtn"
+        >
             Sign Out
         </button>
+
     </div>
 
 </aside>
@@ -368,8 +391,15 @@ button{
     <div class="topbar">
 
         <div>
-            <h1>SMS Verification</h1>
-            <p>View your verification number and incoming SMS.</p>
+
+            <h1>
+                SMS Verification
+            </h1>
+
+            <p>
+                View your verification number and incoming SMS.
+            </p>
+
         </div>
 
         <img
@@ -381,13 +411,17 @@ button{
 
     </div>
 
+
     <section class="card">
 
-        <h2>Active Verification</h2>
+        <h2>
+            Active Verification
+        </h2>
 
         <div class="card-description">
             Your active verification number and incoming messages appear here.
         </div>
+
 
         <div class="number-box">
 
@@ -395,47 +429,71 @@ button{
                 Verification Number
             </div>
 
-            <div class="number" id="phoneNumber">
+            <div
+                class="number"
+                id="phoneNumber"
+            >
                 —
             </div>
 
         </div>
 
+
         <div class="info-grid">
 
             <div class="info">
+
                 <div class="info-label">
                     Service
                 </div>
 
-                <div class="info-value" id="serviceName">
+                <div
+                    class="info-value"
+                    id="serviceName"
+                >
                     —
                 </div>
+
             </div>
 
+
             <div class="info">
+
                 <div class="info-label">
                     Status
                 </div>
 
                 <div class="info-value">
-                    <span class="status" id="numberStatus">
+
+                    <span
+                        class="status"
+                        id="numberStatus"
+                    >
                         Waiting
                     </span>
+
                 </div>
+
             </div>
 
         </div>
 
-        <div class="countdown" id="countdown">
+
+        <div
+            class="countdown"
+            id="countdown"
+        >
             —
         </div>
 
     </section>
 
+
     <section class="card">
 
-        <h2>Incoming SMS</h2>
+        <h2>
+            Incoming SMS
+        </h2>
 
         <div class="card-description">
             Verification messages received for your active number.
@@ -455,6 +513,7 @@ button{
 
 </div>
 
+
 <nav class="mobile-nav">
 
     <button id="mobileDashboard">
@@ -471,12 +530,12 @@ button{
 
 </nav>
 
+
 <script type="module">
 
 import {
     initializeApp
-} from
-"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
     getAuth,
@@ -484,15 +543,13 @@ import {
     signOut,
     setPersistence,
     browserLocalPersistence
-} from
-"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 import {
     getFirestore,
     doc,
     onSnapshot
-} from
-"https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
 /* =========================================================
@@ -502,7 +559,7 @@ import {
 const firebaseConfig = {
 
     apiKey:
-        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjfGdSccWrSg",
 
     authDomain:
         "numora-c9a3b.firebaseapp.com",
@@ -525,16 +582,22 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+const db =
+    getFirestore(app);
 
 
 /* =========================================================
    CONSTANTS
 ========================================================= */
 
-const HOME_URL = "/numorahq/";
+const HOME_URL =
+    "/numorahq/";
 
 const BACKEND_URL =
     "https://numora-backend-cle6.onrender.com";
@@ -545,13 +608,26 @@ const BACKEND_URL =
 ========================================================= */
 
 let currentUser = null;
+
 let activePurchase = null;
+
 let customerNumbers = [];
 
 let countdownTimer = null;
+
 let providerRefreshTimer = null;
 
 let profileUnsubscribe = null;
+
+
+/*
+    Firebase auth starts in an "unknown" state while
+    browserLocalPersistence is being restored.
+
+    We deliberately keep the loading screen visible
+    until Firebase gives us the real auth state.
+*/
+let authStateResolved = false;
 
 
 /* =========================================================
@@ -584,7 +660,11 @@ const messagesContainer =
 async function getCustomerToken(){
 
     if(!currentUser){
-        throw new Error("You are not signed in.");
+
+        throw new Error(
+            "You are not signed in."
+        );
+
     }
 
     return currentUser.getIdToken();
@@ -601,11 +681,17 @@ async function customerApi(
         await getCustomerToken();
 
     const headers = {
-        "Content-Type":"application/json",
+
+        "Content-Type":
+            "application/json",
+
         ...(options.headers || {}),
+
         "Authorization":
             `Bearer ${token}`
+
     };
+
 
     const response =
         await fetch(
@@ -616,21 +702,67 @@ async function customerApi(
             }
         );
 
+
     let data = {};
 
     try{
-        data = await response.json();
-    }catch{}
+
+        data =
+            await response.json();
+
+    }catch(error){
+
+        /*
+            Some error responses may not contain JSON.
+            Keep the customer-facing message generic.
+        */
+
+        data = {};
+
+    }
+
 
     if(!response.ok){
 
+        const serverMessage =
+            String(
+                data.message ||
+                data.error ||
+                ""
+            );
+
+
+        /*
+            Never expose provider/internal information
+            to the customer.
+        */
+
+        const lowerMessage =
+            serverMessage.toLowerCase();
+
+        if(
+            lowerMessage.includes("5sim") ||
+            lowerMessage.includes("operator") ||
+            lowerMessage.includes("virtual") ||
+            lowerMessage.includes("supplier") ||
+            lowerMessage.includes("provider") ||
+            lowerMessage.includes("user balance")
+        ){
+
+            throw new Error(
+                "The verification service is temporarily unavailable. Please try again."
+            );
+
+        }
+
+
         throw new Error(
-            data.message ||
-            data.error ||
-            "Request failed."
+            serverMessage ||
+            "Request failed. Please try again."
         );
 
     }
+
 
     return data;
 
@@ -641,7 +773,10 @@ async function customerApi(
    USER
 ========================================================= */
 
-function populateUser(user, data = {}){
+function populateUser(
+    user,
+    data = {}
+){
 
     document.getElementById("miniName")
         .textContent =
@@ -649,19 +784,31 @@ function populateUser(user, data = {}){
             user.displayName ||
             "Numora User";
 
+
     document.getElementById("miniEmail")
         .textContent =
             data.email ||
             user.email ||
             "";
 
+
     const avatar =
         document.getElementById("userAvatar");
 
+
     if(user.photoURL){
-        avatar.src = user.photoURL;
+
+        avatar.src =
+            user.photoURL;
+
+        avatar.style.display =
+            "block";
+
     }else{
-        avatar.style.display = "none";
+
+        avatar.style.display =
+            "none";
+
     }
 
 }
@@ -673,12 +820,28 @@ function populateUser(user, data = {}){
 
 function listenToProfile(user){
 
+    if(profileUnsubscribe){
+
+        profileUnsubscribe();
+
+        profileUnsubscribe = null;
+
+    }
+
+
     const ref =
-        doc(db, "users", user.uid);
+        doc(
+            db,
+            "users",
+            user.uid
+        );
+
 
     profileUnsubscribe =
         onSnapshot(
+
             ref,
+
             snapshot => {
 
                 if(snapshot.exists()){
@@ -690,21 +853,36 @@ function listenToProfile(user){
 
                 }
 
+            },
+
+            error => {
+
+                console.error(
+                    "Profile listener error:",
+                    error
+                );
+
             }
+
         );
 
 }
 
 
 /* =========================================================
-   NORMALIZE
+   NORMALIZE BACKEND NUMBER
 ========================================================= */
 
-function normalizeBackendNumber(number){
+function normalizeBackendNumber(
+    number
+){
 
     if(!number){
+
         return null;
+
     }
+
 
     return {
 
@@ -713,7 +891,8 @@ function normalizeBackendNumber(number){
         orderId:
             number.orderId ||
             number.fiveSimOrderId ||
-            number.id,
+            number.id ||
+            null,
 
         phoneNumber:
             number.phoneNumber ||
@@ -728,12 +907,17 @@ function normalizeBackendNumber(number){
         expiresAt:
             number.expiresAt ||
             number.expiry ||
+            number.expires ||
             null,
 
         sms:
-            number.sms ||
-            number.messages ||
-            []
+            Array.isArray(number.sms)
+                ? number.sms
+                : (
+                    Array.isArray(number.messages)
+                        ? number.messages
+                        : []
+                )
 
     };
 
@@ -753,34 +937,47 @@ async function loadCustomerNumbers(){
                 "/api/customer/numbers"
             );
 
+
         customerNumbers =
             Array.isArray(data.numbers)
                 ? data.numbers
                 : [];
 
+
         const active =
-            customerNumbers.find(number => {
+            customerNumbers.find(
+                number => {
 
-                const status =
-                    String(
-                        number.status ||
-                        ""
-                    ).toLowerCase();
+                    const status =
+                        String(
+                            number.status ||
+                            ""
+                        ).toLowerCase();
 
-                return status !== "expired" &&
-                       status !== "cancelled" &&
-                       status !== "refunded";
 
-            });
+                    return (
+                        status !== "expired" &&
+                        status !== "cancelled" &&
+                        status !== "refunded" &&
+                        status !== "purchase failed"
+                    );
+
+                }
+            );
+
 
         if(active){
 
             activePurchase =
-                normalizeBackendNumber(active);
+                normalizeBackendNumber(
+                    active
+                );
+
 
             updateSmsView(
                 activePurchase
             );
+
 
             startProviderRefresh(
                 activePurchase
@@ -788,13 +985,19 @@ async function loadCustomerNumbers(){
 
         }else{
 
-            activePurchase = null;
+            activePurchase =
+                null;
 
-            updateSmsView(null);
+
+            updateSmsView(
+                null
+            );
+
 
             stopProviderRefresh();
 
         }
+
 
     }catch(error){
 
@@ -812,63 +1015,82 @@ async function loadCustomerNumbers(){
    UPDATE SMS VIEW
 ========================================================= */
 
-function updateSmsView(purchase){
+function updateSmsView(
+    purchase
+){
 
     if(!purchase){
 
         phoneNumber.textContent =
             "No active number";
 
+
         serviceName.textContent =
             "—";
+
 
         numberStatus.textContent =
             "No active number";
 
+
         numberStatus.style.background =
             "#f3f4f6";
+
 
         numberStatus.style.color =
             "#6b7280";
 
+
         countdown.textContent =
             "—";
 
+
         messagesContainer.innerHTML =
-            `<div class="empty">
+            `
+            <div class="empty">
                 No active verification number.
-             </div>`;
+            </div>
+            `;
+
 
         return;
 
     }
 
+
     phoneNumber.textContent =
         purchase.phoneNumber ||
         "Waiting for number";
+
 
     serviceName.textContent =
         purchase.service ||
         "Verification";
 
+
     const status =
         purchase.status ||
-        "active";
+        "Active";
+
 
     numberStatus.textContent =
         String(status);
 
+
     numberStatus.style.background =
         "#dcfce7";
 
+
     numberStatus.style.color =
         "#15803d";
+
 
     updateMessages(
         purchase.sms ||
         purchase.messages ||
         []
     );
+
 
     startSmsCountdown(
         purchase.expiresAt
@@ -881,75 +1103,119 @@ function updateSmsView(purchase){
    SMS MESSAGES
 ========================================================= */
 
-function updateMessages(messages){
+function updateMessages(
+    messages
+){
 
-    if(!Array.isArray(messages) ||
-       messages.length === 0){
+    if(
+        !Array.isArray(messages) ||
+        messages.length === 0
+    ){
 
         messagesContainer.innerHTML =
-            `<div class="empty">
+            `
+            <div class="empty">
                 Waiting for incoming SMS...
-             </div>`;
-
-        return;
-    }
-
-    messagesContainer.innerHTML =
-        messages.map(message => {
-
-            const body =
-                message.text ||
-                message.body ||
-                message.message ||
-                "";
-
-            const code =
-                message.code ||
-                "";
-
-            const service =
-                message.service ||
-                activePurchase?.service ||
-                "Verification";
-
-            return `
-                <div class="sms-message">
-
-                    <div class="sms-service">
-                        ${escapeHtml(service)}
-                    </div>
-
-                    ${
-                        code
-                        ? `<div class="sms-code">
-                            ${escapeHtml(code)}
-                           </div>`
-                        : ""
-                    }
-
-                    <div style="
-                        margin-top:7px;
-                        font-size:14px;
-                    ">
-                        ${escapeHtml(body)}
-                    </div>
-
-                </div>
+            </div>
             `;
 
-        }).join("");
+        return;
+
+    }
+
+
+    messagesContainer.innerHTML =
+        messages.map(
+            message => {
+
+                const body =
+                    message.text ||
+                    message.body ||
+                    message.message ||
+                    "";
+
+
+                const code =
+                    message.code ||
+                    "";
+
+
+                const service =
+                    message.service ||
+                    activePurchase?.service ||
+                    "Verification";
+
+
+                return `
+                    <div class="sms-message">
+
+                        <div class="sms-service">
+                            ${escapeHtml(service)}
+                        </div>
+
+                        ${
+                            code
+                            ? `
+                                <div class="sms-code">
+                                    ${escapeHtml(code)}
+                                </div>
+                            `
+                            : ""
+                        }
+
+                        ${
+                            body
+                            ? `
+                                <div style="
+                                    margin-top:7px;
+                                    font-size:14px;
+                                ">
+                                    ${escapeHtml(body)}
+                                </div>
+                            `
+                            : ""
+                        }
+
+                    </div>
+                `;
+
+            }
+        ).join("");
 
 }
 
 
-function escapeHtml(value){
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
 
-    return String(value || "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+function escapeHtml(
+    value
+){
+
+    return String(
+        value || ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
@@ -958,12 +1224,21 @@ function escapeHtml(value){
    COUNTDOWN
 ========================================================= */
 
-function startSmsCountdown(expiresAt){
+function startSmsCountdown(
+    expiresAt
+){
 
     if(countdownTimer){
-        clearInterval(countdownTimer);
-        countdownTimer = null;
+
+        clearInterval(
+            countdownTimer
+        );
+
+        countdownTimer =
+            null;
+
     }
+
 
     if(!expiresAt){
 
@@ -974,10 +1249,16 @@ function startSmsCountdown(expiresAt){
 
     }
 
-    let expiry =
-        new Date(expiresAt).getTime();
 
-    if(Number.isNaN(expiry)){
+    const expiry =
+        new Date(
+            expiresAt
+        ).getTime();
+
+
+    if(
+        Number.isNaN(expiry)
+    ){
 
         countdown.textContent =
             "Active";
@@ -986,41 +1267,58 @@ function startSmsCountdown(expiresAt){
 
     }
 
+
     function update(){
 
         const remaining =
-            expiry - Date.now();
+            expiry -
+            Date.now();
+
 
         if(remaining <= 0){
 
             countdown.textContent =
                 "Expired";
 
-            clearInterval(
-                countdownTimer
-            );
+
+            if(countdownTimer){
+
+                clearInterval(
+                    countdownTimer
+                );
+
+                countdownTimer =
+                    null;
+
+            }
+
 
             return;
 
         }
+
 
         const totalSeconds =
             Math.floor(
                 remaining / 1000
             );
 
+
         const hours =
             Math.floor(
                 totalSeconds / 3600
             );
+
 
         const minutes =
             Math.floor(
                 (totalSeconds % 3600) / 60
             );
 
+
         const seconds =
             totalSeconds % 60;
+
 
         countdown.textContent =
             `${String(hours).padStart(2,"0")}:` +
@@ -1029,7 +1327,9 @@ function startSmsCountdown(expiresAt){
 
     }
 
+
     update();
+
 
     countdownTimer =
         setInterval(
@@ -1041,14 +1341,19 @@ function startSmsCountdown(expiresAt){
 
 
 /* =========================================================
-   REFRESH PROVIDER STATE
+   REFRESH PROVIDER / BACKEND STATE
 ========================================================= */
 
-async function refreshCustomerNumber(orderId){
+async function refreshCustomerNumber(
+    orderId
+){
 
     if(!orderId){
+
         return;
+
     }
+
 
     try{
 
@@ -1057,22 +1362,26 @@ async function refreshCustomerNumber(orderId){
                 `/api/customer/number/${encodeURIComponent(orderId)}`
             );
 
+
         const updated =
             normalizeBackendNumber(
                 data.number ||
                 data
             );
 
+
         if(updated){
 
             activePurchase =
                 updated;
+
 
             updateSmsView(
                 updated
             );
 
         }
+
 
     }catch(error){
 
@@ -1091,13 +1400,21 @@ async function refreshCustomerNumber(orderId){
    No page reload.
 ========================================================= */
 
-function startProviderRefresh(purchase){
+function startProviderRefresh(
+    purchase
+){
 
     stopProviderRefresh();
 
-    if(!purchase?.orderId){
+
+    if(
+        !purchase?.orderId
+    ){
+
         return;
+
     }
+
 
     providerRefreshTimer =
         setInterval(
@@ -1114,6 +1431,10 @@ function startProviderRefresh(purchase){
 }
 
 
+/* =========================================================
+   STOP POLLING
+========================================================= */
+
 function stopProviderRefresh(){
 
     if(providerRefreshTimer){
@@ -1122,7 +1443,8 @@ function stopProviderRefresh(){
             providerRefreshTimer
         );
 
-        providerRefreshTimer = null;
+        providerRefreshTimer =
+            null;
 
     }
 
@@ -1133,76 +1455,158 @@ function stopProviderRefresh(){
    NAVIGATION
 ========================================================= */
 
-function goTo(path){
+function goTo(
+    path
+){
 
-    window.location.href = path;
+    /*
+        Navigation only changes the document.
+        It never signs the customer out.
+    */
+
+    window.location.assign(
+        path
+    );
 
 }
 
-document.getElementById("dashboardNav")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/")
-    );
 
-document.getElementById("settingsNav")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/settings.html")
-    );
+document.getElementById(
+    "dashboardNav"
+)
+.addEventListener(
+    "click",
+    () => {
 
-document.getElementById("mobileDashboard")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/")
-    );
+        goTo(
+            "/numorahq/"
+        );
 
-document.getElementById("mobileSettings")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/settings.html")
-    );
+    }
+);
+
+
+document.getElementById(
+    "settingsNav"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        goTo(
+            "/numorahq/settings.html"
+        );
+
+    }
+);
+
+
+document.getElementById(
+    "mobileDashboard"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        goTo(
+            "/numorahq/"
+        );
+
+    }
+);
+
+
+document.getElementById(
+    "mobileSettings"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        goTo(
+            "/numorahq/settings.html"
+        );
+
+    }
+);
 
 
 /* =========================================================
    LOGOUT
 ========================================================= */
 
-document.getElementById("logoutBtn")
-    .addEventListener(
-        "click",
-        async () => {
+document.getElementById(
+    "logoutBtn"
+)
+.addEventListener(
+    "click",
+    async () => {
 
-            try{
+        try{
 
-                stopProviderRefresh();
+            stopProviderRefresh();
 
-                if(countdownTimer){
-                    clearInterval(
-                        countdownTimer
-                    );
-                }
 
-                await signOut(auth);
+            if(countdownTimer){
 
-                window.location.href =
-                    HOME_URL;
+                clearInterval(
+                    countdownTimer
+                );
 
-            }catch(error){
-
-                console.error(error);
+                countdownTimer =
+                    null;
 
             }
 
+
+            if(profileUnsubscribe){
+
+                profileUnsubscribe();
+
+                profileUnsubscribe =
+                    null;
+
+            }
+
+
+            await signOut(
+                auth
+            );
+
+
+            window.location.assign(
+                HOME_URL
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "Sign out error:",
+                error
+            );
+
         }
-    );
+
+    }
+);
 
 
 /* =========================================================
-   START
+   AUTH / START
 ========================================================= */
 
 async function start(){
+
+    /*
+        IMPORTANT:
+
+        Persistence is established BEFORE we start relying
+        on the customer's auth state.
+
+        This allows the same Google session to survive
+        Dashboard -> SMS -> Settings navigation.
+    */
 
     try{
 
@@ -1213,30 +1617,62 @@ async function start(){
 
     }catch(error){
 
-        console.error(error);
+        console.error(
+            "Firebase persistence error:",
+            error
+        );
 
     }
+
 
     onAuthStateChanged(
         auth,
         async user => {
 
+            /*
+                This callback means Firebase has now
+                resolved the persisted authentication state.
+            */
+
+            authStateResolved =
+                true;
+
+
             if(!user){
 
-                window.location.href =
-                    HOME_URL;
+                /*
+                    Only redirect after Firebase has actually
+                    confirmed that there is no signed-in user.
+
+                    We are NOT redirecting merely because the
+                    page is still waiting for Firebase.
+                */
+
+                window.location.assign(
+                    HOME_URL
+                );
 
                 return;
 
             }
 
-            currentUser = user;
+
+            currentUser =
+                user;
+
+
+            populateUser(
+                user
+            );
+
 
             listenToProfile(
                 user
             );
 
+
             await loadCustomerNumbers();
+
 
             loadingScreen.style.display =
                 "none";
@@ -1245,6 +1681,11 @@ async function start(){
     );
 
 }
+
+
+/* =========================================================
+   START APPLICATION
+========================================================= */
 
 start();
 
