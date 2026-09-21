@@ -77,6 +77,19 @@ const TWILIO_INCOMING_SMS_URL =
 =========================================================
 5SIM CONFIGURATION
 =========================================================
+
+5SIM is an additional provider.
+
+Twilio and Paystack remain fully intact.
+
+The 5SIM API key is stored only on Render and is never
+sent to the browser.
+
+The catalog and live price endpoints below use 5SIM's
+public guest API. The authenticated helper is kept ready
+for the later number-purchase/SMS-order stage.
+
+=========================================================
 */
 
 const FIVESIM_API_BASE =
@@ -84,9 +97,6 @@ const FIVESIM_API_BASE =
 
 const FIVESIM_REQUEST_TIMEOUT =
     10000;
-
-const FIVESIM_MIN_DELIVERY_RATE =
-    70;
 
 function get5SimApiKey(){
 
@@ -222,6 +232,16 @@ async function fetch5Sim(
 ---------------------------------------------------------
 5SIM AUTHENTICATED REQUEST
 ---------------------------------------------------------
+
+Used by authenticated 5SIM operations later:
+- account/profile
+- buying activation numbers
+- checking orders/SMS
+- finishing orders
+- cancelling/banning orders
+
+The API key never leaves Render.
+---------------------------------------------------------
 */
 
 async function fetch5SimAuthenticated(
@@ -285,9 +305,16 @@ async function fetch5SimGuest(
 
 
 /*
-=========================================================
+---------------------------------------------------------
 5SIM CACHE
-=========================================================
+---------------------------------------------------------
+
+Small in-memory cache prevents repeated admin requests
+from unnecessarily hitting 5SIM.
+
+The cache is lost automatically if Render restarts, which
+is intentional because 5SIM availability/pricing is live.
+---------------------------------------------------------
 */
 
 const fiveSimCache = {
@@ -373,6 +400,511 @@ function validate5SimName(
 
     return normalized;
 
+}
+
+
+/*
+=========================================================
+CUSTOMER AUTHENTICATION
+=========================================================
+
+Customer requests must carry a Firebase ID token in:
+Authorization: Bearer <firebase-id-token>
+
+The token is verified on Render. The Firebase UID is then
+used to read the customer's Firestore profile.
+=========================================================
+*/
+
+async function authenticateCustomerRequest(req){
+
+    if(!admin || !firebaseInitialized){
+
+        throw new Error(
+            "Firebase Admin is unavailable."
+        );
+
+    }
+
+    const authorization =
+        String(
+            req.headers.authorization || ""
+        );
+
+    if(
+        !authorization.toLowerCase().startsWith("bearer ")
+    ){
+
+        const error =
+            new Error(
+                "Authentication is required."
+            );
+
+        error.status = 401;
+
+        throw error;
+
+    }
+
+    const idToken =
+        authorization
+            .slice(7)
+            .trim();
+
+    if(!idToken){
+
+        const error =
+            new Error(
+                "Authentication token is missing."
+            );
+
+        error.status = 401;
+
+        throw error;
+
+    }
+
+    try{
+
+        return await admin
+            .auth()
+            .verifyIdToken(
+                idToken
+            );
+
+    }
+    catch(error){
+
+        const authError =
+            new Error(
+                "Your session has expired. Please sign in again."
+            );
+
+        authError.status = 401;
+
+        throw authError;
+
+    }
+
+}
+
+
+/*
+---------------------------------------------------------
+CUSTOMER BALANCE FIELD
+---------------------------------------------------------
+
+The customer app currently supports these legacy/new names.
+We use the first existing numeric field so the backend updates
+whichever balance the customer's account is actually using.
+---------------------------------------------------------
+*/
+
+function getCustomerBalanceField(
+    userData
+){
+
+    if(
+        userData &&
+        typeof userData.balance === "number"
+    ){
+
+        return "balance";
+
+    }
+
+    if(
+        userData &&
+        typeof userData.nairaBalance === "number"
+    ){
+
+        return "nairaBalance";
+
+    }
+
+    if(
+        userData &&
+        typeof userData.walletBalance === "number"
+    ){
+
+        return "walletBalance";
+
+    }
+
+    /*
+      New customer accounts use balance as the canonical field.
+    */
+    return "balance";
+
+}
+
+
+function getCustomerBalance(
+    userData,
+    field
+){
+
+    const value =
+        Number(
+            userData?.[field] ?? 0
+        );
+
+    return Number.isFinite(value)
+        ? value
+        : 0;
+
+}
+
+
+/*
+---------------------------------------------------------
+5SIM DELIVERY RATE
+---------------------------------------------------------
+
+5SIM normally exposes delivery rate as a percentage.
+For safety, a fractional value such as 0.74 is also accepted
+and normalized to 74.
+---------------------------------------------------------
+*/
+
+function normalize5SimDeliveryRate(
+    value
+){
+
+    if(
+        value === null ||
+        value === undefined ||
+        value === ""
+    ){
+
+        return null;
+
+    }
+
+    const number =
+        Number(value);
+
+    if(!Number.isFinite(number)){
+
+        return null;
+
+    }
+
+    if(
+        number >= 0 &&
+        number <= 1
+    ){
+
+        return number * 100;
+
+    }
+
+    return number;
+
+}
+
+
+/*
+---------------------------------------------------------
+5SIM OPERATOR SELECTION
+---------------------------------------------------------
+
+Numora's rule:
+1. operator must have stock
+2. delivery/success rate must be >= 70%
+3. among qualifying operators, choose the cheapest
+4. ties use higher delivery rate, then higher stock
+
+There is NO fallback to an operator below 70%.
+---------------------------------------------------------
+*/
+
+async function get5SimPurchaseOption(
+    country,
+    service
+){
+
+    const rawPrices =
+        await fetch5SimGuest(
+            `/guest/prices?country=${encodeURIComponent(country)}&product=${encodeURIComponent(service)}`
+        );
+
+    const countryData =
+        rawPrices?.[country] ||
+        {};
+
+    const serviceData =
+        countryData?.[service] ||
+        {};
+
+    const operators =
+        Object.entries(
+            serviceData
+        )
+        .map(
+            ([operator, data]) => ({
+
+                operator,
+
+                cost:
+                    Number(
+                        data?.cost || 0
+                    ),
+
+                count:
+                    Number(
+                        data?.count || 0
+                    ),
+
+                rate:
+                    normalize5SimDeliveryRate(
+                        data?.rate
+                    )
+
+            })
+        )
+        .filter(
+            item =>
+                item.count > 0 &&
+                item.cost > 0 &&
+                item.rate !== null &&
+                item.rate >= 70
+        )
+        .sort(
+            (a, b) => {
+
+                if(a.cost !== b.cost){
+                    return a.cost - b.cost;
+                }
+
+                if(a.rate !== b.rate){
+                    return b.rate - a.rate;
+                }
+
+                return b.count - a.count;
+
+            }
+        );
+
+    return {
+
+        selected:
+            operators[0] || null,
+
+        operators,
+
+        totalOperators:
+            Object.keys(
+                serviceData
+            ).length
+
+    };
+
+}
+
+
+/*
+---------------------------------------------------------
+5SIM BUY ACTIVATION
+---------------------------------------------------------
+
+5SIM's authenticated activation purchase endpoint is a GET:
+/user/buy/activation/{country}/{operator}/{product}
+
+The API key stays on Render.
+---------------------------------------------------------
+*/
+
+async function buy5SimActivation(
+    country,
+    operator,
+    service
+){
+
+    return await fetch5SimAuthenticated(
+        `/user/buy/activation/${encodeURIComponent(country)}/${encodeURIComponent(operator)}/${encodeURIComponent(service)}`,
+        {
+
+            method:
+                "GET"
+
+        }
+    );
+
+}
+
+
+function normalize5SimPurchaseResponse(
+    data
+){
+
+    const orderId =
+        data?.id ??
+        data?.order_id ??
+        data?.orderId ??
+        null;
+
+    const phoneNumber =
+        data?.phone ??
+        data?.phoneNumber ??
+        data?.number ??
+        null;
+
+    const status =
+        data?.status ??
+        null;
+
+    return {
+
+        orderId:
+            orderId !== null
+                ? String(orderId)
+                : null,
+
+        phoneNumber:
+            phoneNumber
+                ? normalizePhoneNumber(phoneNumber)
+                : null,
+
+        status,
+
+        raw:
+            data
+
+    };
+
+}
+
+
+/*
+---------------------------------------------------------
+REFUND RESERVED CUSTOMER BALANCE
+---------------------------------------------------------
+*/
+
+async function refundCustomerReservation(
+    userRef,
+    balanceField,
+    amount,
+    orderRef,
+    reason
+){
+
+    try{
+
+        await db.runTransaction(
+            async transaction => {
+
+                const userSnapshot =
+                    await transaction.get(
+                        userRef
+                    );
+
+                if(!userSnapshot.exists){
+
+                    throw new Error(
+                        "Customer profile no longer exists."
+                    );
+
+                }
+
+                transaction.update(
+                    userRef,
+                    {
+
+                        [balanceField]:
+                            admin.firestore.FieldValue
+                                .increment(
+                                    amount
+                                )
+
+                    }
+                );
+
+                transaction.update(
+                    orderRef,
+                    {
+
+                        status:
+                            "Purchase failed",
+
+                        purchaseStatus:
+                            "Failed",
+
+                        balanceReservation:
+                            "Refunded",
+
+                        refundAmountNaira:
+                            amount,
+
+                        refundReason:
+                            reason ||
+                            "5SIM purchase failed",
+
+                        refundCompletedAt:
+                            serverTimestamp(),
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    }
+                );
+
+            }
+        );
+
+        return true;
+
+    }
+    catch(error){
+
+        console.error(
+            "Customer balance refund failed:",
+            error
+        );
+
+        try{
+
+            await orderRef.update({
+
+                status:
+                    "Purchase failed",
+
+                purchaseStatus:
+                    "Failed - refund pending",
+
+                balanceReservation:
+                    "Refund pending",
+
+                refundAmountNaira:
+                    amount,
+
+                refundReason:
+                    reason ||
+                    "5SIM purchase failed",
+
+                refundError:
+                    error.message ||
+                    "Unable to refund reserved balance.",
+
+                updatedAt:
+                    serverTimestamp()
+
+            });
+
+        }
+        catch(updateError){
+
+            console.error(
+                "Could not mark failed Numora order:",
+                updateError
+            );
+
+        }
+
+        return false;
+
+    }
 }
 
 
@@ -515,663 +1047,6 @@ function normalizePhoneNumber(value){
 
 /*
 =========================================================
-CUSTOMER AUTHENTICATION
-=========================================================
-
-The customer dashboard sends:
-
-Authorization:
-Bearer FIREBASE_ID_TOKEN
-
-The backend verifies the token using Firebase Admin.
-
-The Firebase UID is NEVER trusted from the request body.
-=========================================================
-*/
-
-async function authenticateCustomer(
-    req
-){
-
-    if(!firebaseInitialized){
-
-        const error =
-            new Error(
-                "Firebase authentication is unavailable."
-            );
-
-        error.status =
-            500;
-
-        throw error;
-
-    }
-
-    const authorization =
-        req.headers.authorization || "";
-
-    if(
-        !authorization.startsWith(
-            "Bearer "
-        )
-    ){
-
-        const error =
-            new Error(
-                "Authentication required."
-            );
-
-        error.status =
-            401;
-
-        throw error;
-
-    }
-
-    const idToken =
-        authorization
-            .substring(7)
-            .trim();
-
-    if(!idToken){
-
-        const error =
-            new Error(
-                "Authentication token is missing."
-            );
-
-        error.status =
-            401;
-
-        throw error;
-
-    }
-
-    try {
-
-        return await admin
-            .auth()
-            .verifyIdToken(
-                idToken
-            );
-
-    }
-    catch(error){
-
-        const authError =
-            new Error(
-                "Invalid or expired authentication token."
-            );
-
-        authError.status =
-            401;
-
-        throw authError;
-
-    }
-
-}
-
-
-/*
-=========================================================
-SERVICE PRICING HELPERS
-=========================================================
-*/
-
-function getPricingCountry(
-    pricing
-){
-
-    return normalize5SimValue(
-        pricing.countryCode ||
-        pricing.country ||
-        pricing.countryId ||
-        ""
-    );
-
-}
-
-
-function getPricingService(
-    pricing
-){
-
-    return normalize5SimValue(
-        pricing.serviceCode ||
-        pricing.service ||
-        pricing.serviceId ||
-        ""
-    );
-
-}
-
-
-function getPricingName(
-    pricing
-){
-
-    return (
-        pricing.serviceName ||
-        pricing.name ||
-        pricing.service ||
-        pricing.serviceCode ||
-        ""
-    );
-
-}
-
-
-function getPricingCountryName(
-    pricing
-){
-
-    return (
-        pricing.countryName ||
-        pricing.countryDisplayName ||
-        pricing.country ||
-        pricing.countryCode ||
-        ""
-    );
-
-}
-
-
-function getPricingPrice(
-    pricing
-){
-
-    const possibleValues = [
-
-        pricing.price,
-
-        pricing.numoraPrice,
-
-        pricing.customerPrice,
-
-        pricing.nairaPrice
-
-    ];
-
-    for(
-        const value of possibleValues
-    ){
-
-        const number =
-            Number(value);
-
-        if(
-            Number.isFinite(number)
-        ){
-
-            return number;
-
-        }
-
-    }
-
-    return NaN;
-
-}
-
-
-/*
----------------------------------------------------------
-FIND SERVICE PRICING
----------------------------------------------------------
-
-The admin can store the service document using slightly
-different field names depending on the version of the
-Admin dashboard.
-
-The backend normalizes those fields here.
-
-The customer price is ALWAYS taken from Firestore.
-
-The customer cannot submit the price.
-
----------------------------------------------------------
-*/
-
-async function findServicePricing(
-    {
-        pricingId,
-        country,
-        service
-    }
-){
-
-    if(!db){
-
-        throw new Error(
-            "Firestore is unavailable."
-        );
-
-    }
-
-    const normalizedCountry =
-        normalize5SimValue(
-            country
-        );
-
-    const normalizedService =
-        normalize5SimValue(
-            service
-        );
-
-    if(
-        pricingId
-    ){
-
-        const directRef =
-            db
-                .collection("servicePricing")
-                .doc(
-                    String(
-                        pricingId
-                    )
-                );
-
-        const directSnapshot =
-            await directRef.get();
-
-        if(
-            directSnapshot.exists
-        ){
-
-            const data =
-                directSnapshot.data();
-
-            const directCountry =
-                getPricingCountry(
-                    data
-                );
-
-            const directService =
-                getPricingService(
-                    data
-                );
-
-            if(
-                (
-                    !normalizedCountry ||
-                    directCountry ===
-                    normalizedCountry
-                )
-                &&
-                (
-                    !normalizedService ||
-                    directService ===
-                    normalizedService
-                )
-            ){
-
-                return {
-
-                    ref:
-                        directRef,
-
-                    id:
-                        directSnapshot.id,
-
-                    data
-
-                };
-
-            }
-
-        }
-
-    }
-
-    const snapshot =
-        await db
-            .collection("servicePricing")
-            .get();
-
-    let match =
-        null;
-
-    snapshot.forEach(
-        document => {
-
-            if(match){
-
-                return;
-
-            }
-
-            const data =
-                document.data();
-
-            const documentCountry =
-                getPricingCountry(
-                    data
-                );
-
-            const documentService =
-                getPricingService(
-                    data
-                );
-
-            if(
-                documentCountry ===
-                normalizedCountry
-                &&
-                documentService ===
-                normalizedService
-            ){
-
-                match = {
-
-                    ref:
-                        document.ref,
-
-                    id:
-                        document.id,
-
-                    data
-
-                };
-
-            }
-
-        }
-    );
-
-    return match;
-
-}
-
-
-/*
----------------------------------------------------------
-CHECK WHETHER SERVICE PRICING IS AVAILABLE
----------------------------------------------------------
-*/
-
-function isPricingAvailable(
-    pricing
-){
-
-    if(
-        pricing.available === false
-    ){
-
-        return false;
-
-    }
-
-    if(
-        pricing.enabled === false
-    ){
-
-        return false;
-
-    }
-
-    if(
-        String(
-            pricing.status ||
-            ""
-        ).toLowerCase()
-        ===
-        "inactive"
-    ){
-
-        return false;
-
-    }
-
-    if(
-        String(
-            pricing.status ||
-            ""
-        ).toLowerCase()
-        ===
-        "disabled"
-    ){
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-
-/*
-=========================================================
-5SIM OPERATOR PRICE LOADER
-=========================================================
-*/
-
-async function load5SimOperators(
-    country,
-    service
-){
-
-    const normalizedCountry =
-        validate5SimName(
-            country,
-            "country"
-        );
-
-    const normalizedService =
-        validate5SimName(
-            service,
-            "service"
-        );
-
-    const cacheKey =
-        `${normalizedCountry}:${normalizedService}`;
-
-    const now =
-        Date.now();
-
-    const cached =
-        fiveSimCache
-            .prices
-            .get(cacheKey);
-
-    if(
-        cached &&
-        cached.expiresAt >
-            now
-    ){
-
-        return cached.data;
-
-    }
-
-    const rawPrices =
-        await fetch5SimGuest(
-            `/guest/prices?country=${encodeURIComponent(normalizedCountry)}&product=${encodeURIComponent(normalizedService)}`
-        );
-
-    const countryData =
-        rawPrices?.[normalizedCountry] ||
-        {};
-
-    const serviceData =
-        countryData?.[normalizedService] ||
-        {};
-
-    const operators =
-        Object.entries(
-            serviceData
-        )
-        .map(
-            ([operator, data]) => {
-
-                const rateValue =
-                    data?.rate !== undefined
-                        ? data.rate
-                        : data?.rate_percents;
-
-                const parsedRate =
-                    rateValue !== undefined &&
-                    rateValue !== null &&
-                    rateValue !== ""
-                        ? Number(
-                            rateValue
-                        )
-                        : null;
-
-                return {
-
-                    operator,
-
-                    cost:
-                        Number(
-                            data?.cost || 0
-                        ),
-
-                    count:
-                        Number(
-                            data?.count || 0
-                        ),
-
-                    rate:
-                        Number.isFinite(
-                            parsedRate
-                        )
-                            ? parsedRate
-                            : null
-
-                };
-
-            }
-        );
-
-    const result = {
-
-        country:
-            normalizedCountry,
-
-        service:
-            normalizedService,
-
-        operators
-
-    };
-
-    fiveSimCache
-        .prices
-        .set(
-            cacheKey,
-            {
-
-                data:
-                    result,
-
-                expiresAt:
-                    now +
-                    FIVESIM_PRICES_CACHE_MS
-
-            }
-        );
-
-    return result;
-
-}
-
-
-/*
----------------------------------------------------------
-SELECT QUALIFYING 5SIM OPERATOR
----------------------------------------------------------
-
-RULE:
-
-1. Stock must be greater than 0.
-2. Delivery rate must be at least 70%.
-3. Among qualifying operators, choose the cheapest.
-4. If price ties, choose the higher delivery rate.
-5. If still tied, choose the higher stock.
-
-There is NO lower-quality fallback.
-
----------------------------------------------------------
-*/
-
-function select5SimOperator(
-    operators
-){
-
-    const qualifyingOperators =
-        operators
-            .filter(
-                operator => {
-
-                    return (
-                        operator.count >
-                        0
-                        &&
-                        operator.rate !== null
-                        &&
-                        operator.rate >=
-                        FIVESIM_MIN_DELIVERY_RATE
-                    );
-
-                }
-            )
-            .sort(
-                (a, b) => {
-
-                    if(
-                        a.cost !==
-                        b.cost
-                    ){
-
-                        return (
-                            a.cost -
-                            b.cost
-                        );
-
-                    }
-
-                    const aRate =
-                        a.rate === null
-                            ? -1
-                            : a.rate;
-
-                    const bRate =
-                        b.rate === null
-                            ? -1
-                            : b.rate;
-
-                    if(
-                        aRate !==
-                        bRate
-                    ){
-
-                        return (
-                            bRate -
-                            aRate
-                        );
-
-                    }
-
-                    return (
-                        b.count -
-                        a.count
-                    );
-
-                }
-            );
-
-    return (
-        qualifyingOperators[0] ||
-        null
-    );
-
-}
-
-
-/*
-=========================================================
 HEALTH CHECK
 =========================================================
 */
@@ -1220,6 +1095,15 @@ app.get(
 /*
 =========================================================
 TWILIO TEST
+=========================================================
+
+IMPORTANT:
+
+This endpoint ONLY tests the Twilio connection and
+searches available numbers.
+
+It DOES NOT purchase a number.
+
 =========================================================
 */
 
@@ -1377,6 +1261,17 @@ app.get(
 =========================================================
 5SIM — COUNTRIES
 =========================================================
+
+GET /api/5sim/countries
+
+Returns countries currently available from 5SIM.
+
+This is used by the Admin Add Service flow.
+
+5SIM documents this as:
+GET /v1/guest/countries
+
+=========================================================
 */
 
 app.get(
@@ -1506,6 +1401,18 @@ app.get(
 /*
 =========================================================
 5SIM — SERVICES FOR COUNTRY
+=========================================================
+
+GET /api/5sim/services?country=usa
+
+Returns activation services currently available for the
+selected country.
+
+5SIM documents the upstream request as:
+GET /v1/guest/products/{country}/{operator}
+
+We use operator=any and keep only activation products.
+
 =========================================================
 */
 
@@ -1671,14 +1578,22 @@ app.get(
 5SIM — EXACT COUNTRY + SERVICE PRICE
 =========================================================
 
-ADMIN/INTERNAL VIEW
+GET /api/5sim/price?country=usa&service=whatsapp
 
-The recommended operator now MUST have:
+Returns current operator-level prices, stock and delivery
+rate for the selected country/service.
 
-- stock > 0
-- delivery rate >= 70%
+The backend selects the cheapest currently available operator
+with a delivery/success rate of at least 70%. If costs tie, it
+prefers the higher delivery rate and then higher stock. Operators
+below 70% are never selected.
 
-Then cheapest qualifying operator wins.
+This provider information is for the Admin side only.
+Customers will later receive the Numora price from
+Firestore, not the 5SIM provider cost.
+
+5SIM documents this as:
+GET /v1/guest/prices?country={country}&product={product}
 
 =========================================================
 */
@@ -1701,16 +1616,134 @@ app.get(
                     "service"
                 );
 
-            const priceData =
-                await load5SimOperators(
-                    country,
-                    service
+            const cacheKey =
+                `${country}:${service}`;
+
+            const now =
+                Date.now();
+
+            const cached =
+                fiveSimCache
+                    .prices
+                    .get(cacheKey);
+
+            if(
+                cached &&
+                cached.expiresAt >
+                    now
+            ){
+
+                return res.status(200).json({
+
+                    success: true,
+
+                    source:
+                        "5sim",
+
+                    cached:
+                        true,
+
+                    ...cached.data
+
+                });
+
+            }
+
+            const rawPrices =
+                await fetch5SimGuest(
+                    `/guest/prices?country=${encodeURIComponent(country)}&product=${encodeURIComponent(service)}`
                 );
 
-            const recommended =
-                select5SimOperator(
-                    priceData.operators
+            const countryData =
+                rawPrices?.[country] ||
+                {};
+
+            const serviceData =
+                countryData?.[service] ||
+                {};
+
+            const operators =
+                Object.entries(
+                    serviceData
+                )
+                .map(
+                    ([operator, data]) => ({
+
+                        operator,
+
+                        cost:
+                            Number(
+                                data?.cost || 0
+                            ),
+
+                        count:
+                            Number(
+                                data?.count || 0
+                            ),
+
+                        rate:
+                            normalize5SimDeliveryRate(
+                                data?.rate
+                            )
+
+                    })
                 );
+
+            const availableOperators =
+                operators
+                    .filter(
+                        operator =>
+                            operator.count >
+                            0
+                    )
+                    .sort(
+                        (a, b) => {
+
+                            if(
+                                a.cost !==
+                                b.cost
+                            ){
+
+                                return (
+                                    a.cost -
+                                    b.cost
+                                );
+
+                            }
+
+                            const aRate =
+                                a.rate === null
+                                    ? -1
+                                    : a.rate;
+
+                            const bRate =
+                                b.rate === null
+                                    ? -1
+                                    : b.rate;
+
+                            if(
+                                aRate !==
+                                bRate
+                            ){
+
+                                return (
+                                    bRate -
+                                    aRate
+                                );
+
+                            }
+
+                            return (
+                                b.count -
+                                a.count
+                            );
+
+                        }
+                    );
+
+            const recommended =
+                availableOperators[0] ||
+                null;
 
             const result = {
 
@@ -1746,13 +1779,25 @@ app.get(
                         ? recommended.operator
                         : null,
 
-                minimumDeliveryRate:
-                    FIVESIM_MIN_DELIVERY_RATE,
-
-                operators:
-                    priceData.operators
+                operators
 
             };
+
+            fiveSimCache
+                .prices
+                .set(
+                    cacheKey,
+                    {
+
+                        data:
+                            result,
+
+                        expiresAt:
+                            now +
+                            FIVESIM_PRICES_CACHE_MS
+
+                    }
+                );
 
             return res.status(200).json({
 
@@ -1794,16 +1839,227 @@ app.get(
 
 /*
 =========================================================
-CUSTOMER — GET SERVICE CATALOG
+SERVICE PRICING HELPERS
 =========================================================
 
-The customer does NOT use the 5SIM catalog directly.
+Admin controls whether a service is offered with:
+- enabled
+- price
+- status
 
-Only services that the Admin has added to Firestore
-servicePricing are returned.
+The `available` field is ONLY the latest 5SIM supplier
+availability snapshot. It must NOT hide a service from the
+customer catalog because supplier stock can temporarily
+change. The purchase endpoint performs a fresh 5SIM check.
+=========================================================
+*/
 
-The provider cost is deliberately NOT returned.
+function normalizePricingValue(value){
 
+    return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]/g, "");
+
+}
+
+function getPricingCountry(pricing){
+
+    return normalizePricingValue(
+        pricing.countryCode ||
+        pricing.country ||
+        pricing.countryId ||
+        ""
+    );
+
+}
+
+function getPricingService(pricing){
+
+    return normalizePricingValue(
+        pricing.serviceCode ||
+        pricing.service ||
+        pricing.serviceId ||
+        ""
+    );
+
+}
+
+function getPricingName(pricing){
+
+    return (
+        pricing.serviceName ||
+        pricing.name ||
+        pricing.service ||
+        pricing.serviceCode ||
+        ""
+    );
+
+}
+
+function getPricingCountryName(pricing){
+
+    return (
+        pricing.countryName ||
+        pricing.countryDisplayName ||
+        pricing.country ||
+        pricing.countryCode ||
+        ""
+    );
+
+}
+
+function getPricingPrice(pricing){
+
+    const values = [
+        pricing.price,
+        pricing.numoraPrice,
+        pricing.customerPrice,
+        pricing.nairaPrice
+    ];
+
+    for(const value of values){
+
+        const number = Number(value);
+
+        if(Number.isFinite(number)){
+            return number;
+        }
+
+    }
+
+    return NaN;
+
+}
+
+function isPricingEnabled(pricing){
+
+    if(pricing.enabled === false){
+        return false;
+    }
+
+    const status =
+        String(pricing.status || "")
+            .trim()
+            .toLowerCase();
+
+    if(
+        status === "inactive" ||
+        status === "disabled"
+    ){
+        return false;
+    }
+
+    return true;
+
+}
+
+async function findServicePricing({
+    pricingId,
+    countryId,
+    serviceId
+}){
+
+    if(!db){
+        return null;
+    }
+
+    if(pricingId){
+
+        const directRef =
+            db.collection("servicePricing")
+                .doc(String(pricingId).trim());
+
+        const directSnapshot =
+            await directRef.get();
+
+        if(directSnapshot.exists){
+
+            const data =
+                directSnapshot.data() || {};
+
+            const country =
+                getPricingCountry(data);
+
+            const service =
+                getPricingService(data);
+
+            const requestedCountry =
+                normalizePricingValue(countryId);
+
+            const requestedService =
+                normalizePricingValue(serviceId);
+
+            if(
+                (!requestedCountry || country === requestedCountry) &&
+                (!requestedService || service === requestedService)
+            ){
+
+                return {
+                    ref: directRef,
+                    id: directSnapshot.id,
+                    data
+                };
+
+            }
+
+        }
+
+    }
+
+    const requestedCountry =
+        normalizePricingValue(countryId);
+
+    const requestedService =
+        normalizePricingValue(serviceId);
+
+    if(!requestedCountry || !requestedService){
+        return null;
+    }
+
+    const snapshot =
+        await db.collection("servicePricing").get();
+
+    for(const document of snapshot.docs){
+
+        const data =
+            document.data() || {};
+
+        if(
+            getPricingCountry(data) === requestedCountry &&
+            getPricingService(data) === requestedService
+        ){
+
+            return {
+                ref: document.ref,
+                id: document.id,
+                data
+            };
+
+        }
+
+    }
+
+    return null;
+
+}
+
+
+/*
+=========================================================
+CUSTOMER — SERVICE CATALOG
+=========================================================
+
+GET /api/customer/catalog
+
+This endpoint reads the Admin-controlled servicePricing
+catalog. It does NOT use Firestore directly from the
+customer browser.
+
+Important:
+`available` is supplier availability from 5SIM and does
+NOT decide whether the catalog item is visible. The live
+5SIM purchase check happens when the customer buys.
 =========================================================
 */
 
@@ -1811,17 +2067,13 @@ app.get(
     "/api/customer/catalog",
     async (req, res) => {
 
-        try {
+        try{
 
             if(!db){
 
                 return res.status(500).json({
-
-                    success: false,
-
-                    message:
-                        "Firestore is unavailable."
-
+                    success:false,
+                    message:"Firestore is unavailable."
                 });
 
             }
@@ -1833,105 +2085,91 @@ app.get(
 
             const services = [];
 
-            snapshot.forEach(
-                document => {
+            snapshot.forEach(document => {
 
-                    const pricing =
-                        document.data();
+                const pricing =
+                    document.data() || {};
 
-                    if(
-                        !isPricingAvailable(
-                            pricing
-                        )
-                    ){
-
-                        return;
-
-                    }
-
-                    const countryCode =
-                        getPricingCountry(
-                            pricing
-                        );
-
-                    const serviceCode =
-                        getPricingService(
-                            pricing
-                        );
-
-                    const price =
-                        getPricingPrice(
-                            pricing
-                        );
-
-                    if(
-                        !countryCode ||
-                        !serviceCode ||
-                        !Number.isFinite(price) ||
-                        price <= 0
-                    ){
-
-                        return;
-
-                    }
-
-                    services.push({
-
-                        id:
-                            document.id,
-
-                        country:
-                            countryCode,
-
-                        countryName:
-                            getPricingCountryName(
-                                pricing
-                            ),
-
-                        service:
-                            serviceCode,
-
-                        serviceName:
-                            getPricingName(
-                                pricing
-                            ),
-
-                        price
-
-                    });
-
+                if(!isPricingEnabled(pricing)){
+                    return;
                 }
-            );
 
-            services.sort(
-                (a, b) => {
+                const country =
+                    getPricingCountry(pricing);
 
-                    const countryCompare =
-                        a.countryName.localeCompare(
-                            b.countryName
+                const service =
+                    getPricingService(pricing);
+
+                const price =
+                    getPricingPrice(pricing);
+
+                if(
+                    !country ||
+                    !service ||
+                    !Number.isFinite(price) ||
+                    price <= 0
+                ){
+                    return;
+                }
+
+                services.push({
+
+                    id:
+                        document.id,
+
+                    pricingId:
+                        document.id,
+
+                    country,
+
+                    countryId:
+                        country,
+
+                    countryName:
+                        getPricingCountryName(pricing),
+
+                    service,
+
+                    serviceId:
+                        service,
+
+                    serviceName:
+                        getPricingName(pricing),
+
+                    price,
+
+                    currency:
+                        "NGN",
+
+                    providerAvailable:
+                        pricing.available !== false
+
+                });
+
+            });
+
+            services.sort((a,b) => {
+
+                const countryCompare =
+                    String(a.countryName || a.country)
+                        .localeCompare(
+                            String(b.countryName || b.country)
                         );
 
-                    if(
-                        countryCompare !== 0
-                    ){
+                if(countryCompare !== 0){
+                    return countryCompare;
+                }
 
-                        return countryCompare;
-
-                    }
-
-                    return a.serviceName.localeCompare(
-                        b.serviceName
+                return String(a.serviceName || a.service)
+                    .localeCompare(
+                        String(b.serviceName || b.service)
                     );
 
-                }
-            );
+            });
 
             return res.status(200).json({
-
-                success: true,
-
+                success:true,
                 services
-
             });
 
         }
@@ -1943,12 +2181,8 @@ app.get(
             );
 
             return res.status(500).json({
-
-                success: false,
-
-                message:
-                    "Unable to load Numora services."
-
+                success:false,
+                message:"Unable to load Numora services."
             });
 
         }
@@ -1959,28 +2193,23 @@ app.get(
 
 /*
 =========================================================
-CUSTOMER — PURCHASE NUMBER
+CUSTOMER — PURCHASE 5SIM NUMBER
 =========================================================
 
 POST /api/customer/purchase-number
 
 Body:
-
 {
-    pricingId,
-    countryId,
-    serviceId,
-    requestId
+    countryId: "usa",
+    serviceId: "whatsapp"
 }
 
-IMPORTANT:
+The customer never supplies or sees a 5SIM operator.
+Numora re-checks live 5SIM inventory and chooses the
+cheapest operator whose delivery rate is at least 70%.
 
-The customer price is loaded from Firestore.
-
-The browser cannot choose the price.
-
-5SIM provider cost is not exposed.
-
+The Numora price is read from servicePricing on the
+server, so the browser cannot change the purchase price.
 =========================================================
 */
 
@@ -1988,20 +2217,13 @@ app.post(
     "/api/customer/purchase-number",
     async (req, res) => {
 
-        let purchaseRef = null;
-        let uid = null;
-        let reservedAmount = 0;
+        let orderRef = null;
+        let userRef = null;
         let balanceField = "balance";
+        let reservedAmount = 0;
+        let fiveSimPurchaseSucceeded = false;
 
         try {
-
-            const decodedToken =
-                await authenticateCustomer(
-                    req
-                );
-
-            uid =
-                decodedToken.uid;
 
             if(!db){
 
@@ -2016,28 +2238,86 @@ app.post(
 
             }
 
-            const {
+            if(!get5SimApiKey()){
 
-                pricingId,
-                countryId,
-                serviceId,
-                requestId
+                return res.status(500).json({
 
-            } = req.body || {};
+                    success: false,
+
+                    message:
+                        "5SIM is not configured on the Numora backend."
+
+                });
+
+            }
+
+            const decodedToken =
+                await authenticateCustomerRequest(
+                    req
+                );
+
+            const uid =
+                decodedToken.uid;
 
             const country =
-                normalize5SimValue(
-                    countryId
+                validate5SimName(
+                    req.body?.countryId,
+                    "country"
                 );
 
             const service =
-                normalize5SimValue(
-                    serviceId
+                validate5SimName(
+                    req.body?.serviceId,
+                    "service"
+                );
+
+            const requestedPricingId =
+                String(
+                    req.body?.pricingId ||
+                    ""
+                ).trim();
+
+            const pricingResult =
+                await findServicePricing({
+                    pricingId:
+                        requestedPricingId || null,
+                    countryId:
+                        country,
+                    serviceId:
+                        service
+                });
+
+            if(!pricingResult){
+
+                return res.status(404).json({
+
+                    success: false,
+
+                    message:
+                        "This country and service is not available on Numora."
+
+                });
+
+            }
+
+            const pricingRef =
+                pricingResult.ref;
+
+            const pricing =
+                pricingResult.data ||
+                {};
+
+            const numoraPrice =
+                Math.round(
+                    Number(
+                        pricing.price || 0
+                    )
                 );
 
             if(
-                !country ||
-                !service
+                pricing.enabled === false ||
+                !Number.isFinite(numoraPrice) ||
+                numoraPrice <= 0
             ){
 
                 return res.status(400).json({
@@ -2045,990 +2325,222 @@ app.post(
                     success: false,
 
                     message:
-                        "Country and service are required."
+                        "This service is not currently available for purchase."
 
                 });
 
             }
 
-            /*
-            -------------------------------------------------
-            FIND ADMIN PRICING
-            -------------------------------------------------
-            */
+            userRef =
+                db.collection(
+                    "users"
+                ).doc(
+                    uid
+                );
 
-            const pricingDocument =
-                await findServicePricing({
+            const userSnapshot =
+                await userRef.get();
 
-                    pricingId,
-
-                    country,
-
-                    service
-
-                });
-
-            if(!pricingDocument){
+            if(!userSnapshot.exists){
 
                 return res.status(404).json({
 
                     success: false,
 
                     message:
-                        "This service is not currently available on Numora."
+                        "Your Numora customer profile was not found."
 
                 });
 
             }
 
-            const pricing =
-                pricingDocument.data;
+            const userData =
+                userSnapshot.data() ||
+                {};
 
-            if(
-                !isPricingAvailable(
-                    pricing
-                )
-            ){
+            balanceField =
+                getCustomerBalanceField(
+                    userData
+                );
 
-                return res.status(409).json({
+            const currentBalance =
+                getCustomerBalance(
+                    userData,
+                    balanceField
+                );
+
+            if(currentBalance < numoraPrice){
+
+                return res.status(400).json({
 
                     success: false,
 
-                    message:
-                        "This service is currently unavailable."
+                    code:
+                        "INSUFFICIENT_BALANCE",
 
-                });
+                    balance:
+                        currentBalance,
 
-            }
-
-            const numoraPrice =
-                getPricingPrice(
-                    pricing
-                );
-
-            if(
-                !Number.isFinite(
-                    numoraPrice
-                )
-                ||
-                numoraPrice <= 0
-            ){
-
-                return res.status(409).json({
-
-                    success: false,
+                    price:
+                        numoraPrice,
 
                     message:
-                        "This service does not have a valid Numora price."
+                        "Your Naira balance is too low for this purchase."
 
                 });
 
             }
 
-            /*
-            -------------------------------------------------
-            PURCHASE REQUEST ID
-            -------------------------------------------------
+            orderRef =
+                db.collection(
+                    "orders"
+                ).doc();
 
-            This prevents accidental double-click purchases
-            when the customer sends the same request twice.
-            -------------------------------------------------
-            */
-
-            let safeRequestId =
-                String(
-                    requestId ||
-                    crypto.randomUUID()
-                )
-                    .trim()
-                    .replace(
-                        /[^a-zA-Z0-9_-]/g,
-                        ""
-                    )
-                    .substring(
-                        0,
-                        100
-                    );
-
-            if(
-                !safeRequestId
-            ){
-
-                safeRequestId =
-                    crypto.randomUUID();
-                
-            }
-
-            const purchaseId =
-                `${uid}_${safeRequestId}`;
-
-            purchaseRef =
-                db
-                    .collection("customerPurchases")
-                    .doc(
-                        purchaseId
-                    );
+            reservedAmount =
+                numoraPrice;
 
             /*
-            -------------------------------------------------
-            RESERVE CUSTOMER BALANCE
-            -------------------------------------------------
+              Reserve the customer's Numora price before contacting 5SIM.
+              Firestore transaction prevents two simultaneous purchases
+              from spending the same balance.
             */
-
-            const reservationResult =
-                await db.runTransaction(
-                    async transaction => {
-
-                        const purchaseSnapshot =
-                            await transaction.get(
-                                purchaseRef
-                            );
-
-                        if(
-                            purchaseSnapshot.exists
-                        ){
-
-                            const existingPurchase =
-                                purchaseSnapshot.data();
-
-                            return {
-
-                                alreadyExists:
-                                    true,
-
-                                purchase:
-                                    existingPurchase
-
-                            };
-
-                        }
-
-                        const userRef =
-                            db
-                                .collection("users")
-                                .doc(
-                                    uid
-                                );
-
-                        const userSnapshot =
-                            await transaction.get(
-                                userRef
-                            );
-
-                        if(
-                            !userSnapshot.exists
-                        ){
-
-                            const error =
-                                new Error(
-                                    "Customer profile was not found."
-                                );
-
-                            error.status =
-                                404;
-
-                            throw error;
-
-                        }
-
-                        const userData =
-                            userSnapshot.data();
-
-                        if(
-                            Number.isFinite(
-                                Number(
-                                    userData.balance
-                                )
-                            )
-                        ){
-
-                            balanceField =
-                                "balance";
-
-                        }
-                        else if(
-                            Number.isFinite(
-                                Number(
-                                    userData.nairaBalance
-                                )
-                            )
-                        ){
-
-                            balanceField =
-                                "nairaBalance";
-
-                        }
-                        else if(
-                            Number.isFinite(
-                                Number(
-                                    userData.walletBalance
-                                )
-                            )
-                        ){
-
-                            balanceField =
-                                "walletBalance";
-
-                        }
-                        else {
-
-                            balanceField =
-                                "balance";
-
-                        }
-
-                        const currentBalance =
-                            Number(
-                                userData[
-                                    balanceField
-                                ] || 0
-                            );
-
-                        if(
-                            currentBalance <
-                            numoraPrice
-                        ){
-
-                            const error =
-                                new Error(
-                                    "Insufficient Naira balance."
-                                );
-
-                            error.status =
-                                402;
-
-                            error.currentBalance =
-                                currentBalance;
-
-                            throw error;
-
-                        }
-
-                        const newBalance =
-                            Number(
-                                (
-                                    currentBalance -
-                                    numoraPrice
-                                ).toFixed(2)
-                            );
-
-                        reservedAmount =
-                            numoraPrice;
-
-                        transaction.update(
-                            userRef,
-                            {
-
-                                [balanceField]:
-                                    newBalance,
-
-                                updatedAt:
-                                    serverTimestamp()
-
-                            }
-                        );
-
-                        transaction.set(
-                            purchaseRef,
-                            {
-
-                                userId:
-                                    uid,
-
-                                profileId:
-                                    userData.profileId ||
-                                    null,
-
-                                requestId:
-                                    safeRequestId,
-
-                                pricingId:
-                                    pricingDocument.id,
-
-                                country:
-                                    country,
-
-                                countryName:
-                                    getPricingCountryName(
-                                        pricing
-                                    ),
-
-                                service:
-                                    service,
-
-                                serviceName:
-                                    getPricingName(
-                                        pricing
-                                    ),
-
-                                numoraPrice:
-                                    numoraPrice,
-
-                                customerPrice:
-                                    numoraPrice,
-
-                                currency:
-                                    "NGN",
-
-                                status:
-                                    "PURCHASING",
-
-                                balanceField:
-                                    balanceField,
-
-                                balanceBefore:
-                                    currentBalance,
-
-                                balanceAfter:
-                                    newBalance,
-
-                                provider:
-                                    "5SIM",
-
-                                createdAt:
-                                    serverTimestamp(),
-
-                                updatedAt:
-                                    serverTimestamp()
-
-                            }
-                        );
-
-                        return {
-
-                            alreadyExists:
-                                false,
-
-                            currentBalance,
-
-                            newBalance
-
-                        };
-
-                    }
-                );
-
-            /*
-            -------------------------------------------------
-            HANDLE EXISTING REQUEST
-            -------------------------------------------------
-            */
-
-            if(
-                reservationResult.alreadyExists
-            ){
-
-                const existing =
-                    reservationResult.purchase;
-
-                if(
-                    existing.status ===
-                    "COMPLETED"
-                ){
-
-                    return res.status(200).json({
-
-                        success: true,
-
-                        alreadyPurchased:
-                            true,
-
-                        purchaseId:
-                            purchaseId,
-
-                        number:
-                            existing.phoneNumber ||
-                            null,
-
-                        phoneNumber:
-                            existing.phoneNumber ||
-                            null,
-
-                        service:
-                            existing.service,
-
-                        country:
-                            existing.country,
-
-                        price:
-                            existing.numoraPrice,
-
-                        status:
-                            existing.status
-
-                    });
-
-                }
-
-                if(
-                    existing.status ===
-                    "PURCHASING"
-                ){
-
-                    return res.status(409).json({
-
-                        success: false,
-
-                        processing:
-                            true,
-
-                        purchaseId:
-                            purchaseId,
-
-                        message:
-                            "This purchase is already being processed."
-
-                    });
-
-                }
-
-                if(
-                    existing.status ===
-                    "FAILED"
-                    ||
-                    existing.status ===
-                    "REFUNDED"
-                ){
-
-                    await purchaseRef.delete();
-
-                    return res.status(409).json({
-
-                        success: false,
-
-                        message:
-                            "Please try the purchase again."
-
-                    });
-
-                }
-
-            }
-
-            /*
-            -------------------------------------------------
-            GET LIVE 5SIM OPERATOR DATA
-            -------------------------------------------------
-            */
-
-            const priceData =
-                await load5SimOperators(
-                    country,
-                    service
-                );
-
-            const selectedOperator =
-                select5SimOperator(
-                    priceData.operators
-                );
-
-            /*
-            -------------------------------------------------
-            NO QUALIFYING OPERATOR
-            -------------------------------------------------
-            */
-
-            if(!selectedOperator){
-
-                await db.runTransaction(
-                    async transaction => {
-
-                        const userRef =
-                            db
-                                .collection("users")
-                                .doc(
-                                    uid
-                                );
-
-                        const purchaseSnapshot =
-                            await transaction.get(
-                                purchaseRef
-                            );
-
-                        const userSnapshot =
-                            await transaction.get(
-                                userRef
-                            );
-
-                        if(
-                            !purchaseSnapshot.exists ||
-                            !userSnapshot.exists
-                        ){
-
-                            return;
-
-                        }
-
-                        const userData =
-                            userSnapshot.data();
-
-                        const currentBalance =
-                            Number(
-                                userData[
-                                    balanceField
-                                ] || 0
-                            );
-
-                        const refundedBalance =
-                            Number(
-                                (
-                                    currentBalance +
-                                    numoraPrice
-                                ).toFixed(2)
-                            );
-
-                        transaction.update(
-                            userRef,
-                            {
-
-                                [balanceField]:
-                                    refundedBalance,
-
-                                updatedAt:
-                                    serverTimestamp()
-
-                            }
-                        );
-
-                        transaction.update(
-                            purchaseRef,
-                            {
-
-                                status:
-                                    "REFUNDED",
-
-                                refundReason:
-                                    "No 5SIM operator met the 70% minimum delivery rate.",
-
-                                refundedAmount:
-                                    numoraPrice,
-
-                                refundedAt:
-                                    serverTimestamp(),
-
-                                updatedAt:
-                                    serverTimestamp()
-
-                            }
-                        );
-
-                    }
-                );
-
-                return res.status(409).json({
-
-                    success: false,
-
-                    unavailable:
-                        true,
-
-                    refunded:
-                        true,
-
-                    message:
-                        "No number is currently available with the required 70% or higher SMS delivery rate. Your balance was not charged."
-
-                });
-
-            }
-
-            /*
-            -------------------------------------------------
-            SAVE SELECTED OPERATOR
-            -------------------------------------------------
-            */
-
-            await purchaseRef.update({
-
-                selectedOperator:
-                    selectedOperator.operator,
-
-                providerCost:
-                    selectedOperator.cost,
-
-                providerCurrency:
-                    "USD",
-
-                providerDeliveryRate:
-                    selectedOperator.rate,
-
-                providerStock:
-                    selectedOperator.count,
-
-                minimumDeliveryRate:
-                    FIVESIM_MIN_DELIVERY_RATE,
-
-                updatedAt:
-                    serverTimestamp()
-
-            });
-
-            /*
-            -------------------------------------------------
-            BUY FROM 5SIM
-            -------------------------------------------------
-            */
-
-            let fiveSimOrder;
-
-            try {
-
-                fiveSimOrder =
-                    await fetch5SimAuthenticated(
-                        `/user/buy/activation/${encodeURIComponent(country)}/${encodeURIComponent(selectedOperator.operator)}/${encodeURIComponent(service)}`
-                    );
-
-            }
-            catch(error){
-
-                console.error(
-                    "5SIM purchase failed:",
-                    error
-                );
-
-                await db.runTransaction(
-                    async transaction => {
-
-                        const userRef =
-                            db
-                                .collection("users")
-                                .doc(
-                                    uid
-                                );
-
-                        const purchaseSnapshot =
-                            await transaction.get(
-                                purchaseRef
-                            );
-
-                        const userSnapshot =
-                            await transaction.get(
-                                userRef
-                            );
-
-                        if(
-                            !purchaseSnapshot.exists ||
-                            !userSnapshot.exists
-                        ){
-
-                            return;
-
-                        }
-
-                        const userData =
-                            userSnapshot.data();
-
-                        const currentBalance =
-                            Number(
-                                userData[
-                                    balanceField
-                                ] || 0
-                            );
-
-                        const refundedBalance =
-                            Number(
-                                (
-                                    currentBalance +
-                                    numoraPrice
-                                ).toFixed(2)
-                            );
-
-                        transaction.update(
-                            userRef,
-                            {
-
-                                [balanceField]:
-                                    refundedBalance,
-
-                                updatedAt:
-                                    serverTimestamp()
-
-                            }
-                        );
-
-                        transaction.update(
-                            purchaseRef,
-                            {
-
-                                status:
-                                    "REFUNDED",
-
-                                refundReason:
-                                    error.message ||
-                                    "5SIM purchase failed.",
-
-                                refundedAmount:
-                                    numoraPrice,
-
-                                refundedAt:
-                                    serverTimestamp(),
-
-                                updatedAt:
-                                    serverTimestamp()
-
-                            }
-                        );
-
-                    }
-                );
-
-                return res.status(502).json({
-
-                    success: false,
-
-                    refunded:
-                        true,
-
-                    message:
-                        "5SIM could not provide a number. Your Numora balance has been refunded."
-
-                });
-
-            }
-
-            /*
-            -------------------------------------------------
-            NORMALIZE 5SIM ORDER
-            -------------------------------------------------
-            */
-
-            const fiveSimOrderId =
-                fiveSimOrder?.id ||
-                fiveSimOrder?.order_id ||
-                null;
-
-            const phoneNumber =
-                normalizePhoneNumber(
-                    fiveSimOrder?.phone ||
-                    fiveSimOrder?.number ||
-                    fiveSimOrder?.phoneNumber ||
-                    ""
-                );
-
-            if(
-                !fiveSimOrderId ||
-                !phoneNumber
-            ){
-
-                console.error(
-                    "5SIM returned an unexpected purchase response:",
-                    fiveSimOrder
-                );
-
-                /*
-                The provider may have created an order even
-                though the response was incomplete.
-
-                Do NOT automatically refund in this case
-                because that could create a provider-side
-                purchase without a corresponding Numora
-                record.
-                */
-
-                await purchaseRef.update({
-
-                    status:
-                        "PROVIDER_RESPONSE_ERROR",
-
-                    providerResponse:
-                        fiveSimOrder || null,
-
-                    updatedAt:
-                        serverTimestamp()
-
-                });
-
-                return res.status(502).json({
-
-                    success: false,
-
-                    message:
-                        "5SIM created an unexpected response. Please contact Numora support before trying again."
-
-                });
-
-            }
-
-            /*
-            -------------------------------------------------
-            SAVE 5SIM NUMBER
-            -------------------------------------------------
-            */
-
-            const numberRef =
-                db
-                    .collection("numbers")
-                    .doc(
-                        String(
-                            fiveSimOrderId
-                        )
-                    );
-
-            const fiveSimStatus =
-                fiveSimOrder?.status ||
-                "PENDING";
-
-            const expiresAt =
-                fiveSimOrder?.expires ||
-                fiveSimOrder?.expiresAt ||
-                null;
-
             await db.runTransaction(
                 async transaction => {
 
-                    const numberSnapshot =
+                    const freshUserSnapshot =
                         await transaction.get(
-                            numberRef
+                            userRef
                         );
 
-                    if(
-                        !numberSnapshot.exists
-                    ){
+                    if(!freshUserSnapshot.exists){
 
-                        transaction.set(
-                            numberRef,
-                            {
-
-                                fiveSimOrderId:
-                                    fiveSimOrderId,
-
-                                userId:
-                                    uid,
-
-                                purchaseId:
-                                    purchaseId,
-
-                                pricingId:
-                                    pricingDocument.id,
-
-                                country:
-                                    country,
-
-                                countryName:
-                                    getPricingCountryName(
-                                        pricing
-                                    ),
-
-                                service:
-                                    service,
-
-                                serviceName:
-                                    getPricingName(
-                                        pricing
-                                    ),
-
-                                phoneNumber:
-                                    phoneNumber,
-
-                                operator:
-                                    selectedOperator.operator,
-
-                                provider:
-                                    "5SIM",
-
-                                providerCost:
-                                    selectedOperator.cost,
-
-                                providerCurrency:
-                                    "USD",
-
-                                providerDeliveryRate:
-                                    selectedOperator.rate,
-
-                                numoraPrice:
-                                    numoraPrice,
-
-                                currency:
-                                    "NGN",
-
-                                status:
-                                    fiveSimStatus,
-
-                                expiresAt:
-                                    expiresAt,
-
-                                sms:
-                                    Array.isArray(
-                                        fiveSimOrder?.sms
-                                    )
-                                        ? fiveSimOrder.sms
-                                        : [],
-
-                                rawProviderOrder:
-                                    fiveSimOrder,
-
-                                createdAt:
-                                    serverTimestamp(),
-
-                                updatedAt:
-                                    serverTimestamp()
-
-                            }
+                        throw new Error(
+                            "Your Numora customer profile was not found."
                         );
 
                     }
-                    else {
 
-                        transaction.update(
-                            numberRef,
-                            {
+                    const freshUserData =
+                        freshUserSnapshot.data() ||
+                        {};
 
-                                userId:
-                                    uid,
-
-                                purchaseId:
-                                    purchaseId,
-
-                                phoneNumber:
-                                    phoneNumber,
-
-                                status:
-                                    fiveSimStatus,
-
-                                expiresAt:
-                                    expiresAt,
-
-                                sms:
-                                    Array.isArray(
-                                        fiveSimOrder?.sms
-                                    )
-                                        ? fiveSimOrder.sms
-                                        : [],
-
-                                rawProviderOrder:
-                                    fiveSimOrder,
-
-                                updatedAt:
-                                    serverTimestamp()
-
-                            }
+                    const freshField =
+                        getCustomerBalanceField(
+                            freshUserData
                         );
+
+                    if(freshField !== balanceField){
+
+                        throw new Error(
+                            "Your balance changed structure. Please try again."
+                        );
+
+                    }
+
+                    const freshBalance =
+                        getCustomerBalance(
+                            freshUserData,
+                            freshField
+                        );
+
+                    if(freshBalance < numoraPrice){
+
+                        const error =
+                            new Error(
+                                "Your Naira balance is too low for this purchase."
+                            );
+
+                        error.status = 400;
+                        error.code =
+                            "INSUFFICIENT_BALANCE";
+
+                        throw error;
 
                     }
 
                     transaction.update(
-                        purchaseRef,
+                        userRef,
                         {
 
-                            status:
-                                "COMPLETED",
+                            [balanceField]:
+                                admin.firestore.FieldValue
+                                    .increment(
+                                        -numoraPrice
+                                    )
 
-                            fiveSimOrderId:
-                                fiveSimOrderId,
+                        }
+                    );
+
+                    transaction.set(
+                        orderRef,
+                        {
+
+                            customerId:
+                                uid,
+
+                            profileId:
+                                userData.profileId ||
+                                null,
+
+                            customerEmail:
+                                decodedToken.email ||
+                                userData.email ||
+                                null,
+
+                            country:
+                                country,
+
+                            countryCode:
+                                pricing.countryCode ||
+                                country,
+
+                            countryName:
+                                pricing.country ||
+                                country.toUpperCase(),
+
+                            service:
+                                pricing.serviceCode ||
+                                service,
+
+                            serviceCode:
+                                pricing.serviceCode ||
+                                service,
+
+                            serviceName:
+                                pricing.service ||
+                                service,
+
+                            price:
+                                numoraPrice,
+
+                            priceNaira:
+                                numoraPrice,
+
+                            currency:
+                                "NGN",
+
+                            balanceField:
+                                balanceField,
+
+                            balanceReservation:
+                                "Reserved",
+
+                            provider:
+                                "5SIM",
+
+                            purchaseStatus:
+                                "Purchasing",
+
+                            status:
+                                "Purchasing",
 
                             phoneNumber:
-                                phoneNumber,
+                                null,
 
-                            operator:
-                                selectedOperator.operator,
+                            fiveSimOrderId:
+                                null,
 
-                            providerStatus:
-                                fiveSimStatus,
-
-                            expiresAt:
-                                expiresAt,
-
-                            completedAt:
+                            createdAt:
                                 serverTimestamp(),
 
                             updatedAt:
@@ -3040,52 +2552,300 @@ app.post(
                 }
             );
 
-            console.log(
-                "5SIM NUMBER PURCHASED:",
-                {
-
-                    purchaseId,
-
-                    fiveSimOrderId,
-
-                    uid,
-
-                    phoneNumber,
-
+            /*
+              5SIM availability and operator price are checked again at
+              the exact moment of purchase. We never rely on the cached
+              Admin value for the transaction.
+            */
+            const providerSelection =
+                await get5SimPurchaseOption(
                     country,
+                    service
+                );
 
-                    service,
+            const selectedOperator =
+                providerSelection.selected;
 
-                    operator:
+            if(!selectedOperator){
+
+                await refundCustomerReservation(
+                    userRef,
+                    balanceField,
+                    reservedAmount,
+                    orderRef,
+                    "No 5SIM operator with at least 70% delivery rate and available stock was found."
+                );
+
+                return res.status(409).json({
+
+                    success: false,
+
+                    code:
+                        "NO_QUALIFYING_PROVIDER",
+
+                    message:
+                        "No suitable 5SIM number is available right now. Your Numora balance was not charged."
+
+                });
+
+            }
+
+            await orderRef.update({
+
+                providerOperator:
+                    selectedOperator.operator,
+
+                providerCostUsd:
+                    selectedOperator.cost,
+
+                providerDeliveryRate:
+                    selectedOperator.rate,
+
+                providerStockAtPurchase:
+                    selectedOperator.count,
+
+                purchaseStatus:
+                    "Sending to 5SIM",
+
+                updatedAt:
+                    serverTimestamp()
+
+            });
+
+            let fiveSimResponse;
+
+            try{
+
+                fiveSimResponse =
+                    await buy5SimActivation(
+                        country,
                         selectedOperator.operator,
+                        service
+                    );
 
-                    providerCost:
-                        selectedOperator.cost,
+            }
+            catch(error){
 
-                    deliveryRate:
-                        selectedOperator.rate,
+                const refunded =
+                    await refundCustomerReservation(
+                        userRef,
+                        balanceField,
+                        reservedAmount,
+                        orderRef,
+                        error.message ||
+                        "5SIM rejected the number purchase."
+                    );
 
-                    numoraPrice
+                return res.status(502).json({
 
-                }
-            );
+                    success: false,
+
+                    code:
+                        "FIVESIM_PURCHASE_FAILED",
+
+                    refunded,
+
+                    message:
+                        refunded
+                            ? "5SIM could not provide a number. Your Numora balance was refunded."
+                            : "5SIM could not provide a number and the balance refund is pending."
+
+                });
+
+            }
+
+            const purchase =
+                normalize5SimPurchaseResponse(
+                    fiveSimResponse
+                );
+
+            /*
+              Once 5SIM has returned a real order ID, the provider
+              purchase has happened. From this point onward we must
+              never refund the customer's Numora balance automatically
+              merely because Firestore persistence encounters an error.
+            */
+            if(purchase.orderId){
+                fiveSimPurchaseSucceeded = true;
+            }
+
+            if(
+                !purchase.orderId ||
+                !purchase.phoneNumber
+            ){
+
+                const refunded =
+                    await refundCustomerReservation(
+                        userRef,
+                        balanceField,
+                        reservedAmount,
+                        orderRef,
+                        "5SIM returned an incomplete purchase response."
+                    );
+
+                return res.status(502).json({
+
+                    success: false,
+
+                    code:
+                        "INVALID_FIVESIM_RESPONSE",
+
+                    refunded,
+
+                    message:
+                        refunded
+                            ? "5SIM returned an invalid number response. Your Numora balance was refunded."
+                            : "5SIM returned an invalid number response and the balance refund is pending."
+
+                });
+
+            }
+
+            const completedAt =
+                admin.firestore.Timestamp.now();
+
+            /*
+              Store both the customer order and a simple numbers record.
+              This gives the Admin dashboard a usable active-number record
+              while the customer page can later use the order record.
+            */
+            await orderRef.update({
+
+                purchaseStatus:
+                    "Active",
+
+                status:
+                    "Active",
+
+                balanceReservation:
+                    "Captured",
+
+                fiveSimOrderId:
+                    purchase.orderId,
+
+                fiveSimStatus:
+                    purchase.status ||
+                    "PENDING",
+
+                phoneNumber:
+                    purchase.phoneNumber,
+
+                providerOperator:
+                    selectedOperator.operator,
+
+                providerCostUsd:
+                    selectedOperator.cost,
+
+                providerDeliveryRate:
+                    selectedOperator.rate,
+
+                activatedAt:
+                    completedAt,
+
+                purchasedAt:
+                    completedAt,
+
+                updatedAt:
+                    completedAt
+
+            });
+
+            try{
+
+                await db
+                    .collection("numbers")
+                    .doc(orderRef.id)
+                    .set({
+
+                        orderId:
+                            orderRef.id,
+
+                        customerId:
+                            uid,
+
+                        profileId:
+                            userData.profileId ||
+                            null,
+
+                        phoneNumber:
+                            purchase.phoneNumber,
+
+                        country:
+                            country,
+
+                        service:
+                            service,
+
+                        serviceName:
+                            pricing.service ||
+                            service,
+
+                        provider:
+                            "5SIM",
+
+                        fiveSimOrderId:
+                            purchase.orderId,
+
+                        operator:
+                            selectedOperator.operator,
+
+                        priceNaira:
+                            numoraPrice,
+
+                        providerCostUsd:
+                            selectedOperator.cost,
+
+                        deliveryRate:
+                            selectedOperator.rate,
+
+                        active:
+                            true,
+
+                        status:
+                            "Active",
+
+                        createdAt:
+                            completedAt,
+
+                        updatedAt:
+                            completedAt
+
+                    },
+                    {
+                        merge:true
+                    }
+                );
+
+            }
+            catch(numberRecordError){
+
+                console.error(
+                    "5SIM purchase succeeded but numbers record could not be saved:",
+                    numberRecordError
+                );
+            }
 
             return res.status(200).json({
 
                 success: true,
 
-                purchaseId,
+                active:
+                    true,
 
-                fiveSimOrderId,
+                orderId:
+                    orderRef.id,
 
-                phoneNumber,
+                fiveSimOrderId:
+                    purchase.orderId,
 
-                number:
-                    phoneNumber,
+                phoneNumber:
+                    purchase.phoneNumber,
 
-                country,
+                country:
+                    country,
 
-                service,
+                service:
+                    service,
 
                 price:
                     numoraPrice,
@@ -3094,12 +2854,11 @@ app.post(
                     "NGN",
 
                 status:
-                    fiveSimStatus,
+                    purchase.status ||
+                    "PENDING_SMS",
 
-                expiresAt,
-
-                operator:
-                    selectedOperator.operator
+                message:
+                    "Your number is ready. Use it for the verification step and wait for the SMS."
 
             });
 
@@ -3107,71 +2866,80 @@ app.post(
         catch(error){
 
             console.error(
-                "Customer purchase error:",
+                "Customer 5SIM purchase error:",
                 error
             );
 
+            /*
+              If the balance was reserved but the request failed before
+              a successful 5SIM order was recorded, attempt a refund.
+              Do not automatically refund after a successful 5SIM purchase.
+            */
             if(
-                error.status ===
-                401
+                orderRef &&
+                userRef &&
+                reservedAmount > 0
             ){
 
-                return res.status(401).json({
+                try{
 
-                    success: false,
+                    const orderSnapshot =
+                        await orderRef.get();
 
-                    message:
-                        error.message
+                    const orderData =
+                        orderSnapshot.exists
+                            ? orderSnapshot.data()
+                            : {};
 
-                });
+                    if(
+                        !fiveSimPurchaseSucceeded &&
+                        orderData.balanceReservation ===
+                        "Reserved"
+                    ){
+
+                        await refundCustomerReservation(
+                            userRef,
+                            balanceField,
+                            reservedAmount,
+                            orderRef,
+                            error.message ||
+                            "Unexpected purchase error."
+                        );
+
+                    }
+
+                }
+                catch(refundError){
+
+                    console.error(
+                        "Unexpected purchase refund error:",
+                        refundError
+                    );
+
+                }
 
             }
 
-            if(
-                error.status ===
-                402
-            ){
+            const statusCode =
+                Number(error.status) ||
+                (
+                    error.code ===
+                    "INSUFFICIENT_BALANCE"
+                        ? 400
+                        : 500
+                );
 
-                return res.status(402).json({
-
-                    success: false,
-
-                    insufficientBalance:
-                        true,
-
-                    currentBalance:
-                        error.currentBalance,
-
-                    message:
-                        error.message
-
-                });
-
-            }
-
-            if(
-                error.status ===
-                404
-            ){
-
-                return res.status(404).json({
-
-                    success: false,
-
-                    message:
-                        error.message
-
-                });
-
-            }
-
-            return res.status(500).json({
+            return res.status(statusCode).json({
 
                 success: false,
 
+                code:
+                    error.code ||
+                    "PURCHASE_FAILED",
+
                 message:
                     error.message ||
-                    "Unable to complete number purchase."
+                    "Unable to purchase a Numora number."
 
             });
 
@@ -3183,38 +2951,27 @@ app.post(
 
 /*
 =========================================================
-CUSTOMER — CHECK 5SIM ORDER
+CUSTOMER — CHECK 5SIM ORDER / SMS
 =========================================================
 
-GET /api/customer/number/:orderId
+GET /api/customer/5sim-order/:orderId
 
-The Firebase user must own the number.
-
-This endpoint contacts 5SIM and updates the local
-Firestore copy.
-
+This keeps the 5SIM API key private and lets the customer
+page poll the activation through Numora.
 =========================================================
 */
 
 app.get(
-    "/api/customer/number/:orderId",
+    "/api/customer/5sim-order/:orderId",
     async (req, res) => {
 
-        try {
-
-            const decodedToken =
-                await authenticateCustomer(
-                    req
-                );
-
-            const uid =
-                decodedToken.uid;
+        try{
 
             if(!db){
 
                 return res.status(500).json({
 
-                    success: false,
+                    success:false,
 
                     message:
                         "Firestore is unavailable."
@@ -3223,17 +2980,34 @@ app.get(
 
             }
 
+            if(!get5SimApiKey()){
+
+                return res.status(500).json({
+
+                    success:false,
+
+                    message:
+                        "5SIM is not configured on the Numora backend."
+
+                });
+
+            }
+
+            const decodedToken =
+                await authenticateCustomerRequest(
+                    req
+                );
+
             const orderId =
                 String(
-                    req.params.orderId ||
-                    ""
+                    req.params.orderId || ""
                 ).trim();
 
             if(!orderId){
 
                 return res.status(400).json({
 
-                    success: false,
+                    success:false,
 
                     message:
                         "Order ID is required."
@@ -3242,165 +3016,88 @@ app.get(
 
             }
 
-            const numberRef =
-                db
-                    .collection("numbers")
-                    .doc(
-                        orderId
-                    );
+            const orderRef =
+                db.collection("orders").doc(orderId);
 
-            const numberSnapshot =
-                await numberRef.get();
+            const orderSnapshot =
+                await orderRef.get();
 
-            if(
-                !numberSnapshot.exists
-            ){
+            if(!orderSnapshot.exists){
 
                 return res.status(404).json({
 
-                    success: false,
+                    success:false,
 
                     message:
-                        "Number order was not found."
+                        "Numora order not found."
 
                 });
 
             }
 
-            const numberData =
-                numberSnapshot.data();
+            const order =
+                orderSnapshot.data() ||
+                {};
 
             if(
-                numberData.userId !==
-                uid
+                order.customerId !==
+                decodedToken.uid
             ){
 
                 return res.status(403).json({
 
-                    success: false,
+                    success:false,
 
                     message:
-                        "You do not have access to this number."
+                        "You are not allowed to access this order."
 
                 });
 
             }
 
-            const fiveSimOrderId =
-                numberData.fiveSimOrderId ||
-                orderId;
+            if(!order.fiveSimOrderId){
 
-            let providerOrder;
+                return res.status(409).json({
 
-            try {
+                    success:false,
 
-                providerOrder =
-                    await fetch5SimAuthenticated(
-                        `/user/check/${encodeURIComponent(fiveSimOrderId)}`
-                    );
+                    message:
+                        "This order does not have a 5SIM activation yet."
+
+                });
 
             }
-            catch(error){
 
-                console.error(
-                    "5SIM order check failed:",
-                    error
+            const fiveSimData =
+                await fetch5SimAuthenticated(
+                    `/user/check/${encodeURIComponent(order.fiveSimOrderId)}`,
+                    {
+                        method:"GET"
+                    }
                 );
 
-                /*
-                Return the last locally saved state instead
-                of destroying the customer's active order.
-                */
+            const sms =
+                Array.isArray(fiveSimData?.sms)
+                    ? fiveSimData.sms
+                    : [];
 
-                return res.status(200).json({
-
-                    success: true,
-
-                    source:
-                        "firestore",
-
-                    providerUnavailable:
-                        true,
-
-                    order: {
-
-                        id:
-                            fiveSimOrderId,
-
-                        phoneNumber:
-                            numberData.phoneNumber,
-
-                        country:
-                            numberData.country,
-
-                        service:
-                            numberData.service,
-
-                        status:
-                            numberData.status ||
-                            "PENDING",
-
-                        expiresAt:
-                            numberData.expiresAt ||
-                            null,
-
-                        sms:
-                            numberData.sms || []
-
-                    }
-
-                });
-
-            }
-
-            const currentStatus =
-                providerOrder?.status ||
-                numberData.status ||
+            const status =
+                fiveSimData?.status ||
+                order.fiveSimStatus ||
                 "PENDING";
 
-            const currentPhone =
-                normalizePhoneNumber(
-                    providerOrder?.phone ||
-                    providerOrder?.number ||
-                    providerOrder?.phoneNumber ||
-                    numberData.phoneNumber
-                );
+            await orderRef.update({
 
-            const currentSms =
-                Array.isArray(
-                    providerOrder?.sms
-                )
-                    ? providerOrder.sms
-                    : (
-                        Array.isArray(
-                            numberData.sms
-                        )
-                            ? numberData.sms
-                            : []
-                    );
+                fiveSimStatus:
+                    status,
 
-            const currentExpires =
-                providerOrder?.expires ||
-                providerOrder?.expiresAt ||
-                numberData.expiresAt ||
-                null;
+                lastSms:
+                    sms.length
+                        ? sms[sms.length - 1]
+                        : null,
 
-            await numberRef.update({
-
-                status:
-                    currentStatus,
-
-                phoneNumber:
-                    currentPhone,
-
-                expiresAt:
-                    currentExpires,
-
-                sms:
-                    currentSms,
-
-                rawProviderOrder:
-                    providerOrder,
+                smsCount:
+                    sms.length,
 
                 lastCheckedAt:
                     serverTimestamp(),
@@ -3412,41 +3109,29 @@ app.get(
 
             return res.status(200).json({
 
-                success: true,
+                success:true,
 
-                source:
-                    "5sim",
+                orderId,
 
-                order: {
+                fiveSimOrderId:
+                    order.fiveSimOrderId,
 
-                    id:
-                        fiveSimOrderId,
+                phoneNumber:
+                    fiveSimData?.phone ||
+                    order.phoneNumber ||
+                    null,
 
-                    phoneNumber:
-                        currentPhone,
+                status,
 
-                    country:
-                        numberData.country,
+                sms,
 
-                    countryName:
-                        numberData.countryName,
+                price:
+                    order.priceNaira ||
+                    order.price ||
+                    0,
 
-                    service:
-                        numberData.service,
-
-                    serviceName:
-                        numberData.serviceName,
-
-                    status:
-                        currentStatus,
-
-                    expiresAt:
-                        currentExpires,
-
-                    sms:
-                        currentSms
-
-                }
+                currency:
+                    "NGN"
 
             });
 
@@ -3454,364 +3139,21 @@ app.get(
         catch(error){
 
             console.error(
-                "Customer number check error:",
+                "5SIM order check error:",
                 error
             );
 
-            if(
-                error.status ===
-                401
-            ){
+            const statusCode =
+                Number(error.status) ||
+                500;
 
-                return res.status(401).json({
+            return res.status(statusCode).json({
 
-                    success: false,
-
-                    message:
-                        error.message
-
-                });
-
-            }
-
-            return res.status(500).json({
-
-                success: false,
+                success:false,
 
                 message:
                     error.message ||
-                    "Unable to check number."
-
-            });
-
-        }
-
-    }
-);
-
-
-/*
-=========================================================
-CUSTOMER — GET ACTIVE NUMBERS
-=========================================================
-
-Used by the customer SMS page.
-
-=========================================================
-*/
-
-app.get(
-    "/api/customer/numbers",
-    async (req, res) => {
-
-        try {
-
-            const decodedToken =
-                await authenticateCustomer(
-                    req
-                );
-
-            const uid =
-                decodedToken.uid;
-
-            if(!db){
-
-                return res.status(500).json({
-
-                    success: false,
-
-                    message:
-                        "Firestore is unavailable."
-
-                });
-
-            }
-
-            const snapshot =
-                await db
-                    .collection("numbers")
-                    .where(
-                        "userId",
-                        "==",
-                        uid
-                    )
-                    .get();
-
-            const numbers =
-                snapshot.docs
-                    .map(
-                        document => {
-
-                            const data =
-                                document.data();
-
-                            return {
-
-                                id:
-                                    document.id,
-
-                                fiveSimOrderId:
-                                    data.fiveSimOrderId ||
-                                    document.id,
-
-                                phoneNumber:
-                                    data.phoneNumber ||
-                                    "",
-
-                                country:
-                                    data.country ||
-                                    "",
-
-                                countryName:
-                                    data.countryName ||
-                                    data.country ||
-                                    "",
-
-                                service:
-                                    data.service ||
-                                    "",
-
-                                serviceName:
-                                    data.serviceName ||
-                                    data.service ||
-                                    "",
-
-                                status:
-                                    data.status ||
-                                    "PENDING",
-
-                                expiresAt:
-                                    data.expiresAt ||
-                                    null,
-
-                                sms:
-                                    Array.isArray(
-                                        data.sms
-                                    )
-                                        ? data.sms
-                                        : [],
-
-                                numoraPrice:
-                                    Number(
-                                        data.numoraPrice ||
-                                        0
-                                    ),
-
-                                createdAt:
-                                    data.createdAt ||
-                                    null
-
-                            };
-
-                        }
-                    );
-
-            numbers.sort(
-                (a, b) => {
-
-                    const aTime =
-                        a.createdAt?.toMillis
-                            ? a.createdAt.toMillis()
-                            : 0;
-
-                    const bTime =
-                        b.createdAt?.toMillis
-                            ? b.createdAt.toMillis()
-                            : 0;
-
-                    return (
-                        bTime -
-                        aTime
-                    );
-
-                }
-            );
-
-            return res.status(200).json({
-
-                success: true,
-
-                numbers
-
-            });
-
-        }
-        catch(error){
-
-            console.error(
-                "Customer numbers error:",
-                error
-            );
-
-            if(
-                error.status ===
-                401
-            ){
-
-                return res.status(401).json({
-
-                    success: false,
-
-                    message:
-                        error.message
-
-                });
-
-            }
-
-            return res.status(500).json({
-
-                success: false,
-
-                message:
-                    "Unable to load customer numbers."
-
-            });
-
-        }
-
-    }
-);
-
-
-/*
-=========================================================
-CUSTOMER — PURCHASE HISTORY
-=========================================================
-*/
-
-app.get(
-    "/api/customer/purchases",
-    async (req, res) => {
-
-        try {
-
-            const decodedToken =
-                await authenticateCustomer(
-                    req
-                );
-
-            const uid =
-                decodedToken.uid;
-
-            if(!db){
-
-                return res.status(500).json({
-
-                    success: false,
-
-                    message:
-                        "Firestore is unavailable."
-
-                });
-
-            }
-
-            const snapshot =
-                await db
-                    .collection("customerPurchases")
-                    .where(
-                        "userId",
-                        "==",
-                        uid
-                    )
-                    .limit(100)
-                    .get();
-
-            const purchases =
-                snapshot.docs
-                    .map(
-                        document => {
-
-                            const data =
-                                document.data();
-
-                            return {
-
-                                id:
-                                    document.id,
-
-                                country:
-                                    data.country,
-
-                                countryName:
-                                    data.countryName,
-
-                                service:
-                                    data.service,
-
-                                serviceName:
-                                    data.serviceName,
-
-                                phoneNumber:
-                                    data.phoneNumber ||
-                                    null,
-
-                                price:
-                                    Number(
-                                        data.numoraPrice ||
-                                        0
-                                    ),
-
-                                currency:
-                                    data.currency ||
-                                    "NGN",
-
-                                status:
-                                    data.status ||
-                                    "UNKNOWN",
-
-                                fiveSimOrderId:
-                                    data.fiveSimOrderId ||
-                                    null,
-
-                                createdAt:
-                                    data.createdAt ||
-                                    null
-
-                            };
-
-                        }
-                    );
-
-            return res.status(200).json({
-
-                success: true,
-
-                purchases
-
-            });
-
-        }
-        catch(error){
-
-            console.error(
-                "Customer purchase history error:",
-                error
-            );
-
-            if(
-                error.status ===
-                401
-            ){
-
-                return res.status(401).json({
-
-                    success: false,
-
-                    message:
-                        error.message
-
-                });
-
-            }
-
-            return res.status(500).json({
-
-                success: false,
-
-                message:
-                    "Unable to load purchase history."
+                    "Unable to check the 5SIM order."
 
             });
 
@@ -4113,6 +3455,15 @@ async function verifyPaystackTransaction(
 =========================================================
 PROVISION EXACT TWILIO NUMBER
 =========================================================
+
+IMPORTANT:
+
+This function purchases ONLY the exact number selected
+by the customer.
+
+It does NOT silently replace an unavailable number.
+
+=========================================================
 */
 
 async function provisionOrder(
@@ -4348,6 +3699,9 @@ async function provisionOrder(
 
     }
 
+    const currentOrder =
+        currentSnapshot.data();
+
     let exactNumberAvailable =
         false;
 
@@ -4549,7 +3903,6 @@ async function provisionOrder(
     console.log(
         "TWILIO NUMBER PURCHASED:",
         {
-
             orderId:
                 orderDoc.id,
 
@@ -5169,6 +4522,16 @@ app.post(
 =========================================================
 TWILIO INCOMING SMS WEBHOOK
 =========================================================
+
+Twilio sends incoming SMS messages here.
+
+The webhook finds the active Numora order that owns
+the receiving Twilio number and stores the message
+inside:
+
+orders/{orderId}/messages/{messageId}
+
+=========================================================
 */
 
 app.post(
@@ -5450,11 +4813,6 @@ app.listen(
             get5SimApiKey()
                 ? "API key configured"
                 : "API key not configured"
-        );
-
-        console.log(
-            "5SIM minimum delivery rate:",
-            `${FIVESIM_MIN_DELIVERY_RATE}%`
         );
 
     }
