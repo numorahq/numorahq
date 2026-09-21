@@ -1964,11 +1964,37 @@ async function findServicePricing({
         return null;
     }
 
-    if(pricingId){
+    const requestedPricingId =
+        String(pricingId || "").trim();
+
+    const requestedCountry =
+        normalizePricingValue(countryId);
+
+    const requestedService =
+        normalizePricingValue(serviceId);
+
+
+    /*
+    -------------------------------------------------------
+    FIRST: USE THE ADMIN PRICING DOCUMENT ID
+    -------------------------------------------------------
+
+    The customer catalog returns the Firestore document ID
+    as `pricingId`.
+
+    If that document exists and is enabled, it is the exact
+    service the customer selected.
+
+    We do NOT reject it just because the browser's countryId
+    or serviceId happens to contain the pricing document ID.
+    -------------------------------------------------------
+    */
+
+    if(requestedPricingId){
 
         const directRef =
             db.collection("servicePricing")
-                .doc(String(pricingId).trim());
+                .doc(requestedPricingId);
 
         const directSnapshot =
             await directRef.get();
@@ -1984,15 +2010,49 @@ async function findServicePricing({
             const service =
                 getPricingService(data);
 
-            const requestedCountry =
-                normalizePricingValue(countryId);
+            /*
+              If country/service were supplied correctly,
+              verify them.
 
-            const requestedService =
-                normalizePricingValue(serviceId);
+              But if the browser sent the pricing document ID
+              as serviceId, do not reject the valid pricing
+              document.
+            */
+
+            const countryMatches =
+                !requestedCountry ||
+                !country ||
+                country === requestedCountry;
+
+            const serviceMatches =
+                !requestedService ||
+                !service ||
+                service === requestedService;
 
             if(
-                (!requestedCountry || country === requestedCountry) &&
-                (!requestedService || service === requestedService)
+                countryMatches &&
+                serviceMatches
+            ){
+
+                return {
+                    ref: directRef,
+                    id: directSnapshot.id,
+                    data
+                };
+
+            }
+
+
+            /*
+              If pricingId is a valid servicePricing document,
+              trust that exact Admin-selected document.
+
+              This prevents the customer UI's option value from
+              causing a false "not available on Numora" error.
+            */
+
+            if(
+                isPricingEnabled(data)
             ){
 
                 return {
@@ -2007,18 +2067,32 @@ async function findServicePricing({
 
     }
 
-    const requestedCountry =
-        normalizePricingValue(countryId);
 
-    const requestedService =
-        normalizePricingValue(serviceId);
+    /*
+    -------------------------------------------------------
+    SECOND: FALLBACK TO COUNTRY + SERVICE
+    -------------------------------------------------------
 
-    if(!requestedCountry || !requestedService){
+    This keeps the endpoint compatible with older customer
+    dashboard versions that don't send pricingId correctly.
+    -------------------------------------------------------
+    */
+
+    if(
+        !requestedCountry ||
+        !requestedService
+    ){
+
         return null;
+
     }
 
+
     const snapshot =
-        await db.collection("servicePricing").get();
+        await db
+            .collection("servicePricing")
+            .get();
+
 
     for(const document of snapshot.docs){
 
@@ -2039,6 +2113,7 @@ async function findServicePricing({
         }
 
     }
+
 
     return null;
 
@@ -2259,33 +2334,34 @@ app.post(
             const uid =
                 decodedToken.uid;
 
-            const country =
-                validate5SimName(
-                    req.body?.countryId,
-                    "country"
-                );
+           const requestedCountry =
+    String(
+        req.body?.countryId || ""
+    ).trim();
 
-            const service =
-                validate5SimName(
-                    req.body?.serviceId,
-                    "service"
-                );
+const requestedService =
+    String(
+        req.body?.serviceId || ""
+    ).trim();
 
-            const requestedPricingId =
-                String(
-                    req.body?.pricingId ||
-                    ""
-                ).trim();
+const requestedPricingId =
+    String(
+        req.body?.pricingId ||
+        ""
+    ).trim();
 
-            const pricingResult =
-                await findServicePricing({
-                    pricingId:
-                        requestedPricingId || null,
-                    countryId:
-                        country,
-                    serviceId:
-                        service
-                });
+const pricingResult =
+    await findServicePricing({
+        pricingId:
+            requestedPricingId || null,
+
+        countryId:
+            requestedCountry,
+
+        serviceId:
+            requestedService
+    });
+    
 
             if(!pricingResult){
 
@@ -2306,6 +2382,24 @@ app.post(
             const pricing =
                 pricingResult.data ||
                 {};
+                
+                /*
+---------------------------------------------------------
+USE THE ACTUAL 5SIM COUNTRY/SERVICE FROM ADMIN PRICING
+---------------------------------------------------------
+*/
+
+const country =
+    validate5SimName(
+        getPricingCountry(pricing),
+        "country"
+    );
+
+const service =
+    validate5SimName(
+        getPricingService(pricing),
+        "service"
+    );
 
             const numoraPrice =
                 Math.round(
