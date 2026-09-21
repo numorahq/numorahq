@@ -619,48 +619,57 @@ There is NO fallback to an operator below 70%.
 ---------------------------------------------------------
 */
 
-async function get5SimPurchaseOption(
-    country,
-    service
-){
+async function get5SimPurchaseOption(country, service){
+
+    console.log("========================================");
+    console.log("5SIM PURCHASE LOOKUP");
+    console.log("Country:", country);
+    console.log("Service:", service);
+
+    const endpoint =
+        `/guest/prices?country=${encodeURIComponent(country)}&product=${encodeURIComponent(service)}`;
+
+    console.log("5SIM endpoint:", endpoint);
 
     const rawPrices =
-        await fetch5SimGuest(
-            `/guest/prices?country=${encodeURIComponent(country)}&product=${encodeURIComponent(service)}`
-        );
+        await fetch5SimGuest(endpoint);
+
+    console.log(
+        "5SIM response top-level keys:",
+        Object.keys(rawPrices || {})
+    );
 
     const countryData =
         rawPrices?.[country] ||
         {};
 
+    console.log(
+        "5SIM country data keys:",
+        Object.keys(countryData || {})
+    );
+
     const serviceData =
         countryData?.[service] ||
         {};
 
+    console.log(
+        "5SIM service data keys:",
+        Object.keys(serviceData || {})
+    );
+
+    console.log(
+        "5SIM service data:",
+        JSON.stringify(serviceData)
+    );
+
     const operators =
-        Object.entries(
-            serviceData
-        )
+        Object.entries(serviceData)
         .map(
             ([operator, data]) => ({
-
                 operator,
-
-                cost:
-                    Number(
-                        data?.cost || 0
-                    ),
-
-                count:
-                    Number(
-                        data?.count || 0
-                    ),
-
-                rate:
-                    normalize5SimDeliveryRate(
-                        data?.rate
-                    )
-
+                cost: Number(data?.cost || 0),
+                count: Number(data?.count || 0),
+                rate: normalize5SimDeliveryRate(data?.rate)
             })
         )
         .filter(
@@ -671,74 +680,42 @@ async function get5SimPurchaseOption(
         .sort(
             (a, b) => {
 
-                /*
-                Cheapest available operator first.
-                */
-                if(
-                    a.cost !==
-                    b.cost
-                ){
-
-                    return (
-                        a.cost -
-                        b.cost
-                    );
-
+                if(a.cost !== b.cost){
+                    return a.cost - b.cost;
                 }
 
-                /*
-                If delivery rate exists, prefer
-                the higher rate.
-                */
                 const aRate =
-                    a.rate === null
-                        ? -1
-                        : a.rate;
+                    a.rate === null ? -1 : a.rate;
 
                 const bRate =
-                    b.rate === null
-                        ? -1
-                        : b.rate;
+                    b.rate === null ? -1 : b.rate;
 
-                if(
-                    aRate !==
-                    bRate
-                ){
-
-                    return (
-                        bRate -
-                        aRate
-                    );
-
+                if(aRate !== bRate){
+                    return bRate - aRate;
                 }
 
-                /*
-                Finally prefer higher stock.
-                */
-                return (
-                    b.count -
-                    a.count
-                );
-
+                return b.count - a.count;
             }
         );
 
+    console.log(
+        "5SIM qualifying operators:",
+        JSON.stringify(operators)
+    );
+
+    console.log(
+        "5SIM selected operator:",
+        JSON.stringify(operators[0] || null)
+    );
+
+    console.log("========================================");
+
     return {
-
-        selected:
-            operators[0] || null,
-
+        selected: operators[0] || null,
         operators,
-
-        totalOperators:
-            Object.keys(
-                serviceData
-            ).length
-
+        totalOperators: Object.keys(serviceData).length
     };
-
 }
-
 /*
 ---------------------------------------------------------
 5SIM BUY ACTIVATION
