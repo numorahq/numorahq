@@ -619,43 +619,63 @@ There is NO fallback to an operator below 70%.
 ---------------------------------------------------------
 */
 
-async function get5SimPurchaseOption(country, service){
+async function get5SimPurchaseOption(
+    country,
+    service,
+    maxProviderCostUsd
+){
 
     console.log("========================================");
     console.log("5SIM PURCHASE LOOKUP");
     console.log("Country:", country);
     console.log("Service:", service);
+    console.log(
+        "Admin maximum 5SIM cost:",
+        maxProviderCostUsd
+    );
+
+    const maxCost =
+        Number(maxProviderCostUsd);
+
+    if(
+        !Number.isFinite(maxCost) ||
+        maxCost <= 0
+    ){
+
+        console.error(
+            "Invalid Admin 5SIM maximum cost:",
+            maxProviderCostUsd
+        );
+
+        return {
+            selected: null,
+            operators: [],
+            totalOperators: 0,
+            reason: "INVALID_MAX_PROVIDER_COST"
+        };
+
+    }
 
     const endpoint =
         `/guest/prices?country=${encodeURIComponent(country)}&product=${encodeURIComponent(service)}`;
 
-    console.log("5SIM endpoint:", endpoint);
+    console.log(
+        "5SIM endpoint:",
+        endpoint
+    );
 
     const rawPrices =
-        await fetch5SimGuest(endpoint);
-
-    console.log(
-        "5SIM response top-level keys:",
-        Object.keys(rawPrices || {})
-    );
+        await fetch5SimGuest(
+            endpoint
+        );
 
     const countryData =
         rawPrices?.[country] ||
         {};
 
-    console.log(
-        "5SIM country data keys:",
-        Object.keys(countryData || {})
-    );
-
     const serviceData =
         countryData?.[service] ||
         {};
-
-    console.log(
-        "5SIM service data keys:",
-        Object.keys(serviceData || {})
-    );
 
     console.log(
         "5SIM service data:",
@@ -666,56 +686,173 @@ async function get5SimPurchaseOption(country, service){
         Object.entries(serviceData)
         .map(
             ([operator, data]) => ({
+
                 operator,
-                cost: Number(data?.cost || 0),
-                count: Number(data?.count || 0),
-                rate: normalize5SimDeliveryRate(data?.rate)
+
+                cost:
+                    Number(
+                        data?.cost || 0
+                    ),
+
+                count:
+                    Number(
+                        data?.count || 0
+                    ),
+
+                rate:
+                    normalize5SimDeliveryRate(
+                        data?.rate
+                    )
+
             })
-        )
-        .filter(
-            item =>
-                item.count > 0 &&
-                item.cost > 0
-        )
-        .sort(
-            (a, b) => {
-
-                if(a.cost !== b.cost){
-                    return a.cost - b.cost;
-                }
-
-                const aRate =
-                    a.rate === null ? -1 : a.rate;
-
-                const bRate =
-                    b.rate === null ? -1 : b.rate;
-
-                if(aRate !== bRate){
-                    return bRate - aRate;
-                }
-
-                return b.count - a.count;
-            }
         );
+
+    /*
+    -------------------------------------------------------
+    PRICE + STOCK + DELIVERY FILTER
+    -------------------------------------------------------
+
+    An operator is eligible only when:
+
+    1. It has stock
+    2. Its live 5SIM cost is <= the Admin dashboard cost
+    3. Its delivery rate is >= 70%
+
+    This prevents Numora from buying a more expensive
+    number than the supplier cost approved by Admin.
+    -------------------------------------------------------
+    */
+
+    const qualifyingOperators =
+        operators
+            .filter(
+                operator => {
+
+                    const hasStock =
+                        operator.count > 0;
+
+                    const withinAdminLimit =
+                        operator.cost > 0 &&
+                        operator.cost <= maxCost;
+
+                    const goodDeliveryRate =
+                        operator.rate !== null &&
+                        operator.rate >= 70;
+
+                    return (
+                        hasStock &&
+                        withinAdminLimit &&
+                        goodDeliveryRate
+                    );
+
+                }
+            )
+            .sort(
+                (a, b) => {
+
+                    /*
+                      Cheapest qualifying operator first.
+                    */
+
+                    if(
+                        a.cost !==
+                        b.cost
+                    ){
+
+                        return (
+                            a.cost -
+                            b.cost
+                        );
+
+                    }
+
+                    /*
+                      If prices are equal,
+                      prefer higher delivery rate.
+                    */
+
+                    const aRate =
+                        a.rate === null
+                            ? -1
+                            : a.rate;
+
+                    const bRate =
+                        b.rate === null
+                            ? -1
+                            : b.rate;
+
+                    if(
+                        aRate !==
+                        bRate
+                    ){
+
+                        return (
+                            bRate -
+                            aRate
+                        );
+
+                    }
+
+                    /*
+                      If price and rate are equal,
+                      prefer higher stock.
+                    */
+
+                    return (
+                        b.count -
+                        a.count
+                    );
+
+                }
+            );
+
+    console.log(
+        "5SIM operators within Admin price limit:",
+        JSON.stringify(
+            operators.filter(
+                operator =>
+                    operator.count > 0 &&
+                    operator.cost > 0 &&
+                    operator.cost <= maxCost
+            )
+        )
+    );
 
     console.log(
         "5SIM qualifying operators:",
-        JSON.stringify(operators)
+        JSON.stringify(
+            qualifyingOperators
+        )
     );
 
     console.log(
         "5SIM selected operator:",
-        JSON.stringify(operators[0] || null)
+        JSON.stringify(
+            qualifyingOperators[0] || null
+        )
     );
 
     console.log("========================================");
 
     return {
-        selected: operators[0] || null,
-        operators,
-        totalOperators: Object.keys(serviceData).length
+
+        selected:
+            qualifyingOperators[0] ||
+            null,
+
+        operators:
+            qualifyingOperators,
+
+        totalOperators:
+            operators.length,
+
+        maxProviderCostUsd:
+            maxCost
+
     };
+
 }
+
 /*
 ---------------------------------------------------------
 5SIM BUY ACTIVATION
@@ -2701,10 +2838,11 @@ const service =
               Admin value for the transaction.
             */
             const providerSelection =
-                await get5SimPurchaseOption(
-                    country,
-                    service
-                );
+    await get5SimPurchaseOption(
+        country,
+        service,
+        pricing.providerCostUsd
+    );
 
             const selectedOperator =
                 providerSelection.selected;
@@ -2716,7 +2854,7 @@ const service =
                     balanceField,
                     reservedAmount,
                     orderRef,
-                    "No 5SIM operator with at least 70% delivery rate and available stock was found."
+                  "No 5SIM operator within the Admin-approved supplier price and delivery requirements was available."
                 );
 
                 return res.status(409).json({
