@@ -369,6 +369,7 @@ button{
 }
 
 @media(max-width:800px){
+
     .sidebar{
         display:none;
     }
@@ -436,15 +437,42 @@ button{
         </div>
 
         <nav class="nav">
-            <button class="active" id="dashboardNav">Dashboard</button>
-            <button id="smsNav">SMS</button>
-            <button id="settingsNav">Settings</button>
+            <button class="active" id="dashboardNav">
+                Dashboard
+            </button>
+
+            <button id="smsNav">
+                SMS
+            </button>
+
+            <button id="settingsNav">
+                Settings
+            </button>
         </nav>
 
         <div class="profile-mini">
-            <div class="profile-mini-name" id="miniName">Numora User</div>
-            <div class="profile-mini-email" id="miniEmail">Loading...</div>
-            <button class="logout-btn" id="logoutBtn">Sign Out</button>
+
+            <div
+                class="profile-mini-name"
+                id="miniName"
+            >
+                Numora User
+            </div>
+
+            <div
+                class="profile-mini-email"
+                id="miniEmail"
+            >
+                Loading...
+            </div>
+
+            <button
+                class="logout-btn"
+                id="logoutBtn"
+            >
+                Sign Out
+            </button>
+
         </div>
 
     </aside>
@@ -452,9 +480,17 @@ button{
     <main class="main">
 
         <div class="topbar">
+
             <div>
-                <h1>Dashboard</h1>
-                <p>Purchase a verification number and receive your SMS.</p>
+
+                <h1>
+                    Dashboard
+                </h1>
+
+                <p>
+                    Purchase a verification number and receive your SMS.
+                </p>
+
             </div>
 
             <img
@@ -463,17 +499,26 @@ button{
                 src=""
                 alt="Profile"
             >
+
         </div>
 
         <section class="balance-card">
 
-            <div class="balance-label">Naira Balance</div>
+            <div class="balance-label">
+                Naira Balance
+            </div>
 
-            <div class="balance-value" id="balanceValue">
+            <div
+                class="balance-value"
+                id="balanceValue"
+            >
                 ₦0
             </div>
 
-            <button class="deposit-btn" id="depositBtn">
+            <button
+                class="deposit-btn"
+                id="depositBtn"
+            >
                 Deposit via WhatsApp
             </button>
 
@@ -481,7 +526,9 @@ button{
 
         <section class="card">
 
-            <h2>Purchase a verification number</h2>
+            <h2>
+                Purchase a verification number
+            </h2>
 
             <div class="card-description">
                 Select a country and service. Your verification number will be supplied through Numora.
@@ -490,19 +537,38 @@ button{
             <div class="form-grid">
 
                 <div class="field">
-                    <label for="countrySelect">Country</label>
+
+                    <label for="countrySelect">
+                        Country
+                    </label>
 
                     <select id="countrySelect">
-                        <option value="">Loading countries...</option>
+
+                        <option value="">
+                            Loading countries...
+                        </option>
+
                     </select>
+
                 </div>
 
                 <div class="field">
-                    <label for="serviceSelect">Service</label>
 
-                    <select id="serviceSelect" disabled>
-                        <option value="">Select country first</option>
+                    <label for="serviceSelect">
+                        Service
+                    </label>
+
+                    <select
+                        id="serviceSelect"
+                        disabled
+                    >
+
+                        <option value="">
+                            Select country first
+                        </option>
+
                     </select>
+
                 </div>
 
             </div>
@@ -513,13 +579,19 @@ button{
                     Service price
                 </div>
 
-                <div class="price-value" id="priceValue">
+                <div
+                    class="price-value"
+                    id="priceValue"
+                >
                     ₦0
                 </div>
 
             </div>
 
-            <div class="balance-warning" id="balanceWarning">
+            <div
+                class="balance-warning"
+                id="balanceWarning"
+            >
                 Your balance is not enough for this purchase. Please deposit first.
             </div>
 
@@ -531,34 +603,75 @@ button{
                 Purchase Number
             </button>
 
-            <div class="status-message" id="purchaseStatus"></div>
+            <div
+                class="status-message"
+                id="purchaseStatus"
+            ></div>
 
         </section>
 
         <section class="stats">
 
             <div class="stat-card">
-                <div class="stat-label">Messages Sent</div>
-                <div class="stat-value" id="sentCount">0</div>
+
+                <div class="stat-label">
+                    Messages Sent
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="sentCount"
+                >
+                    0
+                </div>
+
             </div>
 
             <div class="stat-card">
-                <div class="stat-label">Messages Received</div>
-                <div class="stat-value" id="receivedCount">0</div>
+
+                <div class="stat-label">
+                    Messages Received
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="receivedCount"
+                >
+                    0
+                </div>
+
             </div>
 
             <div class="stat-card">
-                <div class="stat-label">Account Status</div>
-                <div class="stat-value" id="accountStatus">Active</div>
+
+                <div class="stat-label">
+                    Account Status
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="accountStatus"
+                >
+                    Active
+                </div>
+
             </div>
 
         </section>
 
-        <section class="card" style="margin-top:20px;">
+        <section
+            class="card"
+            style="margin-top:20px;"
+        >
 
-            <h2>Recent Messages</h2>
+            <h2>
+                Recent Messages
+            </h2>
 
-            <div class="empty" id="recentMessages">
+            <div
+                class="empty"
+                id="recentMessages"
+            >
                 No recent messages.
             </div>
 
@@ -569,9 +682,22 @@ button{
 </div>
 
 <nav class="mobile-nav">
-    <button class="active" id="mobileDashboard">Dashboard</button>
-    <button id="mobileSms">SMS</button>
-    <button id="mobileSettings">Settings</button>
+
+    <button
+        class="active"
+        id="mobileDashboard"
+    >
+        Dashboard
+    </button>
+
+    <button id="mobileSms">
+        SMS
+    </button>
+
+    <button id="mobileSettings">
+        Settings
+    </button>
+
 </nav>
 
 <script type="module">
@@ -605,7 +731,7 @@ import {
 const firebaseConfig = {
 
     apiKey:
-        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjfGdSccWrSg",
 
     authDomain:
         "numora-c9a3b.firebaseapp.com",
@@ -628,18 +754,25 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+const db =
+    getFirestore(app);
 
 
 /* =========================================================
    CONSTANTS
 ========================================================= */
 
-const HOME_URL = "/numorahq/";
+const HOME_URL =
+    "/numorahq/";
 
-const WHATSAPP_NUMBER = "2349155093341";
+const WHATSAPP_NUMBER =
+    "2349155093341";
 
 const BACKEND_URL =
     "https://numora-backend-cle6.onrender.com";
@@ -665,6 +798,8 @@ let customerNumbers = [];
 let activePurchase = null;
 
 let profileUnsubscribe = null;
+
+let authStateResolved = false;
 
 
 /* =========================================================
@@ -725,6 +860,7 @@ function formatNaira(amount){
             maximumFractionDigits:0
         }
     ).format(value);
+
 }
 
 
@@ -737,37 +873,17 @@ function isValidProfileId(value){
 }
 
 
-function generateProfileId(){
-
-    const letters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    let result = "";
-
-    for(let i = 0; i < 3; i++){
-
-        result +=
-            letters[
-                Math.floor(
-                    Math.random() * letters.length
-                )
-            ];
-
-    }
-
-    result += String(
-        Math.floor(
-            100 + Math.random() * 900
-        )
-    );
-
-    return result;
-}
-
-
+/*
+ * Profile IDs must remain permanent.
+ *
+ * This function NEVER generates a new ID.
+ * The canonical Profile ID comes from Firestore.
+ */
 function getProfileIdFromData(data){
 
-    if(!data) return generateProfileId();
+    if(!data){
+        return null;
+    }
 
     const possible =
         data.profileId ||
@@ -775,20 +891,30 @@ function getProfileIdFromData(data){
         data.customerId;
 
     if(isValidProfileId(possible)){
-        return possible;
+
+        return String(
+            possible
+        ).toUpperCase();
+
     }
 
-    return generateProfileId();
+    return null;
+
 }
 
 
-function getCustomerToken(){
+async function getCustomerToken(){
 
     if(!currentUser){
-        throw new Error("You are not signed in.");
+
+        throw new Error(
+            "You are not signed in."
+        );
+
     }
 
     return currentUser.getIdToken();
+
 }
 
 
@@ -796,9 +922,13 @@ function getCustomerToken(){
    USER PROFILE
 ========================================================= */
 
-function populateUser(user, data = {}){
+function populateUser(
+    user,
+    data = {}
+){
 
-    currentUser = user;
+    currentUser =
+        user;
 
     const displayName =
         data.displayName ||
@@ -810,22 +940,33 @@ function populateUser(user, data = {}){
         user.email ||
         "";
 
-    document.getElementById("miniName")
-        .textContent = displayName;
+    document.getElementById(
+        "miniName"
+    ).textContent =
+        displayName;
 
-    document.getElementById("miniEmail")
-        .textContent = email;
+    document.getElementById(
+        "miniEmail"
+    ).textContent =
+        email;
 
     const avatar =
-        document.getElementById("userAvatar");
+        document.getElementById(
+            "userAvatar"
+        );
 
     if(user.photoURL){
 
-        avatar.src = user.photoURL;
+        avatar.src =
+            user.photoURL;
+
+        avatar.style.display =
+            "block";
 
     }else{
 
-        avatar.style.display = "none";
+        avatar.style.display =
+            "none";
 
     }
 
@@ -838,7 +979,9 @@ function updateBalance(balance){
         Number(balance || 0);
 
     balanceValue.textContent =
-        formatNaira(currentBalance);
+        formatNaira(
+            currentBalance
+        );
 
     updatePurchaseAvailability();
 
@@ -852,26 +995,66 @@ function updateBalance(balance){
 function listenToCustomerProfile(user){
 
     if(profileUnsubscribe){
+
         profileUnsubscribe();
-        profileUnsubscribe = null;
+
+        profileUnsubscribe =
+            null;
+
     }
 
     const profileRef =
-        doc(db, "users", user.uid);
+        doc(
+            db,
+            "users",
+            user.uid
+        );
 
     profileUnsubscribe =
         onSnapshot(
             profileRef,
+
             snapshot => {
 
                 if(!snapshot.exists()){
+
+                    populateUser(
+                        user
+                    );
+
+                    updateBalance(
+                        0
+                    );
+
                     return;
                 }
 
                 const data =
                     snapshot.data();
 
-                populateUser(user, data);
+                populateUser(
+                    user,
+                    data
+                );
+
+                /*
+                 * Read the permanent Profile ID if present.
+                 *
+                 * No temporary/random ID is created here.
+                 */
+                const profileId =
+                    getProfileIdFromData(
+                        data
+                    );
+
+                if(profileId){
+
+                    console.log(
+                        "Customer Profile ID:",
+                        profileId
+                    );
+
+                }
 
                 const balance =
                     data.balance ??
@@ -879,7 +1062,9 @@ function listenToCustomerProfile(user){
                     data.walletBalance ??
                     0;
 
-                updateBalance(balance);
+                updateBalance(
+                    balance
+                );
 
                 sentCount.textContent =
                     Number(
@@ -904,6 +1089,7 @@ function listenToCustomerProfile(user){
                 );
 
             },
+
             error => {
 
                 console.error(
@@ -928,60 +1114,88 @@ function updateRecentMessages(data){
         data.messages ||
         [];
 
-    if(!Array.isArray(messages) ||
-       messages.length === 0){
+    if(
+        !Array.isArray(messages) ||
+        messages.length === 0
+    ){
 
         recentMessages.textContent =
             "No recent messages.";
 
         return;
+
     }
 
     const latest =
-        messages.slice(0,5);
+        messages.slice(
+            0,
+            5
+        );
 
     recentMessages.innerHTML =
-        latest.map(message => {
+        latest.map(
+            message => {
 
-            const text =
-                message.text ||
-                message.body ||
-                message.code ||
-                "";
+                const text =
+                    message.text ||
+                    message.body ||
+                    message.code ||
+                    "";
 
-            const service =
-                message.service ||
-                "Verification";
+                const service =
+                    message.service ||
+                    "Verification";
 
-            return `
-                <div style="
-                    padding:12px 0;
-                    border-bottom:1px solid #e5e7eb;
-                ">
-                    <strong>${escapeHtml(service)}</strong>
+                return `
                     <div style="
-                        margin-top:4px;
-                        color:#6b7280;
-                        font-size:13px;
+                        padding:12px 0;
+                        border-bottom:1px solid #e5e7eb;
                     ">
-                        ${escapeHtml(text)}
-                    </div>
-                </div>
-            `;
+                        <strong>
+                            ${escapeHtml(service)}
+                        </strong>
 
-        }).join("");
+                        <div style="
+                            margin-top:4px;
+                            color:#6b7280;
+                            font-size:13px;
+                        ">
+                            ${escapeHtml(text)}
+                        </div>
+                    </div>
+                `;
+
+            }
+        ).join("");
 
 }
 
 
 function escapeHtml(value){
 
-    return String(value || "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+    return String(
+        value || ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
@@ -999,10 +1213,15 @@ async function customerApi(
         await getCustomerToken();
 
     const headers = {
-        "Content-Type":"application/json",
+
+        "Content-Type":
+            "application/json",
+
         ...(options.headers || {}),
+
         "Authorization":
             `Bearer ${token}`
+
     };
 
     const response =
@@ -1017,17 +1236,24 @@ async function customerApi(
     let data = null;
 
     try{
-        data = await response.json();
+
+        data =
+            await response.json();
+
     }catch{
+
         data = {};
+
     }
 
     if(!response.ok){
 
         throw new Error(
+
             data.message ||
             data.error ||
-            "Request failed."
+            "Unable to complete the request right now. Please try again later."
+
         );
 
     }
@@ -1039,7 +1265,6 @@ async function customerApi(
 
 /* =========================================================
    LOAD CUSTOMER CATALOG
-   Backend combines Admin servicePricing + 5SIM.
 ========================================================= */
 
 async function loadCustomerCatalog(){
@@ -1050,7 +1275,8 @@ async function loadCustomerCatalog(){
     serviceSelect.innerHTML =
         `<option value="">Select country first</option>`;
 
-    serviceSelect.disabled = true;
+    serviceSelect.disabled =
+        true;
 
     try{
 
@@ -1060,46 +1286,61 @@ async function loadCustomerCatalog(){
             );
 
         catalog =
-            Array.isArray(data.catalog)
-                ? data.catalog
-                : Array.isArray(data.services)
-                    ? data.services
-                    : [];
+            Array.isArray(
+                data.catalog
+            )
+            ? data.catalog
+            : Array.isArray(
+                data.services
+            )
+                ? data.services
+                : [];
 
         countries = [];
 
         const countryMap =
             new Map();
 
-        catalog.forEach(item => {
+        catalog.forEach(
+            item => {
 
-            const countryId =
-                item.countryId ??
-                item.country ??
-                item.countryCode;
+                const countryId =
+                    item.countryId ??
+                    item.country ??
+                    item.countryCode;
 
-            const countryName =
-                item.countryName ??
-                item.countryLabel ??
-                item.country ??
-                countryId;
+                const countryName =
+                    item.countryName ??
+                    item.countryLabel ??
+                    item.country ??
+                    countryId;
 
-            if(
-                countryId &&
-                !countryMap.has(String(countryId))
-            ){
+                if(
+                    countryId &&
+                    !countryMap.has(
+                        String(countryId)
+                    )
+                ){
 
-                countryMap.set(
-                    String(countryId),
-                    {
-                        id:String(countryId),
-                        name:String(countryName)
-                    }
-                );
+                    countryMap.set(
+                        String(countryId),
+                        {
+                            id:
+                                String(
+                                    countryId
+                                ),
+
+                            name:
+                                String(
+                                    countryName
+                                )
+                        }
+                    );
+
+                }
 
             }
-
-        });
+        );
 
         countries =
             Array.from(
@@ -1109,22 +1350,30 @@ async function loadCustomerCatalog(){
         countrySelect.innerHTML =
             `<option value="">Select country</option>`;
 
-        countries.forEach(country => {
+        countries.forEach(
+            country => {
 
-            const option =
-                document.createElement("option");
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-            option.value =
-                country.id;
+                option.value =
+                    country.id;
 
-            option.textContent =
-                country.name;
+                option.textContent =
+                    country.name;
 
-            countrySelect.appendChild(option);
+                countrySelect.appendChild(
+                    option
+                );
 
-        });
+            }
+        );
 
-        if(countries.length === 0){
+        if(
+            countries.length === 0
+        ){
 
             countrySelect.innerHTML =
                 `<option value="">No countries available</option>`;
@@ -1133,13 +1382,19 @@ async function loadCustomerCatalog(){
 
     }catch(error){
 
-        console.error(error);
+        console.error(
+            "Customer catalog error:",
+            error
+        );
 
         countrySelect.innerHTML =
             `<option value="">Unable to load countries</option>`;
 
+        /*
+         * Do not expose provider-specific errors.
+         */
         showPurchaseStatus(
-            error.message,
+            "Unable to load available services right now. Please try again later.",
             "error"
         );
 
@@ -1162,17 +1417,22 @@ function loadServices(countryId){
         ) || null;
 
     services =
-        catalog.filter(item => {
+        catalog.filter(
+            item => {
 
-            const itemCountry =
-                item.countryId ??
-                item.country ??
-                item.countryCode;
+                const itemCountry =
+                    item.countryId ??
+                    item.country ??
+                    item.countryCode;
 
-            return String(itemCountry) ===
-                String(countryId);
+                return String(
+                    itemCountry
+                ) === String(
+                    countryId
+                );
 
-        });
+            }
+        );
 
     serviceSelect.innerHTML =
         `<option value="">Select service</option>`;
@@ -1180,28 +1440,37 @@ function loadServices(countryId){
     serviceSelect.disabled =
         services.length === 0;
 
-    services.forEach(service => {
+    services.forEach(
+        service => {
 
-        const option =
-            document.createElement("option");
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-        option.value =
-            service.id ??
-            service.serviceId ??
-            service.service;
+            option.value =
+                service.id ??
+                service.serviceId ??
+                service.service;
 
-        option.textContent =
-            service.serviceName ??
-            service.name ??
-            service.service ??
-            option.value;
+            option.textContent =
+                service.serviceName ??
+                service.name ??
+                service.service ??
+                option.value;
 
-        serviceSelect.appendChild(option);
+            serviceSelect.appendChild(
+                option
+            );
 
-    });
+        }
+    );
 
-    selectedService = null;
-    selectedPrice = 0;
+    selectedService =
+        null;
+
+    selectedPrice =
+        0;
 
     priceValue.textContent =
         formatNaira(0);
@@ -1241,14 +1510,20 @@ function updatePurchaseAvailability(){
         !valid ||
         currentBalance < selectedPrice;
 
-    if(valid &&
-       currentBalance < selectedPrice){
+    if(
+        valid &&
+        currentBalance < selectedPrice
+    ){
 
-        balanceWarning.classList.add("show");
+        balanceWarning.classList.add(
+            "show"
+        );
 
     }else{
 
-        balanceWarning.classList.remove("show");
+        balanceWarning.classList.remove(
+            "show"
+        );
 
     }
 
@@ -1283,7 +1558,10 @@ async function purchaseNumber(){
         return;
     }
 
-    if(currentBalance < selectedPrice){
+    if(
+        currentBalance <
+        selectedPrice
+    ){
 
         showPurchaseStatus(
             "Your balance is not enough for this purchase.",
@@ -1291,9 +1569,11 @@ async function purchaseNumber(){
         );
 
         return;
+
     }
 
-    purchaseBtn.disabled = true;
+    purchaseBtn.disabled =
+        true;
 
     showPurchaseStatus(
         "Processing your purchase...",
@@ -1319,18 +1599,20 @@ async function purchaseNumber(){
                 "/api/customer/purchase-number",
                 {
                     method:"POST",
-                    body:JSON.stringify({
 
-                        pricingId,
+                    body:
+                        JSON.stringify({
 
-                        countryId,
+                            pricingId,
 
-                        serviceId,
+                            countryId,
 
-                        requestId:
-                            createRequestId()
+                            serviceId,
 
-                    })
+                            requestId:
+                                createRequestId()
+
+                        })
                 }
             );
 
@@ -1347,20 +1629,50 @@ async function purchaseNumber(){
         await loadCustomerNumbers();
 
         /*
-         * Navigate to SMS page.
-         * No location.reload() is used.
+         * Go directly to the SMS page.
+         *
+         * This is normal page navigation,
+         * not a logout and not a reload loop.
          */
         window.location.href =
             "/numorahq/sms.html";
 
     }catch(error){
 
-        console.error(error);
-
-        showPurchaseStatus(
-            error.message,
-            "error"
+        console.error(
+            "Purchase error:",
+            error
         );
+
+        /*
+         * Never expose raw provider details.
+         */
+        const safeMessage =
+            String(
+                error.message || ""
+            ).toLowerCase();
+
+        if(
+            safeMessage.includes("5sim") ||
+            safeMessage.includes("not enough user balance") ||
+            safeMessage.includes("operator") ||
+            safeMessage.includes("virtual")
+        ){
+
+            showPurchaseStatus(
+                "Unable to complete the purchase right now. Your balance was not charged. Please try again later.",
+                "error"
+            );
+
+        }else{
+
+            showPurchaseStatus(
+                error.message ||
+                "Unable to complete the purchase right now. Your balance was not charged. Please try again later.",
+                "error"
+            );
+
+        }
 
         updatePurchaseAvailability();
 
@@ -1383,29 +1695,37 @@ async function loadCustomerNumbers(){
             );
 
         customerNumbers =
-            Array.isArray(data.numbers)
-                ? data.numbers
-                : [];
+            Array.isArray(
+                data.numbers
+            )
+            ? data.numbers
+            : [];
 
         const active =
-            customerNumbers.find(number => {
+            customerNumbers.find(
+                number => {
 
-                const status =
-                    String(
-                        number.status ||
-                        ""
-                    ).toLowerCase();
+                    const status =
+                        String(
+                            number.status ||
+                            ""
+                        ).toLowerCase();
 
-                return status !== "expired" &&
-                       status !== "cancelled" &&
-                       status !== "refunded";
+                    return (
+                        status !== "expired" &&
+                        status !== "cancelled" &&
+                        status !== "refunded"
+                    );
 
-            });
+                }
+            );
 
         if(active){
 
             activePurchase =
-                normalizeBackendNumber(active);
+                normalizeBackendNumber(
+                    active
+                );
 
         }
 
@@ -1425,7 +1745,9 @@ async function loadCustomerNumbers(){
    NORMALIZE NUMBER
 ========================================================= */
 
-function normalizeBackendNumber(number){
+function normalizeBackendNumber(
+    number
+){
 
     if(!number){
         return null;
@@ -1508,41 +1830,91 @@ function openDeposit(){
 
 function goTo(path){
 
-    window.location.href = path;
+    /*
+     * Navigation only.
+     *
+     * We do NOT call signOut().
+     * Firebase persistence keeps the same
+     * Google session available on the next page.
+     */
+    window.location.href =
+        path;
 
 }
 
 
-document.getElementById("smsNav")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/sms.html")
-    );
-
-document.getElementById("settingsNav")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/settings.html")
-    );
-
-document.getElementById("mobileSms")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/sms.html")
-    );
-
-document.getElementById("mobileSettings")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/settings.html")
-    );
+document.getElementById(
+    "smsNav"
+).addEventListener(
+    "click",
+    () =>
+        goTo(
+            "/numorahq/sms.html"
+        )
+);
 
 
-document.getElementById("depositBtn")
-    .addEventListener(
-        "click",
-        openDeposit
-    );
+document.getElementById(
+    "settingsNav"
+).addEventListener(
+    "click",
+    () =>
+        goTo(
+            "/numorahq/settings.html"
+        )
+);
+
+
+document.getElementById(
+    "mobileSms"
+).addEventListener(
+    "click",
+    () =>
+        goTo(
+            "/numorahq/sms.html"
+        )
+);
+
+
+document.getElementById(
+    "mobileSettings"
+).addEventListener(
+    "click",
+    () =>
+        goTo(
+            "/numorahq/settings.html"
+        )
+);
+
+
+document.getElementById(
+    "mobileDashboard"
+).addEventListener(
+    "click",
+    () =>
+        goTo(
+            "/numorahq/dashboard.html"
+        )
+);
+
+
+document.getElementById(
+    "dashboardNav"
+).addEventListener(
+    "click",
+    () =>
+        goTo(
+            "/numorahq/dashboard.html"
+        )
+);
+
+
+document.getElementById(
+    "depositBtn"
+).addEventListener(
+    "click",
+    openDeposit
+);
 
 
 countrySelect.addEventListener(
@@ -1551,14 +1923,20 @@ countrySelect.addEventListener(
 
         if(!event.target.value){
 
-            selectedCountry = null;
-            selectedService = null;
-            selectedPrice = 0;
+            selectedCountry =
+                null;
+
+            selectedService =
+                null;
+
+            selectedPrice =
+                0;
 
             serviceSelect.innerHTML =
                 `<option value="">Select country first</option>`;
 
-            serviceSelect.disabled = true;
+            serviceSelect.disabled =
+                true;
 
             priceValue.textContent =
                 formatNaira(0);
@@ -1582,17 +1960,21 @@ serviceSelect.addEventListener(
     event => {
 
         selectedService =
-            services.find(service => {
+            services.find(
+                service => {
 
-                const id =
-                    service.id ??
-                    service.serviceId ??
-                    service.service;
+                    const id =
+                        service.id ??
+                        service.serviceId ??
+                        service.service;
 
-                return String(id) ===
-                    String(event.target.value);
+                    return String(id) ===
+                        String(
+                            event.target.value
+                        );
 
-            }) || null;
+                }
+            ) || null;
 
         selectedPrice =
             getCustomerPrice(
@@ -1600,7 +1982,9 @@ serviceSelect.addEventListener(
             );
 
         priceValue.textContent =
-            formatNaira(selectedPrice);
+            formatNaira(
+                selectedPrice
+            );
 
         updatePurchaseAvailability();
 
@@ -1618,26 +2002,36 @@ purchaseBtn.addEventListener(
    LOGOUT
 ========================================================= */
 
-document.getElementById("logoutBtn")
-    .addEventListener(
-        "click",
-        async () => {
+document.getElementById(
+    "logoutBtn"
+).addEventListener(
+    "click",
+    async () => {
 
-            try{
+        try{
 
-                await signOut(auth);
+            await signOut(
+                auth
+            );
 
-                window.location.href =
-                    HOME_URL;
+            /*
+             * Only an explicit Sign Out action
+             * returns the customer to the home page.
+             */
+            window.location.href =
+                HOME_URL;
 
-            }catch(error){
+        }catch(error){
 
-                console.error(error);
-
-            }
+            console.error(
+                "Sign out error:",
+                error
+            );
 
         }
-    );
+
+    }
+);
 
 
 /* =========================================================
@@ -1646,6 +2040,10 @@ document.getElementById("logoutBtn")
 
 async function startDashboard(){
 
+    /*
+     * Make Firebase authentication persistent
+     * before waiting for the auth state.
+     */
     try{
 
         await setPersistence(
@@ -1662,31 +2060,61 @@ async function startDashboard(){
 
     }
 
+
+    /*
+     * Firebase calls this after it has restored
+     * the saved Google session.
+     *
+     * We do NOT redirect on an early/unknown state.
+     * We only redirect after Firebase has actually
+     * confirmed that there is no authenticated user.
+     */
     onAuthStateChanged(
         auth,
         async user => {
 
+            authStateResolved =
+                true;
+
             if(!user){
+
+                /*
+                 * Firebase has finished restoring the
+                 * session and there genuinely is no user.
+                 *
+                 * This is therefore a real unauthenticated
+                 * state, not a page-switch logout.
+                 */
+                loadingScreen.style.display =
+                    "none";
 
                 window.location.href =
                     HOME_URL;
 
                 return;
+
             }
 
-            currentUser = user;
+
+            currentUser =
+                user;
+
 
             populateUser(
                 user
             );
 
+
             listenToCustomerProfile(
                 user
             );
 
+
             await loadCustomerCatalog();
 
+
             await loadCustomerNumbers();
+
 
             loadingScreen.style.display =
                 "none";
