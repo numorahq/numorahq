@@ -53,7 +53,9 @@ button{
 }
 
 @keyframes spin{
-    to{transform:rotate(360deg)}
+    to{
+        transform:rotate(360deg)
+    }
 }
 
 .app{
@@ -364,7 +366,9 @@ button{
 
         <div>
 
-            <h1>Settings</h1>
+            <h1>
+                Settings
+            </h1>
 
             <p>
                 Manage your Numora account information.
@@ -384,7 +388,9 @@ button{
 
     <section class="card">
 
-        <h2>Account</h2>
+        <h2>
+            Account
+        </h2>
 
         <div class="account">
 
@@ -468,7 +474,9 @@ button{
 
     <section class="card">
 
-        <h2>Account Access</h2>
+        <h2>
+            Account Access
+        </h2>
 
         <button
             class="logout-large"
@@ -505,8 +513,7 @@ button{
 
 import {
     initializeApp
-} from
-"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
     getAuth,
@@ -514,8 +521,7 @@ import {
     signOut,
     setPersistence,
     browserLocalPersistence
-} from
-"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 import {
     getFirestore,
@@ -523,8 +529,7 @@ import {
     getDoc,
     setDoc,
     onSnapshot
-} from
-"https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
 /* =========================================================
@@ -534,7 +539,7 @@ import {
 const firebaseConfig = {
 
     apiKey:
-        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjvGdSccWrSg",
+        "AIzaSyDZa5HcMxwYS-qVPPAyKSWwjfGdSccWrSg",
 
     authDomain:
         "numora-c9a3b.firebaseapp.com",
@@ -557,16 +562,24 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+const auth =
+    getAuth(app);
+
+const db =
+    getFirestore(app);
 
 
 /* =========================================================
    CONSTANTS
 ========================================================= */
 
-const HOME_URL = "/numorahq/";
+const HOME_URL =
+    "/numorahq/";
 
 
 /* =========================================================
@@ -574,7 +587,9 @@ const HOME_URL = "/numorahq/";
 ========================================================= */
 
 let currentUser = null;
+
 let profileUnsubscribe = null;
+
 let permanentProfileId = null;
 
 
@@ -583,7 +598,9 @@ let permanentProfileId = null;
 ========================================================= */
 
 const loadingScreen =
-    document.getElementById("loadingScreen");
+    document.getElementById(
+        "loadingScreen"
+    );
 
 
 /* =========================================================
@@ -594,6 +611,8 @@ function isValidProfileId(value){
 
     return /^[A-Z]{3}[0-9]{3}$/.test(
         String(value || "")
+            .trim()
+            .toUpperCase()
     );
 
 }
@@ -605,6 +624,7 @@ function generateProfileId(){
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     let result = "";
+
 
     for(let i = 0; i < 3; i++){
 
@@ -618,11 +638,14 @@ function generateProfileId(){
 
     }
 
+
     result += String(
         Math.floor(
-            100 + Math.random() * 900
+            100 +
+            Math.random() * 900
         )
     );
+
 
     return result;
 
@@ -630,33 +653,37 @@ function generateProfileId(){
 
 
 /*
-    Get the permanent Profile ID.
+    Resolve the permanent Profile ID.
 
-    IMPORTANT:
-    This function NEVER generates an ID just
-    for displaying on the screen.
+    Existing profileId always wins.
 
-    Existing profileId is always preserved.
+    Legacy customerProfileId/customerId can be
+    migrated.
 
-    Existing legacy customerProfileId/customerId
-    is migrated to profileId.
+    A new ID is generated only when absolutely
+    necessary and is immediately saved.
 
-    A new ID is generated only when the user
-    genuinely has no Profile ID at all.
+    We never generate an ID merely for display.
 */
 
-async function getOrCreateProfileId(user){
+async function getOrCreateProfileId(
+    user
+){
 
     if(!user){
+
         throw new Error(
             "No authenticated user."
         );
+
     }
 
 
     if(
         permanentProfileId &&
-        isValidProfileId(permanentProfileId)
+        isValidProfileId(
+            permanentProfileId
+        )
     ){
 
         return permanentProfileId;
@@ -673,7 +700,9 @@ async function getOrCreateProfileId(user){
 
 
     const snapshot =
-        await getDoc(userRef);
+        await getDoc(
+            userRef
+        );
 
 
     const data =
@@ -682,7 +711,7 @@ async function getOrCreateProfileId(user){
             : {};
 
 
-    /* Existing permanent ID */
+    /* Existing canonical Profile ID */
 
     if(
         isValidProfileId(
@@ -691,17 +720,19 @@ async function getOrCreateProfileId(user){
     ){
 
         permanentProfileId =
-            data.profileId;
+            String(
+                data.profileId
+            )
+            .trim()
+            .toUpperCase();
+
 
         return permanentProfileId;
 
     }
 
 
-    /*
-        Support an older field if the customer
-        already has a valid Profile ID.
-    */
+    /* Legacy Profile ID */
 
     let legacyProfileId = null;
 
@@ -713,7 +744,11 @@ async function getOrCreateProfileId(user){
     ){
 
         legacyProfileId =
-            data.customerProfileId;
+            String(
+                data.customerProfileId
+            )
+            .trim()
+            .toUpperCase();
 
     }else if(
         isValidProfileId(
@@ -722,7 +757,11 @@ async function getOrCreateProfileId(user){
     ){
 
         legacyProfileId =
-            data.customerId;
+            String(
+                data.customerId
+            )
+            .trim()
+            .toUpperCase();
 
     }
 
@@ -751,9 +790,9 @@ async function getOrCreateProfileId(user){
 
 
     /*
-        No valid Profile ID exists.
+        No Profile ID exists.
 
-        Generate it ONCE and immediately save it.
+        Generate it once and save it.
     */
 
     const newProfileId =
@@ -772,15 +811,10 @@ async function getOrCreateProfileId(user){
     );
 
 
-    /*
-        Read it back from Firestore.
-
-        This prevents us from treating an unsaved
-        temporary value as a permanent ID.
-    */
-
     const verifySnapshot =
-        await getDoc(userRef);
+        await getDoc(
+            userRef
+        );
 
 
     const verifyData =
@@ -803,7 +837,11 @@ async function getOrCreateProfileId(user){
 
 
     permanentProfileId =
-        verifyData.profileId;
+        String(
+            verifyData.profileId
+        )
+        .trim()
+        .toUpperCase();
 
 
     return permanentProfileId;
@@ -812,10 +850,16 @@ async function getOrCreateProfileId(user){
 
 
 /* =========================================================
-   FORMAT
+   FORMAT CURRENCY
 ========================================================= */
 
-function formatNaira(amount){
+function formatNaira(
+    amount
+){
+
+    const value =
+        Number(amount || 0);
+
 
     return new Intl.NumberFormat(
         "en-NG",
@@ -825,14 +869,16 @@ function formatNaira(amount){
             maximumFractionDigits:0
         }
     ).format(
-        Number(amount || 0)
+        Number.isFinite(value)
+            ? value
+            : 0
     );
 
 }
 
 
 /* =========================================================
-   USER
+   POPULATE USER
 ========================================================= */
 
 function populateUser(
@@ -841,7 +887,8 @@ function populateUser(
     profileId = null
 ){
 
-    currentUser = user;
+    currentUser =
+        user;
 
 
     const name =
@@ -856,42 +903,52 @@ function populateUser(
         "—";
 
 
-    document.getElementById("miniName")
-        .textContent =
-            name;
+    document.getElementById(
+        "miniName"
+    ).textContent =
+        name;
 
 
-    document.getElementById("miniEmail")
-        .textContent =
-            email;
+    document.getElementById(
+        "miniEmail"
+    ).textContent =
+        email;
 
 
-    document.getElementById("accountName")
-        .textContent =
-            name;
+    document.getElementById(
+        "accountName"
+    ).textContent =
+        name;
 
 
-    document.getElementById("accountEmail")
-        .textContent =
-            email;
+    document.getElementById(
+        "accountEmail"
+    ).textContent =
+        email;
 
 
-    document.getElementById("emailValue")
-        .textContent =
-            email;
+    document.getElementById(
+        "emailValue"
+    ).textContent =
+        email;
 
 
     /*
-        Never generate an ID here.
+        Never create a new ID here.
 
-        Only show the permanent ID.
+        Only display the already-resolved
+        permanent Profile ID.
     */
 
     document.getElementById(
         "profileIdValue"
     ).textContent =
-        isValidProfileId(profileId)
-            ? profileId
+        isValidProfileId(
+            profileId
+        )
+            ? String(
+                profileId
+            ).toUpperCase()
             : "—";
 
 
@@ -902,17 +959,24 @@ function populateUser(
         0;
 
 
-    document.getElementById("balanceValue")
-        .textContent =
-            formatNaira(balance);
+    document.getElementById(
+        "balanceValue"
+    ).textContent =
+        formatNaira(
+            balance
+        );
 
 
     const avatar =
-        document.getElementById("userAvatar");
+        document.getElementById(
+            "userAvatar"
+        );
 
 
     const accountAvatar =
-        document.getElementById("accountAvatar");
+        document.getElementById(
+            "accountAvatar"
+        );
 
 
     if(user.photoURL){
@@ -920,8 +984,16 @@ function populateUser(
         avatar.src =
             user.photoURL;
 
+        avatar.style.display =
+            "block";
+
         accountAvatar.src =
             user.photoURL;
+
+    }else{
+
+        avatar.style.display =
+            "none";
 
     }
 
@@ -929,14 +1001,19 @@ function populateUser(
 
 
 /* =========================================================
-   FIRESTORE PROFILE LISTENER
+   PROFILE LISTENER
 ========================================================= */
 
-function listenToProfile(user){
+function listenToProfile(
+    user
+){
 
     if(profileUnsubscribe){
 
         profileUnsubscribe();
+
+        profileUnsubscribe =
+            null;
 
     }
 
@@ -951,7 +1028,9 @@ function listenToProfile(user){
 
     profileUnsubscribe =
         onSnapshot(
+
             ref,
+
             snapshot => {
 
                 const data =
@@ -960,21 +1039,34 @@ function listenToProfile(user){
                         : {};
 
 
-                /*
-                    Do not generate another ID here.
+                const savedProfileId =
+                    isValidProfileId(
+                        data.profileId
+                    )
+                        ? String(
+                            data.profileId
+                        )
+                        .trim()
+                        .toUpperCase()
+                        : null;
 
-                    The permanent ID has already been
-                    resolved during initialization.
-                */
+
+                if(savedProfileId){
+
+                    permanentProfileId =
+                        savedProfileId;
+
+                }
+
 
                 populateUser(
                     user,
                     data,
-                    permanentProfileId ||
-                    data.profileId
+                    permanentProfileId
                 );
 
             },
+
             error => {
 
                 console.error(
@@ -983,6 +1075,7 @@ function listenToProfile(user){
                 );
 
             }
+
         );
 
 }
@@ -992,40 +1085,80 @@ function listenToProfile(user){
    NAVIGATION
 ========================================================= */
 
-function goTo(path){
+function goTo(
+    path
+){
 
-    window.location.href =
-        path;
+    /*
+        Navigation does NOT call signOut().
+        The Google session remains active.
+    */
+
+    window.location.assign(
+        path
+    );
 
 }
 
 
-document.getElementById("dashboardNav")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/")
-    );
+document.getElementById(
+    "dashboardNav"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        goTo(
+            "/numorahq/"
+        );
+
+    }
+);
 
 
-document.getElementById("smsNav")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/sms.html")
-    );
+document.getElementById(
+    "smsNav"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        goTo(
+            "/numorahq/sms.html"
+        );
+
+    }
+);
 
 
-document.getElementById("mobileDashboard")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/")
-    );
+document.getElementById(
+    "mobileDashboard"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        goTo(
+            "/numorahq/"
+        );
+
+    }
+);
 
 
-document.getElementById("mobileSms")
-    .addEventListener(
-        "click",
-        () => goTo("/numorahq/sms.html")
-    );
+document.getElementById(
+    "mobileSms"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        goTo(
+            "/numorahq/sms.html"
+        );
+
+    }
+);
 
 
 /* =========================================================
@@ -1036,10 +1169,30 @@ async function logout(){
 
     try{
 
-        await signOut(auth);
+        if(profileUnsubscribe){
 
-        window.location.href =
-            HOME_URL;
+            profileUnsubscribe();
+
+            profileUnsubscribe =
+                null;
+
+        }
+
+
+        await signOut(
+            auth
+        );
+
+
+        /*
+            This is the ONLY situation where
+            Settings intentionally leaves the
+            authenticated customer area.
+        */
+
+        window.location.assign(
+            HOME_URL
+        );
 
     }catch(error){
 
@@ -1053,18 +1206,22 @@ async function logout(){
 }
 
 
-document.getElementById("logoutBtn")
-    .addEventListener(
-        "click",
-        logout
-    );
+document.getElementById(
+    "logoutBtn"
+)
+.addEventListener(
+    "click",
+    logout
+);
 
 
-document.getElementById("logoutLarge")
-    .addEventListener(
-        "click",
-        logout
-    );
+document.getElementById(
+    "logoutLarge"
+)
+.addEventListener(
+    "click",
+    logout
+);
 
 
 /* =========================================================
@@ -1072,6 +1229,11 @@ document.getElementById("logoutLarge")
 ========================================================= */
 
 async function start(){
+
+    /*
+        Set persistent Firebase authentication
+        before relying on the authentication state.
+    */
 
     try{
 
@@ -1083,7 +1245,7 @@ async function start(){
     }catch(error){
 
         console.error(
-            "Persistence error:",
+            "Firebase persistence error:",
             error
         );
 
@@ -1094,10 +1256,22 @@ async function start(){
         auth,
         async user => {
 
+            /*
+                Firebase has now resolved the
+                persisted authentication state.
+            */
+
             if(!user){
 
-                window.location.href =
-                    HOME_URL;
+                /*
+                    Only redirect when Firebase has
+                    actually confirmed that there is
+                    no authenticated user.
+                */
+
+                window.location.assign(
+                    HOME_URL
+                );
 
                 return;
 
@@ -1111,7 +1285,8 @@ async function start(){
             try{
 
                 /*
-                    Resolve the permanent ID first.
+                    Resolve the permanent Profile ID
+                    before starting the live listener.
                 */
 
                 const profileId =
@@ -1120,22 +1295,12 @@ async function start(){
                     );
 
 
-                /*
-                    Display the authenticated
-                    user's basic information.
-                */
-
                 populateUser(
                     user,
                     {},
                     profileId
                 );
 
-
-                /*
-                    Keep balance and account data
-                    live without page reload.
-                */
 
                 listenToProfile(
                     user
@@ -1144,7 +1309,6 @@ async function start(){
 
                 loadingScreen.style.display =
                     "none";
-
 
             }catch(error){
 
@@ -1155,8 +1319,8 @@ async function start(){
 
 
                 /*
-                    Do not create a replacement ID
-                    if Firestore fails.
+                    Never invent a replacement ID
+                    if Firestore cannot be reached.
                 */
 
                 document.getElementById(
@@ -1175,6 +1339,10 @@ async function start(){
 
 }
 
+
+/* =========================================================
+   START APPLICATION
+========================================================= */
 
 start();
 
