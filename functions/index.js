@@ -783,6 +783,50 @@ async function buy5SimActivation(
 
 /*
 ---------------------------------------------------------
+NORMALIZE 5SIM PURCHASE RESPONSE
+---------------------------------------------------------
+*/
+
+function normalize5SimPurchaseResponse(data){
+
+    const orderId =
+        data?.id ??
+        data?.order_id ??
+        data?.orderId ??
+        null;
+
+    const phoneNumber =
+        data?.phone ??
+        data?.phoneNumber ??
+        data?.number ??
+        null;
+
+    const status =
+        data?.status ??
+        null;
+
+    return {
+
+        orderId:
+            orderId !== null
+                ? String(orderId)
+                : null,
+
+        phoneNumber:
+            phoneNumber
+                ? normalizePhoneNumber(phoneNumber)
+                : null,
+
+        status,
+
+        raw:
+            data
+
+    };
+
+}
+/*
+---------------------------------------------------------
 REFUND RESERVED CUSTOMER BALANCE
 ---------------------------------------------------------
 */
