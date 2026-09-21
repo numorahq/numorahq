@@ -1,2662 +1,580 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Numora Dashboard</title>
-
-<meta
-    name="description"
-    content="Your Numora customer dashboard."
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numora — Dashboard</title>
 
 <style>
-
-/* =========================================================
-   GLOBAL
-========================================================= */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-html,
-body {
-    min-height: 100%;
+:root{
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#111827;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#d97706;
 }
 
-body {
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "SF Pro Text",
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-
-    background: #f5f8fc;
-    color: #0f172a;
-
-    overflow-x: hidden;
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
 }
 
 button,
-select {
-    font: inherit;
+select{
+    font:inherit;
 }
 
-button,
-.nav-item,
-.mobile-nav-item {
-    -webkit-tap-highlight-color: transparent;
+button{
+    cursor:pointer;
 }
 
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-.loading-screen {
-
-    position: fixed;
-    inset: 0;
-
-    z-index: 9999;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background:
-        linear-gradient(
-            145deg,
-            #f8fbff,
-            #edf5ff
-        );
-
-    transition:
-        opacity .25s ease,
-        visibility .25s ease;
-}
-
-.loading-screen.hidden {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.loading-box {
-    text-align: center;
-}
-
-.loading-logo {
-
-    width: 58px;
-    height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin: 0 auto 15px;
-
-    border-radius: 18px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f8cff
-        );
-
-    color: white;
-
-    font-size: 27px;
-    font-weight: 800;
-
-    box-shadow:
-        0 15px 30px rgba(37,99,235,.2);
-}
-
-.loading-box p {
-    color: #64748b;
-    font-size: 13px;
-}
-
-
-/* =========================================================
-   APP
-========================================================= */
-
-.app {
-    min-height: 100vh;
-    display: flex;
-}
-
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
-
-.sidebar {
-
-    position: fixed;
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-
-    width: 250px;
-
-    padding: 24px 16px;
-
-    background: white;
-
-    border-right:
-        1px solid #e6edf5;
-
-    z-index: 100;
-}
-
-.brand {
-
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-
-    padding:
-        0 10px
-        25px;
-}
-
-.logo {
-
-    width: 40px;
-    height: 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 13px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f8cff
-        );
-
-    color: white;
-
-    font-size: 20px;
-    font-weight: 800;
-}
-
-.brand-name {
-
-    font-size: 20px;
-    font-weight: 800;
-
-    letter-spacing: -.5px;
-}
-
-.nav-list {
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 6px;
-}
-
-.nav-item {
-
-    width: 100%;
-
-    display: flex;
-    align-items: center;
-
-    gap: 12px;
-
-    padding: 13px 14px;
-
-    border: 0;
-
-    border-radius: 13px;
-
-    background: transparent;
-
-    color: #64748b;
-
-    text-align: left;
-
-    cursor: pointer;
-
-    font-size: 14px;
-    font-weight: 650;
-
-    transition:
-        background .2s ease,
-        color .2s ease;
-}
-
-.nav-item:hover {
-
-    background: #f1f6ff;
-    color: #2563eb;
-}
-
-.nav-item.active {
-
-    background: #eff6ff;
-    color: #2563eb;
-}
-
-.nav-icon {
-
-    width: 21px;
-    height: 21px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    flex: 0 0 21px;
-}
-
-.nav-icon svg {
-
-    width: 18px;
-    height: 18px;
-
-    stroke: currentColor;
-
-    stroke-width: 1.8;
-
-    fill: none;
-
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.sidebar-bottom {
-
-    position: absolute;
-
-    left: 16px;
-    right: 16px;
-    bottom: 20px;
-
-    border-top:
-        1px solid #edf1f6;
-
-    padding-top: 18px;
-}
-
-.profile-mini {
-
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-
-    padding: 10px;
-
-    margin-bottom: 10px;
-}
-
-.avatar {
-
-    width: 38px;
-    height: 38px;
-
-    flex: 0 0 38px;
-
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #dbeafe;
-    color: #2563eb;
-
-    font-weight: 800;
-
-    overflow: hidden;
-}
-
-.avatar img {
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-}
-
-.profile-info {
-    min-width: 0;
-}
-
-.profile-name {
-
-    font-size: 13px;
-    font-weight: 750;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.profile-email {
-
-    color: #94a3b8;
-
-    font-size: 11px;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.signout-btn {
-
-    width: 100%;
-
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-
-    padding: 11px 12px;
-
-    border: 0;
-    border-radius: 12px;
-
-    background: #fff1f2;
-    color: #e11d48;
-
-    cursor: pointer;
-
-    font-size: 13px;
-    font-weight: 700;
-}
-
-
-/* =========================================================
-   MAIN
-========================================================= */
-
-.main {
-
-    width: calc(100% - 250px);
-
-    margin-left: 250px;
-
-    min-height: 100vh;
-
-    padding: 30px;
-}
-
-
-/* =========================================================
-   TOPBAR
-========================================================= */
-
-.topbar {
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 30px;
-}
-
-.topbar-left h1 {
-
-    font-size: 29px;
-
-    letter-spacing: -1px;
-
-    margin-bottom: 5px;
-}
-
-.topbar-left p {
-
-    color: #64748b;
-
-    font-size: 14px;
-}
-
-.topbar-right {
-
-    display: flex;
-    align-items: center;
-
-    gap: 12px;
-}
-
-.top-avatar {
-
-    width: 42px;
-    height: 42px;
-
-    border-radius: 50%;
-
-    overflow: hidden;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #dbeafe;
-    color: #2563eb;
-
-    font-weight: 800;
-}
-
-.top-avatar img {
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-}
-
-
-/* =========================================================
-   VIEWS
-========================================================= */
-
-.page-view {
-    display: none;
-}
-
-.page-view.active {
-    display: block;
-}
-
-
-/* =========================================================
-   BALANCE HERO
-========================================================= */
-
-.balance-hero {
-
-    position: relative;
-
-    overflow: hidden;
-
-    padding: 30px;
-
-    border-radius: 27px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f8cff
-        );
-
-    color: white;
-
-    box-shadow:
-        0 22px 50px rgba(37,99,235,.18);
-
-    margin-bottom: 24px;
-}
-
-.balance-hero::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 260px;
-    height: 260px;
-
-    right: -90px;
-    top: -120px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255,255,255,.10);
-}
-
-.balance-content {
-    position: relative;
-    z-index: 2;
-}
-
-.balance-label {
-
-    font-size: 12px;
-
-    opacity: .78;
-
-    margin-bottom: 8px;
-}
-
-.balance-amount {
-
-    font-size: clamp(
-        32px,
-        5vw,
-        46px
-    );
-
-    font-weight: 800;
-
-    letter-spacing: -1.5px;
-
-    margin-bottom: 22px;
-}
-
-.deposit-button {
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 8px;
-
-    padding: 12px 17px;
-
-    border: 0;
-
-    border-radius: 13px;
-
-    background: white;
-
-    color: #2563eb;
-
-    font-weight: 800;
-
-    text-decoration: none;
-
-    cursor: pointer;
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease;
-}
-
-.deposit-button:hover {
-
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 8px 20px rgba(0,0,0,.12);
-}
-
-.deposit-button svg {
-
-    width: 17px;
-    height: 17px;
-
-    fill: currentColor;
-}
-
-
-/* =========================================================
-   PURCHASE SECTION
-========================================================= */
-
-.purchase-section {
-
-    background: white;
-
-    border:
-        1px solid #e7edf5;
-
-    border-radius: 24px;
-
-    padding: 25px;
-
-    margin-bottom: 20px;
-}
-
-.purchase-heading {
-
-    margin-bottom: 22px;
-}
-
-.purchase-heading h2 {
-
-    font-size: 21px;
-
-    letter-spacing: -.5px;
-
-    margin-bottom: 6px;
-}
-
-.purchase-heading p {
-
-    color: #64748b;
-
-    font-size: 13px;
-
-    line-height: 1.5;
-}
-
-.purchase-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 15px;
-}
-
-.field {
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 8px;
-}
-
-.field-label {
-
-    font-size: 12px;
-
-    color: #64748b;
-
-    font-weight: 750;
-}
-
-.select-wrap {
-    position: relative;
-}
-
-.select-wrap::after {
-
-    content: "";
-
-    position: absolute;
-
-    right: 15px;
-    top: 50%;
-
-    width: 7px;
-    height: 7px;
-
-    border-right:
-        1.7px solid #64748b;
-
-    border-bottom:
-        1.7px solid #64748b;
-
-    transform:
-        translateY(-70%)
-        rotate(45deg);
-
-    pointer-events: none;
-}
-
-.select-input {
-
-    width: 100%;
-
-    height: 49px;
-
-    padding:
-        0 42px
-        0 14px;
-
-    appearance: none;
-
-    border:
-        1px solid #dce5ef;
-
-    border-radius: 13px;
-
-    background: #f8fafc;
-
-    color: #0f172a;
-
-    outline: none;
-
-    cursor: pointer;
-
-    font-size: 14px;
-
-    transition:
-        border .2s ease,
-        box-shadow .2s ease;
-}
-
-.select-input:focus {
-
-    border-color: #2563eb;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(37,99,235,.10);
-}
-
-.select-input:disabled {
-
-    color: #94a3b8;
-
-    cursor: not-allowed;
-
-    background: #f8fafc;
-}
-
-
-/* =========================================================
-   PRICE
-========================================================= */
-
-.price-box {
-
-    margin-top: 18px;
-
-    padding: 18px;
-
-    border-radius: 17px;
-
-    background: #f8fbff;
-
-    border:
-        1px solid #e1ebf8;
-}
-
-.price-row {
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-}
-
-.price-title {
-
-    color: #64748b;
-
-    font-size: 12px;
-
-    font-weight: 700;
-}
-
-.price-value {
-
-    color: #2563eb;
-
-    font-size: 24px;
-
-    font-weight: 800;
-
-    letter-spacing: -.5px;
-}
-
-.balance-warning {
-
-    display: none;
-
-    margin-top: 12px;
-
-    padding: 12px 14px;
-
-    border-radius: 12px;
-
-    background: #fff7ed;
-
-    color: #c2410c;
-
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-.balance-warning.show {
-    display: block;
-}
-
-
-/* =========================================================
-   PURCHASE BUTTON
-========================================================= */
-
-.purchase-button {
-
-    width: 100%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 9px;
-
-    margin-top: 17px;
-
-    height: 52px;
-
-    border: 0;
-
-    border-radius: 14px;
-
-    background: #2563eb;
-
-    color: white;
-
-    font-size: 14px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 10px 22px
-        rgba(37,99,235,.17);
-
-    transition:
-        background .2s ease,
-        transform .2s ease,
-        opacity .2s ease;
-}
-
-.purchase-button:hover:not(:disabled) {
-
-    background: #1d4ed8;
-
-    transform: translateY(-1px);
-}
-
-.purchase-button:disabled {
-
-    opacity: .55;
-
-    cursor: not-allowed;
-
-    box-shadow: none;
-}
-
-.purchase-button svg {
-
-    width: 18px;
-    height: 18px;
-
-    stroke: currentColor;
-
-    fill: none;
-
-    stroke-width: 2;
-
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-.purchase-status {
-
-    display: none;
-
-    margin-top: 13px;
-
-    padding: 13px 14px;
-
-    border-radius: 12px;
-
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-.purchase-status.show {
-    display: block;
-}
-
-.purchase-status.info {
-
-    background: #eff6ff;
-    color: #1d4ed8;
-}
-
-.purchase-status.success {
-
-    background: #f0fdf4;
-    color: #15803d;
-}
-
-.purchase-status.error {
-
-    background: #fff1f2;
-    color: #be123c;
-}
-
-
-/* =========================================================
-   STATS
-========================================================= */
-
-.stats {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap: 15px;
-
-    margin-bottom: 20px;
-}
-
-.stat-card {
-
-    padding: 22px;
-
-    border-radius: 21px;
-
-    background: white;
-
-    border:
-        1px solid #e7edf5;
+.loading-screen{
+    position:fixed;
+    inset:0;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
 }
-
-.stat-label {
-
-    color: #64748b;
-
-    font-size: 12px;
-
-    margin-bottom: 9px;
-}
-
-.stat-value {
-
-    font-size: 24px;
-
-    font-weight: 800;
 
-    letter-spacing: -.5px;
+.loading-spinner{
+    width:34px;
+    height:34px;
+    border:3px solid #dbeafe;
+    border-top-color:var(--primary);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
 }
 
-
-/* =========================================================
-   RECENT MESSAGES
-========================================================= */
-
-.content-card {
-
-    background: white;
-
-    border:
-        1px solid #e7edf5;
-
-    border-radius: 22px;
-
-    padding: 24px;
+@keyframes spin{
+    to{transform:rotate(360deg)}
 }
-
-.card-header {
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 
-    margin-bottom: 20px;
+.app{
+    display:flex;
+    min-height:100vh;
 }
 
-.card-header h2 {
-    font-size: 18px;
+.sidebar{
+    width:250px;
+    background:#fff;
+    border-right:1px solid var(--border);
+    padding:24px 16px;
+    display:flex;
+    flex-direction:column;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
 }
 
-.view-all {
-
-    border: 0;
-
-    background: transparent;
-
-    color: #2563eb;
-
-    font-size: 13px;
-    font-weight: 700;
-
-    cursor: pointer;
+.logo{
+    font-size:24px;
+    font-weight:800;
+    color:var(--primary);
+    margin:4px 12px 32px;
 }
-
-.empty-state {
 
-    padding: 40px 20px;
-
-    text-align: center;
+.logo small{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    font-weight:500;
+    margin-top:3px;
 }
-
-.empty-icon {
 
-    width: 52px;
-    height: 52px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin: 0 auto 15px;
-
-    border-radius: 17px;
-
-    background: #eff6ff;
-    color: #2563eb;
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
 }
-
-.empty-icon svg {
-
-    width: 23px;
-    height: 23px;
-
-    stroke: currentColor;
-
-    fill: none;
 
-    stroke-width: 1.8;
-
-    stroke-linecap: round;
-    stroke-linejoin: round;
+.nav button{
+    border:0;
+    background:transparent;
+    padding:13px 14px;
+    border-radius:12px;
+    text-align:left;
+    color:#4b5563;
+    font-weight:600;
 }
-
-.empty-state h3 {
 
-    font-size: 16px;
-
-    margin-bottom: 7px;
+.nav button:hover,
+.nav button.active{
+    background:#eff6ff;
+    color:var(--primary);
 }
-
-.empty-state p {
-
-    max-width: 400px;
-
-    margin: auto;
-
-    color: #94a3b8;
-
-    line-height: 1.6;
 
-    font-size: 13px;
+.profile-mini{
+    margin-top:auto;
+    padding:14px 10px;
+    border-top:1px solid var(--border);
 }
 
-
-/* =========================================================
-   SMS PAGE
-========================================================= */
-
-.sms-header-card {
-
-    background: white;
-
-    border:
-        1px solid #e7edf5;
-
-    border-radius: 24px;
-
-    padding: 25px;
-
-    margin-bottom: 20px;
+.profile-mini-name{
+    font-weight:700;
+    font-size:14px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
-
-.section-title {
 
-    font-size: 22px;
-
-    letter-spacing: -.6px;
-
-    margin-bottom: 6px;
+.profile-mini-email{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:3px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
-
-.section-description {
-
-    color: #64748b;
 
-    font-size: 13px;
-
-    line-height: 1.6;
+.logout-btn{
+    width:100%;
+    margin-top:12px;
+    border:0;
+    background:#fef2f2;
+    color:#dc2626;
+    padding:10px;
+    border-radius:10px;
+    font-weight:600;
 }
-
-.sms-number-card {
-
-    position: relative;
-
-    overflow: hidden;
 
-    padding: 28px;
-
-    border-radius: 24px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f8cff
-        );
-
-    color: white;
-
-    box-shadow:
-        0 20px 45px rgba(37,99,235,.16);
-
-    margin-bottom: 20px;
+.main{
+    margin-left:250px;
+    width:calc(100% - 250px);
+    padding:28px;
 }
-
-.sms-number-card::after {
-
-    content: "";
-
-    position: absolute;
 
-    width: 230px;
-    height: 230px;
-
-    right: -100px;
-    top: -120px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255,255,255,.10);
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:24px;
 }
-
-.sms-number-content {
 
-    position: relative;
-
-    z-index: 2;
+.topbar h1{
+    font-size:26px;
 }
-
-.sms-small-label {
-
-    font-size: 11px;
-
-    opacity: .78;
 
-    margin-bottom: 8px;
-
-    text-transform: uppercase;
-
-    letter-spacing: .4px;
+.topbar p{
+    color:var(--muted);
+    margin-top:5px;
+    font-size:14px;
 }
-
-.sms-number {
-
-    font-size: 31px;
 
-    font-weight: 800;
-
-    letter-spacing: -1px;
-
-    margin-bottom: 18px;
+.user-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#dbeafe;
 }
-
-.sms-service {
-
-    display: inline-flex;
 
-    align-items: center;
-
-    padding: 8px 12px;
-
-    border-radius: 10px;
-
-    background:
-        rgba(255,255,255,.14);
-
-    font-size: 12px;
-
-    font-weight: 700;
+.balance-card{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    border-radius:22px;
+    padding:25px;
+    margin-bottom:22px;
 }
-
-.sms-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1.3fr)
-        minmax(260px, .7fr);
 
-    gap: 20px;
+.balance-label{
+    font-size:13px;
+    opacity:.85;
 }
 
-.sms-messages-card,
-.sms-status-card {
-
-    background: white;
-
-    border:
-        1px solid #e7edf5;
-
-    border-radius: 22px;
-
-    padding: 24px;
+.balance-value{
+    font-size:34px;
+    font-weight:800;
+    margin:7px 0 20px;
 }
 
-.sms-card-title {
-
-    font-size: 17px;
-
-    font-weight: 800;
-
-    margin-bottom: 18px;
+.deposit-btn{
+    border:0;
+    background:#fff;
+    color:var(--primary);
+    padding:11px 17px;
+    border-radius:12px;
+    font-weight:700;
 }
-
-.sms-empty {
 
-    min-height: 250px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    text-align: center;
-
-    padding: 30px;
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:20px;
 }
 
-.sms-empty .empty-icon {
-    margin-bottom: 14px;
+.card h2{
+    font-size:18px;
+    margin-bottom:7px;
 }
-
-.sms-empty h3 {
-
-    font-size: 16px;
 
-    margin-bottom: 7px;
+.card-description{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:20px;
 }
 
-.sms-empty p {
-
-    color: #94a3b8;
-
-    font-size: 13px;
-
-    line-height: 1.6;
-
-    max-width: 340px;
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
 }
-
-.countdown-box {
-
-    padding: 18px;
-
-    border-radius: 16px;
-
-    background: #f8fbff;
 
-    border:
-        1px solid #e1ebf8;
-
-    margin-bottom: 14px;
+.field label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:7px;
 }
-
-.countdown-label {
-
-    color: #64748b;
-
-    font-size: 11px;
 
-    font-weight: 700;
-
-    margin-bottom: 6px;
+.field select{
+    width:100%;
+    height:46px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    padding:0 12px;
+    background:#fff;
+    color:var(--text);
+    outline:none;
 }
-
-.countdown-value {
-
-    color: #2563eb;
-
-    font-size: 25px;
 
-    font-weight: 800;
+.field select:focus{
+    border-color:var(--primary);
 }
 
-.waiting-status {
-
-    padding: 14px;
-
-    border-radius: 13px;
-
-    background: #eff6ff;
-
-    color: #1d4ed8;
-
-    font-size: 12px;
-
-    line-height: 1.5;
+.price-box{
+    background:#f8fafc;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:15px;
+    margin-top:16px;
 }
-
-
-/* =========================================================
-   SETTINGS PAGE
-========================================================= */
 
-.settings-card {
-
-    background: white;
-
-    border:
-        1px solid #e7edf5;
-
-    border-radius: 24px;
-
-    padding: 25px;
-
-    margin-bottom: 20px;
+.price-label{
+    color:var(--muted);
+    font-size:12px;
 }
-
-.settings-profile {
-
-    display: flex;
-
-    align-items: center;
 
-    gap: 16px;
-
-    padding-bottom: 24px;
-
-    border-bottom:
-        1px solid #edf1f6;
-
-    margin-bottom: 20px;
+.price-value{
+    font-size:22px;
+    font-weight:800;
+    margin-top:3px;
 }
-
-.settings-avatar {
-
-    width: 64px;
-    height: 64px;
-
-    flex: 0 0 64px;
-
-    border-radius: 50%;
-
-    overflow: hidden;
 
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background: #dbeafe;
-
-    color: #2563eb;
-
-    font-size: 22px;
-
-    font-weight: 800;
+.purchase-btn{
+    width:100%;
+    border:0;
+    background:var(--primary);
+    color:#fff;
+    padding:14px;
+    border-radius:12px;
+    font-weight:700;
+    margin-top:16px;
 }
-
-.settings-avatar img {
-
-    width: 100%;
-    height: 100%;
 
-    object-fit: cover;
+.purchase-btn:hover{
+    background:var(--primary-dark);
 }
 
-.settings-profile-name {
-
-    font-size: 18px;
-
-    font-weight: 800;
-
-    margin-bottom: 4px;
+.purchase-btn:disabled{
+    background:#cbd5e1;
+    cursor:not-allowed;
 }
-
-.settings-profile-email {
 
-    color: #64748b;
-
-    font-size: 13px;
+.status-message{
+    display:none;
+    padding:12px;
+    border-radius:10px;
+    font-size:13px;
+    margin-top:12px;
 }
-
-.settings-list {
-
-    display: flex;
-
-    flex-direction: column;
 
-    gap: 0;
+.status-message.show{
+    display:block;
 }
 
-.setting-row {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding: 17px 0;
-
-    border-bottom:
-        1px solid #edf1f6;
+.status-message.error{
+    background:#fef2f2;
+    color:#b91c1c;
 }
 
-.setting-row:last-child {
-    border-bottom: 0;
+.status-message.success{
+    background:#f0fdf4;
+    color:#15803d;
 }
-
-.setting-label {
-
-    color: #64748b;
 
-    font-size: 12px;
-
-    font-weight: 700;
-
-    margin-bottom: 4px;
+.balance-warning{
+    display:none;
+    background:#fff7ed;
+    color:#c2410c;
+    border-radius:10px;
+    padding:12px;
+    margin-top:14px;
+    font-size:13px;
 }
-
-.setting-value {
-
-    color: #0f172a;
 
-    font-size: 14px;
-
-    font-weight: 700;
-
-    word-break: break-word;
-
-    text-align: right;
+.balance-warning.show{
+    display:block;
 }
-
-.settings-logout {
-
-    width: 100%;
-
-    height: 50px;
-
-    margin-top: 5px;
-
-    border: 0;
-
-    border-radius: 13px;
-
-    background: #fff1f2;
-
-    color: #e11d48;
-
-    font-weight: 800;
 
-    cursor: pointer;
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
 }
 
-
-/* =========================================================
-   MOBILE NAV
-========================================================= */
-
-.mobile-nav {
-
-    display: none;
-
-    position: fixed;
-
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
-
-    z-index: 200;
-
-    padding: 8px;
-
-    background:
-        rgba(255,255,255,.94);
-
-    backdrop-filter:
-        blur(20px);
-
-    -webkit-backdrop-filter:
-        blur(20px);
-
-    border:
-        1px solid rgba(226,232,240,.9);
-
-    border-radius: 20px;
-
-    box-shadow:
-        0 15px 35px
-        rgba(15,23,42,.12);
+.stat-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px;
 }
-
-.mobile-nav-item {
-
-    flex: 1;
-
-    display: flex;
-    flex-direction: column;
 
-    align-items: center;
-
-    gap: 5px;
-
-    padding: 8px 4px;
-
-    border: 0;
-
-    background: transparent;
-
-    color: #94a3b8;
-
-    font-size: 10px;
-    font-weight: 700;
-
-    cursor: pointer;
+.stat-label{
+    font-size:12px;
+    color:var(--muted);
 }
 
-.mobile-nav-item.active {
-    color: #2563eb;
+.stat-value{
+    font-size:23px;
+    font-weight:800;
+    margin-top:6px;
 }
-
-.mobile-nav-icon {
 
-    width: 19px;
-    height: 19px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.empty{
+    color:var(--muted);
+    font-size:14px;
+    padding:10px 0;
 }
-
-.mobile-nav-icon svg {
-
-    width: 17px;
-    height: 17px;
-
-    stroke: currentColor;
 
-    fill: none;
-
-    stroke-width: 1.8;
-
-    stroke-linecap: round;
-    stroke-linejoin: round;
+.mobile-nav{
+    display:none;
 }
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 900px) {
 
-    .sidebar {
-        display: none;
+@media(max-width:800px){
+    .sidebar{
+        display:none;
     }
 
-    .main {
-
-        width: 100%;
-
-        margin-left: 0;
-
-        padding:
-            22px
-            18px
-            100px;
+    .main{
+        margin-left:0;
+        width:100%;
+        padding:18px 15px 90px;
     }
 
-    .mobile-nav {
-        display: flex;
+    .topbar h1{
+        font-size:22px;
     }
 
-    .topbar {
-        margin-bottom: 22px;
+    .form-grid{
+        grid-template-columns:1fr;
     }
 
-    .purchase-grid {
-        grid-template-columns: 1fr;
+    .stats{
+        grid-template-columns:1fr;
     }
 
-    .stats {
-        grid-template-columns:
-            repeat(3,1fr);
+    .mobile-nav{
+        display:flex;
+        position:fixed;
+        bottom:0;
+        left:0;
+        right:0;
+        height:65px;
+        background:rgba(255,255,255,.96);
+        border-top:1px solid var(--border);
+        z-index:100;
+        justify-content:space-around;
+        padding:7px;
     }
 
-    .sms-grid {
-        grid-template-columns: 1fr;
+    .mobile-nav button{
+        border:0;
+        background:transparent;
+        color:var(--muted);
+        font-size:12px;
+        font-weight:600;
+    }
+
+    .mobile-nav button.active{
+        color:var(--primary);
     }
 }
-
-
-@media (max-width: 600px) {
-
-    .topbar-left h1 {
-        font-size: 24px;
-    }
-
-    .topbar-left p {
-        font-size: 12px;
-    }
-
-    .top-avatar {
-
-        width: 38px;
-        height: 38px;
-    }
-
-    .balance-hero {
-        padding: 24px;
-    }
-
-    .balance-amount {
-        font-size: 34px;
-    }
-
-    .purchase-section {
-        padding: 19px;
-    }
-
-    .purchase-heading h2 {
-        font-size: 19px;
-    }
-
-    .stats {
-        gap: 9px;
-    }
-
-    .stat-card {
-        padding: 15px 12px;
-    }
-
-    .stat-value {
-        font-size: 19px;
-    }
-
-    .stat-label {
-        font-size: 10px;
-    }
-
-    .content-card,
-    .sms-header-card,
-    .sms-messages-card,
-    .sms-status-card,
-    .settings-card {
-        padding: 18px;
-    }
-
-    .sms-number-card {
-        padding: 23px;
-    }
-
-    .sms-number {
-        font-size: 27px;
-    }
-
-    .setting-row {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .setting-value {
-        text-align: left;
-    }
-
-}
-
-
-/* =========================================================
-   ACCESSIBILITY
-========================================================= */
-
-button:focus-visible,
-select:focus-visible,
-a:focus-visible {
-
-    outline:
-        3px solid
-        rgba(37,99,235,.25);
-
-    outline-offset: 2px;
-}
-
 </style>
-
 </head>
 
 <body>
 
-
-<!-- =====================================================
-     LOADING
-===================================================== -->
-
-<div
-    class="loading-screen"
-    id="loadingScreen"
->
-
-    <div class="loading-box">
-
-        <div class="loading-logo">
-            N
-        </div>
-
-        <p>
-            Loading your Numora account...
-        </p>
-
-    </div>
-
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner"></div>
 </div>
-
 
 <div class="app">
 
-
-<!-- =====================================================
-     SIDEBAR
-===================================================== -->
-
-<aside class="sidebar">
-
-    <div class="brand">
+    <aside class="sidebar">
 
         <div class="logo">
-            N
+            Numora
+            <small>Your number. Your connection.</small>
         </div>
 
-        <span class="brand-name">
-            Numora
-        </span>
-
-    </div>
-
-
-    <nav class="nav-list">
-
-        <button
-            class="nav-item active"
-            id="dashboardNav"
-            data-view="dashboard"
-        >
-
-            <span class="nav-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M3 10.5 12 3l9 7.5"></path>
-                    <path d="M5 9.5V21h14V9.5"></path>
-                    <path d="M9 21v-6h6v6"></path>
-                </svg>
-            </span>
-
-            Dashboard
-
-        </button>
-
-
-        <button
-            class="nav-item"
-            id="smsNav"
-            data-view="sms"
-        >
-
-            <span class="nav-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
-                    <path d="M7 8h10"></path>
-                    <path d="M7 11h7"></path>
-                </svg>
-            </span>
-
-            SMS
-
-        </button>
-
-
-        <button
-            class="nav-item"
-            id="settingsNav"
-            data-view="settings"
-        >
-
-            <span class="nav-icon">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
-                </svg>
-            </span>
-
-            Settings
-
-        </button>
-
-    </nav>
-
-
-    <div class="sidebar-bottom">
+        <nav class="nav">
+            <button class="active" id="dashboardNav">Dashboard</button>
+            <button id="smsNav">SMS</button>
+            <button id="settingsNav">Settings</button>
+        </nav>
 
         <div class="profile-mini">
-
-            <div
-                class="avatar"
-                id="sidebarAvatar"
-            >
-                N
-            </div>
-
-            <div class="profile-info">
-
-                <div
-                    class="profile-name"
-                    id="sidebarName"
-                >
-                    Customer
-                </div>
-
-                <div
-                    class="profile-email"
-                    id="sidebarEmail"
-                >
-                    Loading...
-                </div>
-
-            </div>
-
+            <div class="profile-mini-name" id="miniName">Numora User</div>
+            <div class="profile-mini-email" id="miniEmail">Loading...</div>
+            <button class="logout-btn" id="logoutBtn">Sign Out</button>
         </div>
 
+    </aside>
 
-        <button
-            class="signout-btn"
-            id="sidebarSignOut"
-        >
+    <main class="main">
 
-            <span>
-                <svg
-                    width="17"
-                    height="17"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <path d="M10 17l5-5-5-5"></path>
-                    <path d="M15 12H3"></path>
-                    <path d="M21 3v18"></path>
-                </svg>
-            </span>
-
-            Sign Out
-
-        </button>
-
-    </div>
-
-</aside>
-
-
-<!-- =====================================================
-     MAIN
-===================================================== -->
-
-<main class="main">
-
-
-<header class="topbar">
-
-    <div class="topbar-left">
-
-        <h1 id="pageTitle">
-            Welcome
-        </h1>
-
-        <p id="pageSubtitle">
-            Here's your account overview.
-        </p>
-
-    </div>
-
-
-    <div class="topbar-right">
-
-        <div
-            class="top-avatar"
-            id="topAvatar"
-        >
-            N
-        </div>
-
-    </div>
-
-</header>
-
-
-<!-- =====================================================
-     DASHBOARD VIEW
-===================================================== -->
-
-<section
-    class="page-view active"
-    id="dashboardView"
->
-
-
-    <!-- BALANCE -->
-
-    <section class="balance-hero">
-
-        <div class="balance-content">
-
-            <div class="balance-label">
-                NAIRA BALANCE
+        <div class="topbar">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Purchase a verification number and receive your SMS.</p>
             </div>
 
-            <div
-                class="balance-amount"
-                id="balanceValue"
+            <img
+                id="userAvatar"
+                class="user-avatar"
+                src=""
+                alt="Profile"
             >
+        </div>
+
+        <section class="balance-card">
+
+            <div class="balance-label">Naira Balance</div>
+
+            <div class="balance-value" id="balanceValue">
                 ₦0
             </div>
 
-
-            <a
-                class="deposit-button"
-                id="depositButton"
-                href="#"
-                target="_blank"
-                rel="noopener"
-            >
-
-                <svg viewBox="0 0 24 24">
-                    <path d="M20 11.5a8.1 8.1 0 0 1-8 8 8 8 0 0 1-5.1-1.8L4 19l1.3-3A8 8 0 1 1 20 11.5Z"></path>
-                </svg>
-
+            <button class="deposit-btn" id="depositBtn">
                 Deposit via WhatsApp
-
-            </a>
-
-        </div>
-
-    </section>
-
-
-    <!-- PURCHASE -->
-
-    <section class="purchase-section">
-
-        <div class="purchase-heading">
-
-            <h2>
-                Purchase a number for your verification here!
-            </h2>
-
-            <p>
-                Select your country and service to see the
-                current price available on your Numora account.
-            </p>
-
-        </div>
-
-
-        <div class="purchase-grid">
-
-
-            <div class="field">
-
-                <label
-                    class="field-label"
-                    for="countrySelect"
-                >
-                    Choose Country
-                </label>
-
-                <div class="select-wrap">
-
-                    <select
-                        class="select-input"
-                        id="countrySelect"
-                    >
-
-                        <option value="">
-                            Loading countries...
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <div class="field">
-
-                <label
-                    class="field-label"
-                    for="serviceSelect"
-                >
-                    Choose Service
-                </label>
-
-                <div class="select-wrap">
-
-                    <select
-                        class="select-input"
-                        id="serviceSelect"
-                        disabled
-                    >
-
-                        <option value="">
-                            Choose a country first
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="price-box">
-
-            <div class="price-row">
-
-                <div>
-
-                    <div class="price-title">
-                        SERVICE PRICE
-                    </div>
-
-                </div>
-
-                <div
-                    class="price-value"
-                    id="servicePrice"
-                >
-                    —
-                </div>
-
-            </div>
-
-
-            <div
-                class="balance-warning"
-                id="balanceWarning"
-            >
-                Your Naira balance is not enough for this
-                service. Please deposit through WhatsApp
-                before purchasing.
-            </div>
-
-        </div>
-
-
-        <button
-            class="purchase-button"
-            id="purchaseButton"
-            disabled
-        >
-
-            <svg viewBox="0 0 24 24">
-                <path d="M5 7h14l-1 12H6L5 7Z"></path>
-                <path d="M9 7a3 3 0 0 1 6 0"></path>
-                <path d="M9 11h.01"></path>
-                <path d="M15 11h.01"></path>
-            </svg>
-
-            Purchase Number
-
-        </button>
-
-
-        <div
-            class="purchase-status"
-            id="purchaseStatus"
-        ></div>
-
-    </section>
-
-
-    <!-- STATS -->
-
-    <div class="stats">
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Messages Sent
-            </div>
-
-            <div
-                class="stat-value"
-                id="messagesSent"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Messages Received
-            </div>
-
-            <div
-                class="stat-value"
-                id="messagesReceived"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Account Status
-            </div>
-
-            <div
-                class="stat-value"
-                id="accountStatus"
-                style="color:#16a34a;"
-            >
-                Active
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- RECENT MESSAGES -->
-
-    <div class="content-card">
-
-        <div class="card-header">
-
-            <h2>
-                Recent Messages
-            </h2>
-
-            <button
-                class="view-all"
-                id="viewSmsButton"
-            >
-                View all
             </button>
 
-        </div>
+        </section>
 
+        <section class="card">
 
-        <div
-            class="empty-state"
-            id="recentMessagesEmpty"
-        >
+            <h2>Purchase a verification number</h2>
 
-            <div class="empty-icon">
-
-                <svg viewBox="0 0 24 24">
-                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
-                    <path d="M7 8h10"></path>
-                    <path d="M7 11h7"></path>
-                </svg>
-
+            <div class="card-description">
+                Select a country and service. Your verification number will be supplied through Numora.
             </div>
 
-            <h3>
-                No messages yet
-            </h3>
+            <div class="form-grid">
 
-            <p>
-                Verification messages received by your
-                purchased number will appear here.
-            </p>
+                <div class="field">
+                    <label for="countrySelect">Country</label>
 
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     SMS VIEW
-===================================================== -->
-
-<section
-    class="page-view"
-    id="smsView"
->
-
-
-    <div class="sms-header-card">
-
-        <h2 class="section-title">
-            SMS Verification
-        </h2>
-
-        <p class="section-description">
-            Your purchased verification number and incoming
-            verification messages will appear here.
-        </p>
-
-    </div>
-
-
-    <div
-        class="sms-number-card"
-        id="smsNumberCard"
-    >
-
-        <div class="sms-number-content">
-
-            <div class="sms-small-label">
-                YOUR VERIFICATION NUMBER
-            </div>
-
-            <div
-                class="sms-number"
-                id="smsNumber"
-            >
-                No active number
-            </div>
-
-            <div
-                class="sms-service"
-                id="smsService"
-            >
-                No active verification
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="sms-grid">
-
-
-        <div class="sms-messages-card">
-
-            <div class="sms-card-title">
-                Incoming SMS
-            </div>
-
-
-            <div
-                class="sms-empty"
-                id="smsEmptyState"
-            >
-
-                <div class="empty-icon">
-
-                    <svg viewBox="0 0 24 24">
-                        <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
-                        <path d="M7 8h10"></path>
-                        <path d="M7 11h7"></path>
-                    </svg>
-
+                    <select id="countrySelect">
+                        <option value="">Loading countries...</option>
+                    </select>
                 </div>
 
-                <h3>
-                    Waiting for verification SMS
-                </h3>
+                <div class="field">
+                    <label for="serviceSelect">Service</label>
 
-                <p>
-                    When the verification message arrives,
-                    it will appear here automatically.
-                </p>
-
-            </div>
-
-
-            <div
-                id="smsMessageContent"
-                style="display:none;"
-            >
-
-                <div
-                    style="
-                        padding:18px;
-                        border-radius:16px;
-                        background:#f8fbff;
-                        border:1px solid #e1ebf8;
-                    "
-                >
-
-                    <div
-                        style="
-                            color:#64748b;
-                            font-size:11px;
-                            font-weight:700;
-                            margin-bottom:8px;
-                        "
-                    >
-                        VERIFICATION MESSAGE
-                    </div>
-
-                    <div
-                        id="smsMessageText"
-                        style="
-                            font-size:16px;
-                            font-weight:750;
-                            line-height:1.6;
-                        "
-                    ></div>
-
+                    <select id="serviceSelect" disabled>
+                        <option value="">Select country first</option>
+                    </select>
                 </div>
 
             </div>
 
-        </div>
+            <div class="price-box">
 
-
-        <div class="sms-status-card">
-
-            <div class="sms-card-title">
-                Verification Status
-            </div>
-
-
-            <div class="countdown-box">
-
-                <div class="countdown-label">
-                    TIME REMAINING
+                <div class="price-label">
+                    Service price
                 </div>
 
-                <div
-                    class="countdown-value"
-                    id="smsCountdown"
-                >
-                    —
-                </div>
-
-            </div>
-
-
-            <div
-                class="waiting-status"
-                id="smsWaitingStatus"
-            >
-                No active number. Purchase a verification
-                number from Dashboard to begin.
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     SETTINGS VIEW
-===================================================== -->
-
-<section
-    class="page-view"
-    id="settingsView"
->
-
-
-    <div class="settings-card">
-
-        <h2 class="section-title">
-            Settings
-        </h2>
-
-        <p class="section-description">
-            Your Numora account information.
-        </p>
-
-    </div>
-
-
-    <div class="settings-card">
-
-
-        <div class="settings-profile">
-
-            <div
-                class="settings-avatar"
-                id="settingsAvatar"
-            >
-                N
-            </div>
-
-            <div>
-
-                <div
-                    class="settings-profile-name"
-                    id="settingsName"
-                >
-                    Customer
-                </div>
-
-                <div
-                    class="settings-profile-email"
-                    id="settingsEmail"
-                >
-                    Loading...
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="settings-list">
-
-
-            <div class="setting-row">
-
-                <div>
-
-                    <div class="setting-label">
-                        Google Account
-                    </div>
-
-                    <div class="setting-label">
-                        Signed in with Google
-                    </div>
-
-                </div>
-
-                <div
-                    class="setting-value"
-                    style="color:#16a34a;"
-                >
-                    Connected
-                </div>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div>
-
-                    <div class="setting-label">
-                        Email
-                    </div>
-
-                    <div class="setting-label">
-                        Your Google account email
-                    </div>
-
-                </div>
-
-                <div
-                    class="setting-value"
-                    id="settingsEmailRow"
-                >
-                    —
-                </div>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div>
-
-                    <div class="setting-label">
-                        Profile ID
-                    </div>
-
-                    <div class="setting-label">
-                        Use this ID when contacting Numora support.
-                    </div>
-
-                </div>
-
-                <div
-                    class="setting-value"
-                    id="profileId"
-                >
-                    —
-                </div>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div>
-
-                    <div class="setting-label">
-                        Naira Balance
-                    </div>
-
-                    <div class="setting-label">
-                        Current account balance
-                    </div>
-
-                </div>
-
-                <div
-                    class="setting-value"
-                    id="settingsBalance"
-                >
+                <div class="price-value" id="priceValue">
                     ₦0
                 </div>
 
             </div>
 
+            <div class="balance-warning" id="balanceWarning">
+                Your balance is not enough for this purchase. Please deposit first.
+            </div>
 
-        </div>
+            <button
+                class="purchase-btn"
+                id="purchaseBtn"
+                disabled
+            >
+                Purchase Number
+            </button>
 
+            <div class="status-message" id="purchaseStatus"></div>
 
-        <button
-            class="settings-logout"
-            id="settingsSignOut"
-        >
-            Log Out
-        </button>
+        </section>
 
-    </div>
+        <section class="stats">
 
-</section>
+            <div class="stat-card">
+                <div class="stat-label">Messages Sent</div>
+                <div class="stat-value" id="sentCount">0</div>
+            </div>
 
+            <div class="stat-card">
+                <div class="stat-label">Messages Received</div>
+                <div class="stat-value" id="receivedCount">0</div>
+            </div>
 
-</main>
+            <div class="stat-card">
+                <div class="stat-label">Account Status</div>
+                <div class="stat-value" id="accountStatus">Active</div>
+            </div>
+
+        </section>
+
+        <section class="card" style="margin-top:20px;">
+
+            <h2>Recent Messages</h2>
+
+            <div class="empty" id="recentMessages">
+                No recent messages.
+            </div>
+
+        </section>
+
+    </main>
 
 </div>
 
-
-<!-- =====================================================
-     MOBILE NAV
-===================================================== -->
-
 <nav class="mobile-nav">
-
-    <button
-        class="mobile-nav-item active"
-        id="mobileDashboardNav"
-        data-view="dashboard"
-    >
-
-        <span class="mobile-nav-icon">
-
-            <svg viewBox="0 0 24 24">
-                <path d="M3 10.5 12 3l9 7.5"></path>
-                <path d="M5 9.5V21h14V9.5"></path>
-                <path d="M9 21v-6h6v6"></path>
-            </svg>
-
-        </span>
-
-        Dashboard
-
-    </button>
-
-
-    <button
-        class="mobile-nav-item"
-        id="mobileSmsNav"
-        data-view="sms"
-    >
-
-        <span class="mobile-nav-icon">
-
-            <svg viewBox="0 0 24 24">
-                <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
-                <path d="M7 8h10"></path>
-                <path d="M7 11h7"></path>
-            </svg>
-
-        </span>
-
-        SMS
-
-    </button>
-
-
-    <button
-        class="mobile-nav-item"
-        id="mobileSettingsNav"
-        data-view="settings"
-    >
-
-        <span class="mobile-nav-icon">
-
-            <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
-            </svg>
-
-        </span>
-
-        Settings
-
-    </button>
-
+    <button class="active" id="mobileDashboard">Dashboard</button>
+    <button id="mobileSms">SMS</button>
+    <button id="mobileSettings">Settings</button>
 </nav>
 
-
 <script type="module">
-
-/* =========================================================
-   FIREBASE IMPORTS
-========================================================= */
 
 import {
     initializeApp
@@ -2709,201 +627,22 @@ const firebaseConfig = {
 
 };
 
-const app =
-    initializeApp(firebaseConfig);
 
-const auth =
-    getAuth(app);
-
-const db =
-    getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 
 /* =========================================================
-   PATH
+   CONSTANTS
 ========================================================= */
 
-const HOME_URL =
-    "/numorahq/";
+const HOME_URL = "/numorahq/";
 
-
-/* =========================================================
-   WHATSAPP
-========================================================= */
-
-const WHATSAPP_NUMBER =
-    "2349155093341";
-
-const WHATSAPP_URL =
-    `https://wa.me/${WHATSAPP_NUMBER}`;
-
-
-/* =========================================================
-   BACKEND
-========================================================= */
+const WHATSAPP_NUMBER = "2349155093341";
 
 const BACKEND_URL =
     "https://numora-backend-cle6.onrender.com";
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const loadingScreen =
-    document.getElementById(
-        "loadingScreen"
-    );
-
-const sidebarAvatar =
-    document.getElementById(
-        "sidebarAvatar"
-    );
-
-const sidebarName =
-    document.getElementById(
-        "sidebarName"
-    );
-
-const sidebarEmail =
-    document.getElementById(
-        "sidebarEmail"
-    );
-
-const topAvatar =
-    document.getElementById(
-        "topAvatar"
-    );
-
-const settingsAvatar =
-    document.getElementById(
-        "settingsAvatar"
-    );
-
-const settingsName =
-    document.getElementById(
-        "settingsName"
-    );
-
-const settingsEmail =
-    document.getElementById(
-        "settingsEmail"
-    );
-
-const settingsEmailRow =
-    document.getElementById(
-        "settingsEmailRow"
-    );
-
-const profileId =
-    document.getElementById(
-        "profileId"
-    );
-
-const settingsBalance =
-    document.getElementById(
-        "settingsBalance"
-    );
-
-const pageTitle =
-    document.getElementById(
-        "pageTitle"
-    );
-
-const pageSubtitle =
-    document.getElementById(
-        "pageSubtitle"
-    );
-
-const balanceValue =
-    document.getElementById(
-        "balanceValue"
-    );
-
-const countrySelect =
-    document.getElementById(
-        "countrySelect"
-    );
-
-const serviceSelect =
-    document.getElementById(
-        "serviceSelect"
-    );
-
-const servicePrice =
-    document.getElementById(
-        "servicePrice"
-    );
-
-const purchaseButton =
-    document.getElementById(
-        "purchaseButton"
-    );
-
-const balanceWarning =
-    document.getElementById(
-        "balanceWarning"
-    );
-
-const purchaseStatus =
-    document.getElementById(
-        "purchaseStatus"
-    );
-
-const messagesSent =
-    document.getElementById(
-        "messagesSent"
-    );
-
-const messagesReceived =
-    document.getElementById(
-        "messagesReceived"
-    );
-
-const accountStatus =
-    document.getElementById(
-        "accountStatus"
-    );
-
-const smsNumber =
-    document.getElementById(
-        "smsNumber"
-    );
-
-const smsService =
-    document.getElementById(
-        "smsService"
-    );
-
-const smsCountdown =
-    document.getElementById(
-        "smsCountdown"
-    );
-
-const smsWaitingStatus =
-    document.getElementById(
-        "smsWaitingStatus"
-    );
-
-const smsEmptyState =
-    document.getElementById(
-        "smsEmptyState"
-    );
-
-const smsMessageContent =
-    document.getElementById(
-        "smsMessageContent"
-    );
-
-const smsMessageText =
-    document.getElementById(
-        "smsMessageText"
-    );
-
-const recentMessagesEmpty =
-    document.getElementById(
-        "recentMessagesEmpty"
-    );
 
 
 /* =========================================================
@@ -2911,577 +650,195 @@ const recentMessagesEmpty =
 ========================================================= */
 
 let currentUser = null;
-
 let currentBalance = 0;
 
 let catalog = [];
 
 let countries = [];
-
 let services = [];
 
 let selectedCountry = null;
-
 let selectedService = null;
-
-let selectedPrice = null;
-
-let activeView = "dashboard";
-
-let smsCountdownTimer = null;
-
-let activePurchase = null;
+let selectedPrice = 0;
 
 let customerNumbers = [];
+let activePurchase = null;
+
+let profileUnsubscribe = null;
 
 
 /* =========================================================
-   PAGE VIEW TITLES
+   DOM
 ========================================================= */
 
-const viewInfo = {
+const loadingScreen =
+    document.getElementById("loadingScreen");
 
-    dashboard: {
-        title: "Welcome",
-        subtitle: "Here's your account overview."
-    },
+const balanceValue =
+    document.getElementById("balanceValue");
 
-    sms: {
-        title: "SMS Verification",
-        subtitle: "View your active number and verification messages."
-    },
+const countrySelect =
+    document.getElementById("countrySelect");
 
-    settings: {
-        title: "Settings",
-        subtitle: "Manage your Numora account information."
-    }
+const serviceSelect =
+    document.getElementById("serviceSelect");
 
-};
+const priceValue =
+    document.getElementById("priceValue");
+
+const purchaseBtn =
+    document.getElementById("purchaseBtn");
+
+const purchaseStatus =
+    document.getElementById("purchaseStatus");
+
+const balanceWarning =
+    document.getElementById("balanceWarning");
+
+const sentCount =
+    document.getElementById("sentCount");
+
+const receivedCount =
+    document.getElementById("receivedCount");
+
+const accountStatus =
+    document.getElementById("accountStatus");
+
+const recentMessages =
+    document.getElementById("recentMessages");
 
 
 /* =========================================================
-   AVATAR
+   HELPERS
 ========================================================= */
 
-function setAvatar(
-    element,
-    user
-) {
+function formatNaira(amount){
 
-    if (!element) {
-        return;
-    }
+    const value =
+        Number(amount || 0);
 
-    if (user.photoURL) {
-
-        element.innerHTML =
-            `<img
-                src="${user.photoURL}"
-                alt="Profile"
-            >`;
-
-        return;
-    }
-
-    const name =
-        user.displayName ||
-        user.email ||
-        "N";
-
-    const initial =
-        name
-            .trim()
-            .charAt(0)
-            .toUpperCase();
-
-    element.textContent =
-        initial || "N";
+    return new Intl.NumberFormat(
+        "en-NG",
+        {
+            style:"currency",
+            currency:"NGN",
+            maximumFractionDigits:0
+        }
+    ).format(value);
 }
 
 
-/* =========================================================
-   PROFILE ID
-   Required format:
-   3 LETTERS + 3 NUMBERS
-   Example: ABC123
-========================================================= */
-
-function isValidProfileId(value) {
+function isValidProfileId(value){
 
     return /^[A-Z]{3}[0-9]{3}$/.test(
         String(value || "")
-            .trim()
-            .toUpperCase()
     );
+
 }
 
 
-function generateProfileId() {
+function generateProfileId(){
 
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const letters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     let result = "";
 
-    for (let i = 0; i < 3; i++) {
+    for(let i = 0; i < 3; i++){
 
         result +=
-            letters.charAt(
+            letters[
                 Math.floor(
-                    Math.random() *
-                    letters.length
+                    Math.random() * letters.length
                 )
-            );
+            ];
 
     }
 
-    result +=
-        String(
-            Math.floor(
-                100 +
-                Math.random() * 900
-            )
-        );
+    result += String(
+        Math.floor(
+            100 + Math.random() * 900
+        )
+    );
 
     return result;
 }
 
 
-/*
- * The real/stable Profile ID should already exist
- * on users/{uid}.profileId.
- *
- * The Firebase UID is NEVER displayed as the
- * customer's Profile ID.
- *
- * If the backend/profile has not supplied one yet,
- * we only create a temporary correctly-formatted
- * display value rather than exposing the UID.
- */
-function getProfileIdFromData(data) {
+function getProfileIdFromData(data){
 
-    const storedId =
-        data &&
-        (
-            data.profileId ||
-            data.customerProfileId ||
-            data.customerId
-        );
+    if(!data) return generateProfileId();
 
-    if (
-        isValidProfileId(
-            storedId
-        )
-    ) {
+    const possible =
+        data.profileId ||
+        data.customerProfileId ||
+        data.customerId;
 
-        return String(
-            storedId
-        )
-            .trim()
-            .toUpperCase();
-
+    if(isValidProfileId(possible)){
+        return possible;
     }
 
     return generateProfileId();
 }
 
 
+function getCustomerToken(){
+
+    if(!currentUser){
+        throw new Error("You are not signed in.");
+    }
+
+    return currentUser.getIdToken();
+}
+
+
 /* =========================================================
-   USER
+   USER PROFILE
 ========================================================= */
 
-function populateUser(
-    user,
-    profileData = null
-) {
+function populateUser(user, data = {}){
 
-    const name =
+    currentUser = user;
+
+    const displayName =
+        data.displayName ||
         user.displayName ||
-        "Customer";
+        "Numora User";
 
     const email =
+        data.email ||
         user.email ||
         "";
 
-    sidebarName.textContent =
-        name;
+    document.getElementById("miniName")
+        .textContent = displayName;
 
-    sidebarEmail.textContent =
-        email;
+    document.getElementById("miniEmail")
+        .textContent = email;
 
-    settingsName.textContent =
-        name;
+    const avatar =
+        document.getElementById("userAvatar");
 
-    settingsEmail.textContent =
-        email;
+    if(user.photoURL){
 
-    settingsEmailRow.textContent =
-        email || "—";
+        avatar.src = user.photoURL;
 
+    }else{
 
-    const customerProfileId =
-        getProfileIdFromData(
-            profileData
-        );
+        avatar.style.display = "none";
 
-
-    profileId.textContent =
-        customerProfileId;
-
-
-    setAvatar(
-        sidebarAvatar,
-        user
-    );
-
-    setAvatar(
-        topAvatar,
-        user
-    );
-
-    setAvatar(
-        settingsAvatar,
-        user
-    );
-
-    updatePageHeader();
-}
-
-
-/* =========================================================
-   PAGE HEADER
-========================================================= */
-
-function updatePageHeader() {
-
-    const info =
-        viewInfo[
-            activeView
-        ] ||
-        viewInfo.dashboard;
-
-    if (
-        activeView === "dashboard" &&
-        currentUser
-    ) {
-
-        const name =
-            currentUser.displayName ||
-            "Customer";
-
-        pageTitle.textContent =
-            `Welcome, ${
-                name
-                    .split(" ")[0]
-            }`;
-
-    } else {
-
-        pageTitle.textContent =
-            info.title;
     }
 
-    pageSubtitle.textContent =
-        info.subtitle;
 }
 
 
-/* =========================================================
-   VIEW SWITCHING
-========================================================= */
+function updateBalance(balance){
 
-function showView(view) {
-
-    if (
-        view !== "dashboard" &&
-        view !== "sms" &&
-        view !== "settings"
-    ) {
-        view = "dashboard";
-    }
-
-    activeView = view;
-
-
-    document
-        .querySelectorAll(".page-view")
-        .forEach(
-            element => {
-
-                element.classList.toggle(
-                    "active",
-                    element.id ===
-                    `${view}View`
-                );
-
-            }
-        );
-
-
-    document
-        .querySelectorAll(".nav-item")
-        .forEach(
-            element => {
-
-                element.classList.toggle(
-                    "active",
-                    element.dataset.view ===
-                    view
-                );
-
-            }
-        );
-
-
-    document
-        .querySelectorAll(".mobile-nav-item")
-        .forEach(
-            element => {
-
-                element.classList.toggle(
-                    "active",
-                    element.dataset.view ===
-                    view
-                );
-
-            }
-        );
-
-
-    updatePageHeader();
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-document
-    .querySelectorAll(
-        ".nav-item, .mobile-nav-item"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    showView(
-                        button.dataset.view
-                    );
-
-                }
-            );
-
-        }
-    );
-
-
-document
-    .getElementById(
-        "viewSmsButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
-            showView("sms");
-        }
-    );
-
-
-/* =========================================================
-   CUSTOMER PROFILE
-========================================================= */
-
-function listenToCustomerProfile(user) {
-
-    if (!user) {
-        return;
-    }
-
-    const userRef =
-        doc(
-            db,
-            "users",
-            user.uid
-        );
-
-    onSnapshot(
-        userRef,
-
-        snapshot => {
-
-            if (!snapshot.exists()) {
-
-                setDefaultDashboard();
-
-                populateUser(
-                    user,
-                    null
-                );
-
-                return;
-            }
-
-            const data =
-                snapshot.data();
-
-
-            populateUser(
-                user,
-                data
-            );
-
-
-            currentBalance =
-                Number(
-                    data.balance ??
-                    data.nairaBalance ??
-                    data.walletBalance ??
-                    0
-                );
-
-
-            balanceValue.textContent =
-                formatNaira(
-                    currentBalance
-                );
-
-
-            settingsBalance.textContent =
-                formatNaira(
-                    currentBalance
-                );
-
-
-            const sent =
-                Number(
-                    data.messagesSent ??
-                    data.smsSent ??
-                    0
-                );
-
-
-            const profileReceived =
-                Number(
-                    data.messagesReceived ??
-                    data.smsReceived ??
-                    0
-                );
-
-
-            messagesSent.textContent =
-                sent.toLocaleString();
-
-
-            messagesReceived.textContent =
-                profileReceived.toLocaleString();
-
-
-            const status =
-                data.accountStatus ||
-                "Active";
-
-
-            accountStatus.textContent =
-                status;
-
-
-            if (
-                String(status).toLowerCase() ===
-                "active"
-            ) {
-
-                accountStatus.style.color =
-                    "#16a34a";
-
-            } else {
-
-                accountStatus.style.color =
-                    "#f59e0b";
-
-            }
-
-
-            /*
-             * The new 5SIM system uses the backend
-             * numbers collection as the source of
-             * purchased numbers.
-             *
-             * We still support the existing Firestore
-             * activePurchase fields as a fallback.
-             */
-
-            const purchase =
-                data.activePurchase ||
-                data.currentPurchase ||
-                data.activeNumber ||
-                null;
-
-
-            if (
-                purchase &&
-                typeof purchase ===
-                "object"
-            ) {
-
-                activePurchase =
-                    purchase;
-
-                updateSmsView(
-                    purchase
-                );
-
-            }
-
-
-            updatePurchaseAvailability();
-
-        },
-
-        error => {
-
-            console.error(
-                "Customer profile error:",
-                error
-            );
-
-        }
-    );
-}
-
-
-/* =========================================================
-   DEFAULT
-========================================================= */
-
-function setDefaultDashboard() {
-
-    currentBalance = 0;
+    currentBalance =
+        Number(balance || 0);
 
     balanceValue.textContent =
-        "₦0";
-
-    settingsBalance.textContent =
-        "₦0";
-
-    messagesSent.textContent =
-        "0";
-
-    messagesReceived.textContent =
-        "0";
-
-    accountStatus.textContent =
-        "Active";
-
-    accountStatus.style.color =
-        "#16a34a";
+        formatNaira(currentBalance);
 
     updatePurchaseAvailability();
 
@@ -3489,310 +846,302 @@ function setDefaultDashboard() {
 
 
 /* =========================================================
-   FORMAT NAIRA
+   FIRESTORE PROFILE LISTENER
 ========================================================= */
 
-function formatNaira(amount) {
+function listenToCustomerProfile(user){
 
-    const value =
-        Number(amount) || 0;
-
-    return (
-        "₦" +
-        value.toLocaleString(
-            "en-NG",
-            {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            }
-        )
-    );
-}
-
-
-/* =========================================================
-   WHATSAPP
-========================================================= */
-
-document
-    .getElementById(
-        "depositButton"
-    )
-    .href =
-        WHATSAPP_URL;
-
-
-/* =========================================================
-   CUSTOMER API AUTH
-========================================================= */
-
-async function getCustomerToken() {
-
-    if (!currentUser) {
-        throw new Error(
-            "Your Numora session has expired. Please sign in again."
-        );
+    if(profileUnsubscribe){
+        profileUnsubscribe();
+        profileUnsubscribe = null;
     }
 
-    return await currentUser.getIdToken();
+    const profileRef =
+        doc(db, "users", user.uid);
+
+    profileUnsubscribe =
+        onSnapshot(
+            profileRef,
+            snapshot => {
+
+                if(!snapshot.exists()){
+                    return;
+                }
+
+                const data =
+                    snapshot.data();
+
+                populateUser(user, data);
+
+                const balance =
+                    data.balance ??
+                    data.nairaBalance ??
+                    data.walletBalance ??
+                    0;
+
+                updateBalance(balance);
+
+                sentCount.textContent =
+                    Number(
+                        data.messagesSent ||
+                        data.sentMessages ||
+                        0
+                    );
+
+                receivedCount.textContent =
+                    Number(
+                        data.messagesReceived ||
+                        data.receivedMessages ||
+                        0
+                    );
+
+                accountStatus.textContent =
+                    data.accountStatus ||
+                    "Active";
+
+                updateRecentMessages(
+                    data
+                );
+
+            },
+            error => {
+
+                console.error(
+                    "Profile listener error:",
+                    error
+                );
+
+            }
+        );
+
 }
 
 
+/* =========================================================
+   RECENT MESSAGES
+========================================================= */
+
+function updateRecentMessages(data){
+
+    const messages =
+        data.recentMessages ||
+        data.messages ||
+        [];
+
+    if(!Array.isArray(messages) ||
+       messages.length === 0){
+
+        recentMessages.textContent =
+            "No recent messages.";
+
+        return;
+    }
+
+    const latest =
+        messages.slice(0,5);
+
+    recentMessages.innerHTML =
+        latest.map(message => {
+
+            const text =
+                message.text ||
+                message.body ||
+                message.code ||
+                "";
+
+            const service =
+                message.service ||
+                "Verification";
+
+            return `
+                <div style="
+                    padding:12px 0;
+                    border-bottom:1px solid #e5e7eb;
+                ">
+                    <strong>${escapeHtml(service)}</strong>
+                    <div style="
+                        margin-top:4px;
+                        color:#6b7280;
+                        font-size:13px;
+                    ">
+                        ${escapeHtml(text)}
+                    </div>
+                </div>
+            `;
+
+        }).join("");
+
+}
+
+
+function escapeHtml(value){
+
+    return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   BACKEND API
+========================================================= */
+
 async function customerApi(
-    endpoint,
+    path,
     options = {}
-) {
+){
 
     const token =
         await getCustomerToken();
 
-
     const headers = {
+        "Content-Type":"application/json",
         ...(options.headers || {}),
         "Authorization":
             `Bearer ${token}`
     };
 
-
-    if (
-        options.body &&
-        !headers["Content-Type"]
-    ) {
-
-        headers["Content-Type"] =
-            "application/json";
-    }
-
-
     const response =
         await fetch(
-            `${BACKEND_URL}${endpoint}`,
+            `${BACKEND_URL}${path}`,
             {
                 ...options,
                 headers
             }
         );
 
+    let data = null;
 
-    let result = null;
+    try{
+        data = await response.json();
+    }catch{
+        data = {};
+    }
 
-    try {
+    if(!response.ok){
 
-        result =
-            await response.json();
-
-    } catch {
-
-        result = null;
+        throw new Error(
+            data.message ||
+            data.error ||
+            "Request failed."
+        );
 
     }
 
+    return data;
 
-    if (!response.ok) {
-
-        const error =
-            new Error(
-                result?.message ||
-                result?.error ||
-                `Request failed with status ${response.status}.`
-            );
-
-        error.response =
-            response;
-
-        error.data =
-            result;
-
-        throw error;
-    }
-
-
-    return result;
 }
 
 
 /* =========================================================
    LOAD CUSTOMER CATALOG
+   Backend combines Admin servicePricing + 5SIM.
 ========================================================= */
 
-async function loadCustomerCatalog() {
+async function loadCustomerCatalog(){
 
     countrySelect.innerHTML =
-        `<option value="">
-            Loading countries...
-        </option>`;
-
-    serviceSelect.disabled =
-        true;
+        `<option value="">Loading countries...</option>`;
 
     serviceSelect.innerHTML =
-        `<option value="">
-            Choose a country first
-        </option>`;
+        `<option value="">Select country first</option>`;
 
+    serviceSelect.disabled = true;
 
-    try {
+    try{
 
-        /*
-         * IMPORTANT:
-         *
-         * Countries and services are NOT loaded
-         * directly from Firestore anymore.
-         *
-         * The backend reads the admin-controlled
-         * servicePricing catalog and sends the
-         * customer only the services Numora sells.
-         */
-
-        const response =
-            await fetch(
-                `${BACKEND_URL}/api/customer/catalog`
+        const data =
+            await customerApi(
+                "/api/customer/catalog"
             );
-
-
-        const result =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                result?.message ||
-                result?.error ||
-                "Unable to load Numora catalog."
-            );
-
-        }
-
 
         catalog =
-            Array.isArray(
-                result.catalog
-            )
-                ? result.catalog
-                : [];
-
-
-        /*
-         * Build the country list from the backend
-         * catalog. This does NOT read the countries
-         * collection from Firestore.
-         */
+            Array.isArray(data.catalog)
+                ? data.catalog
+                : Array.isArray(data.services)
+                    ? data.services
+                    : [];
 
         countries = [];
-
 
         const countryMap =
             new Map();
 
+        catalog.forEach(item => {
 
-        catalog.forEach(
-            item => {
+            const countryId =
+                item.countryId ??
+                item.country ??
+                item.countryCode;
 
-                const code =
-                    String(
-                        item.country ||
-                        item.countryCode ||
-                        ""
-                    )
-                        .trim();
+            const countryName =
+                item.countryName ??
+                item.countryLabel ??
+                item.country ??
+                countryId;
 
+            if(
+                countryId &&
+                !countryMap.has(String(countryId))
+            ){
 
-                if (!code) {
-                    return;
-                }
-
-
-                if (
-                    !countryMap.has(code)
-                ) {
-
-                    countryMap.set(
-                        code,
-                        {
-                            id: code,
-                            name:
-                                item.countryName ||
-                                item.countryDisplayName ||
-                                code
-                        }
-                    );
-
-                }
+                countryMap.set(
+                    String(countryId),
+                    {
+                        id:String(countryId),
+                        name:String(countryName)
+                    }
+                );
 
             }
-        );
 
+        });
 
         countries =
             Array.from(
                 countryMap.values()
             );
 
-
-        countries.sort(
-            (a,b) =>
-                String(a.name)
-                    .localeCompare(
-                        String(b.name)
-                    )
-        );
-
-
         countrySelect.innerHTML =
-            `<option value="">
-                Select a country
-            </option>`;
+            `<option value="">Select country</option>`;
 
+        countries.forEach(country => {
 
-        countries.forEach(
-            country => {
+            const option =
+                document.createElement("option");
 
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+            option.value =
+                country.id;
 
-                option.value =
-                    country.id;
+            option.textContent =
+                country.name;
 
-                option.textContent =
-                    country.name;
+            countrySelect.appendChild(option);
 
-                countrySelect.appendChild(
-                    option
-                );
+        });
 
-            }
-        );
-
-
-        if (!countries.length) {
+        if(countries.length === 0){
 
             countrySelect.innerHTML =
-                `<option value="">
-                    No countries available
-                </option>`;
+                `<option value="">No countries available</option>`;
 
         }
 
-    }
+    }catch(error){
 
-    catch (error) {
-
-        console.error(
-            "Customer catalog error:",
-            error
-        );
-
-        catalog = [];
-
-        countries = [];
+        console.error(error);
 
         countrySelect.innerHTML =
-            `<option value="">
-                Unable to load countries
-            </option>`;
+            `<option value="">Unable to load countries</option>`;
+
+        showPurchaseStatus(
+            error.message,
+            "error"
+        );
 
     }
 
@@ -3800,342 +1149,109 @@ async function loadCustomerCatalog() {
 
 
 /* =========================================================
-   COUNTRY CHANGE
+   SERVICES
 ========================================================= */
 
-countrySelect.addEventListener(
-    "change",
-    async () => {
+function loadServices(countryId){
 
-        const countryId =
-            countrySelect.value;
+    selectedCountry =
+        countries.find(
+            country =>
+                String(country.id) ===
+                String(countryId)
+        ) || null;
 
-        selectedCountry =
-            countries.find(
-                country =>
-                    country.id ===
-                    countryId
-            ) || null;
+    services =
+        catalog.filter(item => {
 
-        selectedService = null;
-        selectedPrice = null;
+            const itemCountry =
+                item.countryId ??
+                item.country ??
+                item.countryCode;
 
-        servicePrice.textContent =
-            "—";
+            return String(itemCountry) ===
+                String(countryId);
 
-        balanceWarning.classList.remove(
-            "show"
-        );
-
-        purchaseButton.disabled =
-            true;
-
-
-        if (!selectedCountry) {
-
-            serviceSelect.disabled =
-                true;
-
-            serviceSelect.innerHTML =
-                `<option value="">
-                    Choose a country first
-                </option>`;
-
-            return;
-        }
-
-
-        await loadServices(
-            selectedCountry
-        );
-
-    }
-);
-
-
-/* =========================================================
-   LOAD SERVICES
-========================================================= */
-
-async function loadServices(country) {
-
-    serviceSelect.disabled =
-        true;
+        });
 
     serviceSelect.innerHTML =
-        `<option value="">
-            Loading services...
-        </option>`;
+        `<option value="">Select service</option>`;
 
+    serviceSelect.disabled =
+        services.length === 0;
 
-    try {
+    services.forEach(service => {
 
-        /*
-         * Services are filtered from the backend
-         * customer catalog already loaded from
-         * Firestore servicePricing by the backend.
-         */
+        const option =
+            document.createElement("option");
 
-        services =
-            catalog.filter(
-                item =>
-                    String(
-                        item.country ||
-                        item.countryCode ||
-                        ""
-                    ).toLowerCase() ===
-                    String(
-                        country.id
-                    ).toLowerCase()
-            );
+        option.value =
+            service.id ??
+            service.serviceId ??
+            service.service;
 
+        option.textContent =
+            service.serviceName ??
+            service.name ??
+            service.service ??
+            option.value;
 
-        services.sort(
-            (a,b) =>
-                String(
-                    a.serviceName ||
-                    a.name ||
-                    a.service ||
-                    a.serviceCode ||
-                    a.id
-                ).localeCompare(
-                    String(
-                        b.serviceName ||
-                        b.name ||
-                        b.service ||
-                        b.serviceCode ||
-                        b.id
-                    )
-                )
-        );
+        serviceSelect.appendChild(option);
 
+    });
 
-        serviceSelect.innerHTML =
-            `<option value="">
-                Select a service
-            </option>`;
+    selectedService = null;
+    selectedPrice = 0;
 
+    priceValue.textContent =
+        formatNaira(0);
 
-        services.forEach(
-            service => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                /*
-                 * The catalog document ID is the
-                 * authoritative pricingId.
-                 */
-
-                option.value =
-                    service.id;
-
-
-                option.textContent =
-                    service.serviceName ||
-                    service.name ||
-                    service.service ||
-                    service.serviceCode ||
-                    service.id;
-
-
-                serviceSelect.appendChild(
-                    option
-                );
-
-            }
-        );
-
-
-        serviceSelect.disabled =
-            services.length === 0;
-
-
-        if (!services.length) {
-
-            serviceSelect.innerHTML =
-                `<option value="">
-                    No services available
-                </option>`;
-
-        }
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Service loading error:",
-            error
-        );
-
-        serviceSelect.innerHTML =
-            `<option value="">
-                Unable to load services
-            </option>`;
-
-    }
+    updatePurchaseAvailability();
 
 }
 
 
 /* =========================================================
-   SERVICE CHANGE
+   PRICE
 ========================================================= */
 
-serviceSelect.addEventListener(
-    "change",
-    () => {
+function getCustomerPrice(service){
 
-        const serviceId =
-            serviceSelect.value;
-
-        selectedService =
-            services.find(
-                service =>
-                    service.id ===
-                    serviceId
-            ) || null;
-
-
-        if (!selectedService) {
-
-            selectedPrice = null;
-
-            servicePrice.textContent =
-                "—";
-
-            purchaseButton.disabled =
-                true;
-
-            balanceWarning.classList.remove(
-                "show"
-            );
-
-            return;
-        }
-
-
-        selectedPrice =
-            getCustomerPrice(
-                selectedService,
-                selectedCountry
-            );
-
-
-        if (
-            selectedPrice === null ||
-            Number.isNaN(selectedPrice)
-        ) {
-
-            servicePrice.textContent =
-                "Price unavailable";
-
-            purchaseButton.disabled =
-                true;
-
-            return;
-        }
-
-
-        servicePrice.textContent =
-            formatNaira(
-                selectedPrice
-            );
-
-
-        updatePurchaseAvailability();
-
-    }
-);
-
-
-/* =========================================================
-   GET CUSTOMER PRICE
-========================================================= */
-
-function getCustomerPrice(
-    service,
-    country
-) {
-
-    /*
-     * Customer catalog already contains the
-     * authoritative Numora customer price.
-     *
-     * The browser only displays this price.
-     * The backend still performs the authoritative
-     * price lookup during purchase.
-     */
-
-    if (
-        service &&
-        service.price !== undefined &&
-        service.price !== null
-    ) {
-
-        const price =
-            Number(
-                service.price
-            );
-
-        return Number.isFinite(price)
-            ? price
-            : null;
+    if(!service){
+        return 0;
     }
 
-
-    return null;
-}
-
-
-/* =========================================================
-   PURCHASE AVAILABILITY
-========================================================= */
-
-function updatePurchaseAvailability() {
-
-    if (
-        !selectedService ||
-        selectedPrice === null ||
-        Number.isNaN(selectedPrice)
-    ) {
-
-        purchaseButton.disabled =
-            true;
-
-        balanceWarning.classList.remove(
-            "show"
-        );
-
-        return;
-    }
-
-
-    if (
-        currentBalance <
-        selectedPrice
-    ) {
-
-        purchaseButton.disabled =
-            true;
-
-        balanceWarning.classList.add(
-            "show"
-        );
-
-        return;
-    }
-
-
-    balanceWarning.classList.remove(
-        "show"
+    return Number(
+        service.price ??
+        service.sellingPrice ??
+        service.customerPrice ??
+        0
     );
 
-    purchaseButton.disabled =
-        false;
+}
+
+
+function updatePurchaseAvailability(){
+
+    const valid =
+        selectedService &&
+        selectedPrice > 0;
+
+    purchaseBtn.disabled =
+        !valid ||
+        currentBalance < selectedPrice;
+
+    if(valid &&
+       currentBalance < selectedPrice){
+
+        balanceWarning.classList.add("show");
+
+    }else{
+
+        balanceWarning.classList.remove("show");
+
+    }
+
 }
 
 
@@ -4143,18 +1259,7 @@ function updatePurchaseAvailability() {
    REQUEST ID
 ========================================================= */
 
-function createRequestId() {
-
-    if (
-        window.crypto &&
-        typeof window.crypto.randomUUID ===
-            "function"
-    ) {
-
-        return window.crypto.randomUUID();
-
-    }
-
+function createRequestId(){
 
     return (
         "numora_" +
@@ -4162,8 +1267,9 @@ function createRequestId() {
         "_" +
         Math.random()
             .toString(36)
-            .slice(2, 10)
+            .slice(2,10)
     );
+
 }
 
 
@@ -4171,258 +1277,94 @@ function createRequestId() {
    PURCHASE
 ========================================================= */
 
-purchaseButton.addEventListener(
-    "click",
-    purchaseNumber
-);
+async function purchaseNumber(){
 
-
-async function purchaseNumber() {
-
-    if (!currentUser) {
+    if(!selectedService){
         return;
     }
 
-    if (!selectedCountry) {
-        return;
-    }
-
-    if (!selectedService) {
-        return;
-    }
-
-    if (
-        selectedPrice === null ||
-        Number.isNaN(selectedPrice)
-    ) {
-        return;
-    }
-
-
-    if (
-        currentBalance <
-        selectedPrice
-    ) {
+    if(currentBalance < selectedPrice){
 
         showPurchaseStatus(
-            "error",
-            "Your balance is not enough. Please deposit through WhatsApp before purchasing."
+            "Your balance is not enough for this purchase.",
+            "error"
         );
 
         return;
     }
 
-
-    purchaseButton.disabled =
-        true;
-
+    purchaseBtn.disabled = true;
 
     showPurchaseStatus(
-        "info",
-        "Checking your balance and preparing your number..."
+        "Processing your purchase...",
+        "success"
     );
 
+    try{
 
-    try {
+        const countryId =
+            selectedCountry?.id;
 
-        /*
-         * IMPORTANT:
-         *
-         * No price is sent to the backend as
-         * authoritative data.
-         *
-         * The backend receives the pricingId,
-         * country/service identifiers and a unique
-         * requestId, then looks up the real price
-         * from Firestore servicePricing.
-         */
+        const serviceId =
+            selectedService.id ??
+            selectedService.serviceId ??
+            selectedService.service;
 
-        const result =
+        const pricingId =
+            selectedService.pricingId ||
+            selectedService.id;
+
+        const data =
             await customerApi(
                 "/api/customer/purchase-number",
                 {
-                    method: "POST",
+                    method:"POST",
+                    body:JSON.stringify({
 
-                    body:
-                        JSON.stringify({
+                        pricingId,
 
-                            pricingId:
-                                selectedService.id,
+                        countryId,
 
-                            countryId:
-                                selectedService.country ||
-                                selectedCountry.id,
+                        serviceId,
 
-                            serviceId:
-                                selectedService.service ||
-                                selectedService.serviceCode ||
-                                selectedService.id,
+                        requestId:
+                            createRequestId()
 
-                            requestId:
-                                createRequestId()
-
-                        })
+                    })
                 }
             );
 
-
-        /*
-         * Backend response contains the purchased
-         * 5SIM number directly.
-         */
-
-        activePurchase = {
-
-            ...(
-                result.purchase ||
-                result.numberData ||
-                {}
-            ),
-
-            ...result,
-
-            number:
-                result.number ||
-                result.phoneNumber ||
-                result.phone,
-
-            phoneNumber:
-                result.phoneNumber ||
-                result.number ||
-                result.phone,
-
-            service:
-                result.service ||
-                selectedService.serviceName ||
-                selectedService.service,
-
-            serviceName:
-                result.serviceName ||
-                selectedService.serviceName ||
-                selectedService.service,
-
-            country:
-                result.country ||
-                selectedCountry.id,
-
-            countryName:
-                result.countryName ||
-                selectedCountry.name,
-
-            purchaseId:
-                result.purchaseId,
-
-            fiveSimOrderId:
-                result.fiveSimOrderId,
-
-            expiresAt:
-                result.expiresAt,
-
-            status:
-                result.status ||
-                "COMPLETED"
-
-        };
-
-
-        /*
-         * Refresh the balance/profile immediately.
-         * Firestore onSnapshot should also update it
-         * automatically after the backend transaction.
-         */
-
-        updateSmsView(
-            activePurchase
-        );
-
+        activePurchase =
+            data.purchase ||
+            data.number ||
+            data;
 
         showPurchaseStatus(
-            "success",
-            result.message ||
-            "Number purchased successfully."
+            "Number purchased successfully.",
+            "success"
         );
-
-
-        /*
-         * Refresh the customer's backend number
-         * list so the newly purchased number becomes
-         * the active number used by the SMS page.
-         */
 
         await loadCustomerNumbers();
 
-
-        setTimeout(
-            () => {
-
-                showView("sms");
-
-            },
-            700
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Purchase error:",
-            error
-        );
-
-
         /*
-         * If the backend says the number was
-         * unavailable and refunded, show that clearly.
+         * Navigate to SMS page.
+         * No location.reload() is used.
          */
+        window.location.href =
+            "/numorahq/sms.html";
 
-        if (
-            error.data &&
-            error.data.refunded
-        ) {
+    }catch(error){
 
-            showPurchaseStatus(
-                "error",
-                error.data.message ||
-                "That number is currently unavailable. Your balance has been refunded."
-            );
+        console.error(error);
 
-        } else {
-
-            showPurchaseStatus(
-                "error",
-                error.message ||
-                "Unable to complete the purchase. Please try again."
-            );
-
-        }
-
-
-        purchaseButton.disabled =
-            false;
+        showPurchaseStatus(
+            error.message,
+            "error"
+        );
 
         updatePurchaseAvailability();
 
     }
-
-}
-
-
-/* =========================================================
-   PURCHASE STATUS
-========================================================= */
-
-function showPurchaseStatus(
-    type,
-    message
-) {
-
-    purchaseStatus.className =
-        "purchase-status show " +
-        type;
-
-    purchaseStatus.textContent =
-        message;
 
 }
 
@@ -4431,150 +1373,48 @@ function showPurchaseStatus(
    CUSTOMER NUMBERS
 ========================================================= */
 
-async function loadCustomerNumbers() {
+async function loadCustomerNumbers(){
 
-    if (!currentUser) {
-        return [];
-    }
+    try{
 
-
-    try {
-
-        const result =
+        const data =
             await customerApi(
                 "/api/customer/numbers"
             );
 
-
         customerNumbers =
-            Array.isArray(
-                result.numbers
-            )
-                ? result.numbers
+            Array.isArray(data.numbers)
+                ? data.numbers
                 : [];
 
-
-        /*
-         * The backend returns newest numbers first.
-         * Prefer the first active/purchasing/completed
-         * number as the customer's current number.
-         */
-
         const active =
-            customerNumbers.find(
-                number => {
+            customerNumbers.find(number => {
 
-                    const status =
-                        String(
-                            number.status ||
-                            ""
-                        ).toUpperCase();
+                const status =
+                    String(
+                        number.status ||
+                        ""
+                    ).toLowerCase();
 
-                    return (
-                        status !== "EXPIRED" &&
-                        status !== "CANCELLED" &&
-                        status !== "REFUNDED"
-                    );
+                return status !== "expired" &&
+                       status !== "cancelled" &&
+                       status !== "refunded";
 
-                }
-            );
+            });
 
-
-        if (active) {
+        if(active){
 
             activePurchase =
-                normalizeBackendNumber(
-                    active
-                );
-
-            updateSmsView(
-                activePurchase
-            );
-
-
-            /*
-             * Refresh the provider state/SMS when
-             * a 5SIM order ID is available.
-             */
-
-            if (
-                active.fiveSimOrderId
-            ) {
-
-                await refreshCustomerNumber(
-                    active.fiveSimOrderId
-                );
-
-            }
-
-        } else {
-
-            /*
-             * Only clear the SMS page if there is
-             * no backend number and there isn't a
-             * Firestore fallback purchase.
-             */
-
-            if (!activePurchase) {
-
-                updateSmsView(
-                    null
-                );
-
-            }
+                normalizeBackendNumber(active);
 
         }
 
-
-        /*
-         * Keep the dashboard received-message
-         * statistic useful for the new 5SIM system
-         * when the profile doesn't maintain its own
-         * received counter.
-         */
-
-        let totalReceived = 0;
-
-        customerNumbers.forEach(
-            number => {
-
-                if (
-                    Array.isArray(
-                        number.sms
-                    )
-                ) {
-
-                    totalReceived +=
-                        number.sms.length;
-
-                }
-
-            }
-        );
-
-
-        if (
-            totalReceived > 0
-        ) {
-
-            messagesReceived.textContent =
-                totalReceived.toLocaleString();
-
-        }
-
-
-        return customerNumbers;
-
-    }
-
-    catch (error) {
+    }catch(error){
 
         console.error(
-            "Customer numbers error:",
+            "Unable to load numbers:",
             error
         );
-
-        return [];
 
     }
 
@@ -4582,96 +1422,43 @@ async function loadCustomerNumbers() {
 
 
 /* =========================================================
-   NORMALIZE BACKEND NUMBER
+   NORMALIZE NUMBER
 ========================================================= */
 
-function normalizeBackendNumber(
-    number
-) {
+function normalizeBackendNumber(number){
 
-    if (!number) {
+    if(!number){
         return null;
     }
-
-
-    const smsList =
-        Array.isArray(
-            number.sms
-        )
-            ? number.sms
-            : [];
-
-
-    let latestMessage = null;
-
-
-    if (smsList.length) {
-
-        const latest =
-            smsList[
-                smsList.length - 1
-            ];
-
-
-        if (
-            typeof latest === "string"
-        ) {
-
-            latestMessage =
-                latest;
-
-        } else if (
-            latest &&
-            typeof latest === "object"
-        ) {
-
-            latestMessage =
-                latest.sms ||
-                latest.message ||
-                latest.code ||
-                latest.text ||
-                null;
-
-        }
-
-    }
-
 
     return {
 
         ...number,
 
-        number:
-            number.number ||
-            number.phoneNumber ||
-            number.phone,
+        orderId:
+            number.orderId ||
+            number.fiveSimOrderId ||
+            number.id,
 
         phoneNumber:
             number.phoneNumber ||
             number.number ||
-            number.phone,
-
-        serviceName:
-            number.serviceName ||
-            number.service ||
-            "Verification",
+            "",
 
         service:
-            number.service ||
             number.serviceName ||
-            "Verification",
+            number.service ||
+            "",
 
-        countryName:
-            number.countryName ||
-            number.country,
+        expiresAt:
+            number.expiresAt ||
+            number.expiry ||
+            null,
 
         sms:
-            latestMessage ||
-            (
-                smsList.length
-                    ? smsList
-                    : null
-            )
+            number.sms ||
+            number.messages ||
+            []
 
     };
 
@@ -4679,526 +1466,233 @@ function normalizeBackendNumber(
 
 
 /* =========================================================
-   REFRESH CUSTOMER NUMBER
+   STATUS
 ========================================================= */
 
-async function refreshCustomerNumber(
-    orderId
-) {
+function showPurchaseStatus(
+    message,
+    type
+){
 
-    if (!orderId) {
-        return;
-    }
+    purchaseStatus.textContent =
+        message;
 
-
-    try {
-
-        const result =
-            await customerApi(
-                `/api/customer/number/${encodeURIComponent(orderId)}`
-            );
-
-
-        const numberData =
-            result.number ||
-            result;
-
-
-        activePurchase =
-            normalizeBackendNumber(
-                numberData
-            );
-
-
-        updateSmsView(
-            activePurchase
-        );
-
-
-        /*
-         * Update the received count from the
-         * provider response when available.
-         */
-
-        const sms =
-            numberData &&
-            Array.isArray(
-                numberData.sms
-            )
-                ? numberData.sms
-                : [];
-
-
-        if (sms.length) {
-
-            messagesReceived.textContent =
-                sms.length.toLocaleString();
-
-        }
-
-
-        return activePurchase;
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Number refresh error:",
-            error
-        );
-
-    }
+    purchaseStatus.className =
+        `status-message show ${type}`;
 
 }
 
 
 /* =========================================================
-   SMS VIEW
+   DEPOSIT
 ========================================================= */
 
-function updateSmsView(
-    purchase
-) {
+function openDeposit(){
 
-    if (!purchase) {
+    const message =
+        encodeURIComponent(
+            "Hello Numora, I want to deposit money into my account."
+        );
 
-        if (smsCountdownTimer) {
+    window.open(
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`,
+        "_blank"
+    );
 
-            clearInterval(
-                smsCountdownTimer
-            );
+}
 
-            smsCountdownTimer =
-                null;
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goTo(path){
+
+    window.location.href = path;
+
+}
+
+
+document.getElementById("smsNav")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/sms.html")
+    );
+
+document.getElementById("settingsNav")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/settings.html")
+    );
+
+document.getElementById("mobileSms")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/sms.html")
+    );
+
+document.getElementById("mobileSettings")
+    .addEventListener(
+        "click",
+        () => goTo("/numorahq/settings.html")
+    );
+
+
+document.getElementById("depositBtn")
+    .addEventListener(
+        "click",
+        openDeposit
+    );
+
+
+countrySelect.addEventListener(
+    "change",
+    event => {
+
+        if(!event.target.value){
+
+            selectedCountry = null;
+            selectedService = null;
+            selectedPrice = 0;
+
+            serviceSelect.innerHTML =
+                `<option value="">Select country first</option>`;
+
+            serviceSelect.disabled = true;
+
+            priceValue.textContent =
+                formatNaira(0);
+
+            updatePurchaseAvailability();
+
+            return;
 
         }
 
-
-        smsNumber.textContent =
-            "No active number";
-
-        smsService.textContent =
-            "No active verification";
-
-        smsCountdown.textContent =
-            "—";
-
-        smsWaitingStatus.textContent =
-            "No active number. Purchase a verification number from Dashboard to begin.";
-
-        smsEmptyState.style.display =
-            "flex";
-
-        smsMessageContent.style.display =
-            "none";
-
-        return;
-    }
-
-
-    const normalized =
-        normalizeBackendNumber(
-            purchase
+        loadServices(
+            event.target.value
         );
 
-
-    const number =
-        normalized.number ||
-        normalized.phone ||
-        normalized.phoneNumber ||
-        normalized.tel ||
-        "Number unavailable";
+    }
+);
 
 
-    const service =
-        normalized.serviceName ||
-        normalized.service ||
-        normalized.serviceId ||
-        "Verification";
+serviceSelect.addEventListener(
+    "change",
+    event => {
 
+        selectedService =
+            services.find(service => {
 
-    smsNumber.textContent =
-        number;
+                const id =
+                    service.id ??
+                    service.serviceId ??
+                    service.service;
 
-    smsService.textContent =
-        service;
+                return String(id) ===
+                    String(event.target.value);
 
+            }) || null;
 
-    const expiresAt =
-        normalized.expiresAt ||
-        normalized.expiry ||
-        normalized.expires ||
-        null;
+        selectedPrice =
+            getCustomerPrice(
+                selectedService
+            );
 
+        priceValue.textContent =
+            formatNaira(selectedPrice);
 
-    if (expiresAt) {
-
-        startSmsCountdown(
-            expiresAt
-        );
-
-    } else {
-
-        smsCountdown.textContent =
-            "Active";
+        updatePurchaseAvailability();
 
     }
+);
 
 
-    const status =
-        String(
-            normalized.status ||
-            ""
-        ).toLowerCase();
+purchaseBtn.addEventListener(
+    "click",
+    purchaseNumber
+);
 
 
-    smsWaitingStatus.textContent =
-        status === "received"
-            ? "Verification SMS received."
-            : status === "expired"
-                ? "This verification number has expired."
-                : "Waiting for verification SMS...";
+/* =========================================================
+   LOGOUT
+========================================================= */
 
+document.getElementById("logoutBtn")
+    .addEventListener(
+        "click",
+        async () => {
 
-    /*
-     * 5SIM returns SMS as an array. The backend
-     * may also return a simple sms/message/code.
-     */
+            try{
 
-    let message = null;
+                await signOut(auth);
 
+                window.location.href =
+                    HOME_URL;
 
-    if (
-        Array.isArray(
-            normalized.sms
-        )
-    ) {
+            }catch(error){
 
-        const smsList =
-            normalized.sms;
-
-
-        if (smsList.length) {
-
-            const latest =
-                smsList[
-                    smsList.length - 1
-                ];
-
-
-            if (
-                typeof latest === "string"
-            ) {
-
-                message =
-                    latest;
-
-            } else if (
-                latest &&
-                typeof latest === "object"
-            ) {
-
-                message =
-                    latest.sms ||
-                    latest.message ||
-                    latest.code ||
-                    latest.text ||
-                    null;
+                console.error(error);
 
             }
 
         }
-
-    } else {
-
-        message =
-            normalized.sms ||
-            normalized.message ||
-            normalized.code ||
-            null;
-
-    }
-
-
-    if (message) {
-
-        smsEmptyState.style.display =
-            "none";
-
-        smsMessageContent.style.display =
-            "block";
-
-        smsMessageText.textContent =
-            message;
-
-    } else {
-
-        smsEmptyState.style.display =
-            "flex";
-
-        smsMessageContent.style.display =
-            "none";
-
-    }
-
-
-    /*
-     * Update the Recent Messages empty state
-     * without changing its existing design.
-     */
-
-    if (message) {
-
-        recentMessagesEmpty.innerHTML = `
-            <div class="empty-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8A2.5 2.5 0 0 1 17.5 16H10l-5.5 4v-4.5A2.5 2.5 0 0 1 2 13V5.5"></path>
-                    <path d="M7 8h10"></path>
-                    <path d="M7 11h7"></path>
-                </svg>
-            </div>
-
-            <h3>
-                Verification message received
-            </h3>
-
-            <p>
-                Your latest verification message is available in the SMS section.
-            </p>
-        `;
-
-    }
-
-}
-
-
-/* =========================================================
-   SMS COUNTDOWN
-========================================================= */
-
-function startSmsCountdown(
-    expiresAt
-) {
-
-    if (smsCountdownTimer) {
-
-        clearInterval(
-            smsCountdownTimer
-        );
-
-    }
-
-
-    function updateCountdown() {
-
-        const expiry =
-            new Date(
-                expiresAt
-            ).getTime();
-
-        const now =
-            Date.now();
-
-        const remaining =
-            Math.max(
-                0,
-                expiry - now
-            );
-
-
-        if (remaining <= 0) {
-
-            smsCountdown.textContent =
-                "Expired";
-
-            smsWaitingStatus.textContent =
-                "This verification number has expired.";
-
-            clearInterval(
-                smsCountdownTimer
-            );
-
-            return;
-        }
-
-
-        const totalSeconds =
-            Math.floor(
-                remaining / 1000
-            );
-
-        const minutes =
-            Math.floor(
-                totalSeconds / 60
-            );
-
-        const seconds =
-            totalSeconds % 60;
-
-
-        smsCountdown.textContent =
-            `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
-
-    }
-
-
-    updateCountdown();
-
-
-    smsCountdownTimer =
-        setInterval(
-            updateCountdown,
-            1000
-        );
-
-}
-
-
-/* =========================================================
-   SIGN OUT
-========================================================= */
-
-async function logout() {
-
-    try {
-
-        await signOut(
-            auth
-        );
-
-        window.location.replace(
-            HOME_URL
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Sign out error:",
-            error
-        );
-
-        alert(
-            "Unable to sign out. Please try again."
-        );
-
-    }
-
-}
-
-
-document
-    .getElementById(
-        "sidebarSignOut"
-    )
-    .addEventListener(
-        "click",
-        logout
-    );
-
-
-document
-    .getElementById(
-        "settingsSignOut"
-    )
-    .addEventListener(
-        "click",
-        logout
     );
 
 
 /* =========================================================
-   AUTHENTICATION
+   START DASHBOARD
 ========================================================= */
 
-async function startDashboard() {
+async function startDashboard(){
 
-    try {
+    try{
 
         await setPersistence(
             auth,
             browserLocalPersistence
         );
 
-
-        onAuthStateChanged(
-            auth,
-
-            async user => {
-
-                if (!user) {
-
-                    window.location.replace(
-                        HOME_URL
-                    );
-
-                    return;
-                }
-
-
-                currentUser =
-                    user;
-
-
-                /*
-                 * Initially populate using the Google
-                 * account. Firestore profile data will
-                 * replace the temporary Profile ID with
-                 * the stored 3-letter + 3-number ID.
-                 */
-
-                populateUser(
-                    user,
-                    null
-                );
-
-
-                listenToCustomerProfile(
-                    user
-                );
-
-
-                /*
-                 * Customer catalog comes through the
-                 * Numora backend. It does NOT read
-                 * countries/services directly from
-                 * Firestore.
-                 */
-
-                await loadCustomerCatalog();
-
-
-                /*
-                 * Load the customer's actual 5SIM
-                 * numbers from the authenticated backend.
-                 */
-
-                await loadCustomerNumbers();
-
-
-                loadingScreen.classList.add(
-                    "hidden"
-                );
-
-            }
-        );
-
-    }
-
-    catch (error) {
+    }catch(error){
 
         console.error(
-            "Dashboard authentication error:",
+            "Persistence error:",
             error
         );
 
-        window.location.replace(
-            HOME_URL
-        );
-
     }
+
+    onAuthStateChanged(
+        auth,
+        async user => {
+
+            if(!user){
+
+                window.location.href =
+                    HOME_URL;
+
+                return;
+            }
+
+            currentUser = user;
+
+            populateUser(
+                user
+            );
+
+            listenToCustomerProfile(
+                user
+            );
+
+            await loadCustomerCatalog();
+
+            await loadCustomerNumbers();
+
+            loadingScreen.style.display =
+                "none";
+
+        }
+    );
 
 }
 
